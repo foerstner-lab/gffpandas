@@ -26,19 +26,19 @@ test_requirements = [
 ]
 
 setup(
-    name='pandasgff',
+    name='gffpandas',
     version='0.1.0',
     description="GFF annotations in panda dataframes",
     long_description=readme + '\n\n' + history,
     author="Konrad U. Förstner",
     author_email='konrad@foerstner.org',
-    url='https://github.com/konrad/pandasgff',
-    packages=find_packages(include=['pandasgff']),
+    url='https://github.com/konrad/gffpandas',
+    packages=find_packages(include=['gffpandas']),
     include_package_data=True,
     install_requires=requirements,
     license="ISC license",
     zip_safe=False,
-    keywords='pandasgff',
+    keywords='gffpandas',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',

@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use pandasgff in a project::
+To use gffpandas in a project::
 
-    import pandasgff
+    import gffpandas

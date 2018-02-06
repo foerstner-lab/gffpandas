@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for `pandasgff` package."""
+"""Tests for `gffpandas` package."""
 
 import pytest
 
 
-from pandasgff import pandasgff
+from gffpandas import gffpandas
 
 
 @pytest.fixture

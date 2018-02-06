@@ -1,3 +1,7 @@
-# -*- coding: utf-8 -*-
+import pandas
 
-"""Main module."""
+
+class GffDf(object):
+
+    def __init__(self):
+        pass

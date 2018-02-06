@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for pandasgff."""
+"""Top-level package for gffpandas."""
 
 __author__ = """Konrad U. Förstner"""
 __email__ = 'konrad@foerstner.org'

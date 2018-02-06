@@ -1,4 +1,4 @@
-Welcome to pandasgff's documentation!
+Welcome to gffpandas's documentation!
 ======================================
 
 Contents:
