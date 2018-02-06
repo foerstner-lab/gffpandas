@@ -5,6 +5,7 @@ Credits
 Development Lead
 ----------------
 
+* Vivian Monzon
 * Konrad U. Förstner <konrad@foerstner.org>
 
 Contributors
