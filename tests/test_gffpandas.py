@@ -124,10 +124,9 @@ def test_write_tsv():
 
 def test_filter_feature():
     gff3_df = generate_gff3_df()
-    type_df = gff3_df.filter_feature_of_type('gene')
-    print(type(type_df))
-    # assert type(type_df) == type(dummy_df)
-
+    object_type_df, type_df = gff3_df.filter_feature_of_type('gene')
+    assert type(type_df) == type(dummy_df)
+      
 # def test_get_feature_by_attribute():
 #     gff3_df = gff3pd.Gff3DataFrame(test_fh)
 #     filtered_gff3_df = gff3_df.get_feature_by_attribute('SL1344_0001')
