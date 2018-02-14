@@ -26,7 +26,11 @@ class Gff3DataFrame(object):
                                         "attributes"])
 
     def _read_gff_header(self):
-        pass
+        for line in self._gff_file:
+            if line.startswith('#'):
+                self._header = line
+        return self._header
+
 
     def write_gff():
         pass
@@ -45,7 +49,7 @@ class Gff3DataFrame(object):
 
     def filter_feature_of_type(self, type):
         feature_df = self._df[self._df.feature == type]
-        Gff3DataFrame(input_df=feature_df, input_header=self._header)
+        return Gff3DataFrame(input_df=feature_df, input_header=self._header)
         return feature_df
 
     def filter_by_lenght(self):
