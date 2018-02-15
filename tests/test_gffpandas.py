@@ -124,19 +124,21 @@ def test_filter_feature():
     gff3_df = generate_gff3_df()
     object_type_df, type_df, header = gff3_df.filter_feature_of_type('gene')
     assert type(type_df) == type(dummy_df)
-      
-# def test_get_feature_by_attribute():
-#     gff3_df = gff3pd.Gff3DataFrame(test_fh)
-#     filtered_gff3_df = gff3_df.get_feature_by_attribute('SL1344_0001')
-#     return filtered_gff3_df
-#     #       attribute_name="ID", attribute_value="WP_00000")
-#  #   filtered_gff3_df = gff3_df.feature_by_attribute("locus_tag", "WP_00000")
 
+    
 # def test_filter_by_lenght():
-#     test_df_thr_obj = gff3pd.Gff3DataFrame(test_fh)
-#     lenght_filter = test_df_thr_obj.filter_by_lenght()
-#     assert type(lenght_filter) == type(dummy_df)
+#     gff3_df = generate_gff3_df()
+#     lenght_object, lenght_filter, header = gff3_df.filter_by_lenght()
+#     assert type(lenght_filter) != type(dummy_df)
 
+def test_get_feature_by_attribute():
+    gff3_df = generate_gff3_df()
+    filtered_gff3_df = gff3_df.get_feature_by_attribute('SL1344_0001')
+    assert filtered_gff3_df == 'gene0'
+    
+# gff3_df = generate_gff3_df()
+# filtered_gff3_df = gff3_df.get_feature_by_attribute('SL1344_0001')
+# print(filtered_gff3_df)
 
 # def test_attributes_to_columns():
 #     gff3_df = generate_gff3_df()
