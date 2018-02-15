@@ -16,20 +16,21 @@ class Gff3DataFrame(object):
             self._df = input_df
             self._header = input_header
 
-    def to_gff3(self, df):
-        pass
-
     def _read_gff3_to_df(self):
         self._df = pd.read_table(self._gff_file, comment='#',
                                  names=["Seq_ID", "source", "feature", "start",
                                         "end", "score", "strang", "phase",
                                         "attributes"])
+        return self._df
 
     def _read_gff_header(self):
-        for line in self._gff_file:
-            if line.startswith('#'):
-                self._header = line
+        self._header = '# This is my header with my information'
         return self._header
+        
+    #     for line in self._gff_file:
+    #         if line.startswith('#'):
+    #             self._header = line
+    #     return self._header
 
 
     def write_gff():
@@ -49,8 +50,8 @@ class Gff3DataFrame(object):
 
     def filter_feature_of_type(self, type):
         feature_df = self._df[self._df.feature == type]
-        return Gff3DataFrame(input_df=feature_df, input_header=self._header)
-        return feature_df
+        return [Gff3DataFrame(input_df=feature_df, input_header=self._header),
+                feature_df, self._header]
 
     def filter_by_lenght(self):
         self._df['gene_lenght'] = self._df.apply(lambda row:

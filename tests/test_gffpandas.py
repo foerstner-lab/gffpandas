@@ -5,16 +5,8 @@
 
 # import pytest
 
-#.gffpandas as gff3pd
-import sys
-sys.path.append('/home/vivian/gffPandas/gffpandas/gffpandas')
-import gffpandas as gff3pd
-
-# print(sys.path)
-# from gffpandas.gffpandas import gffpandas
-
+import gffpandas.gffpandas as gff3pd
 import pandas as pd
-
 import io
 
 # writing gff file with BCBio-gff (problems to install it) 
@@ -78,16 +70,22 @@ def generate_gff3_df():
     return read_in_file
 
 
-def generate_gff_header():
-    pass
-
-
+# do we want to return a df or instance? in this case an instance. 
 def test_read_gff3_if_df_type():
     gff3_df = generate_gff3_df()
+#   gff3_df_object = generate_gff3_df()
+#   gff3_df = gff3_df_object._read_gff3_to_df()
     assert type(gff3_df) == gff3pd.Gff3DataFrame
     # maybe even asssert the following:
     # gff3_df.columns = ["Seq_id", "...",
     #                  "Length", "Parent(s)??", "Children"]
+    
+    
+def generate_gff_header():
+    object_header = gff3pd.read_gff3(test_fh)
+    generate_header = object_header._read_gff_header()
+    return generate_header
+    
 
 # def test_if_df_values_equal_gff_values():
 #     test_df_object = gff3pd.Gff3DataFrame(test_fh)
@@ -124,7 +122,7 @@ def test_write_tsv():
 
 def test_filter_feature():
     gff3_df = generate_gff3_df()
-    object_type_df, type_df = gff3_df.filter_feature_of_type('gene')
+    object_type_df, type_df, header = gff3_df.filter_feature_of_type('gene')
     assert type(type_df) == type(dummy_df)
       
 # def test_get_feature_by_attribute():
