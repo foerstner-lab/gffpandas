@@ -1,0 +1,58 @@
+import gffpandas.gffpandas as gff3pd
+import pandas as pd
+import io
+
+test_fh = io.StringIO(
+    "# Identifikation\n"
+    "# gff3\n"
+    "eins\tzwei\tgene\t4000\t5000\tsechs\tsieben\tacht\tID=gene0;Name=thrL;locus_tag=SL1344_0001\n"
+    "eins\tzwei\tCDS\t4000\t5000\tsechs\tsieben\tacht\tID=gene0;Name=thrL;locus_tag=SL1344_0001\n"
+    "eins\tzwei\tgene\t4000\t5000\tsechs\tsieben\tacht\tID=gene0;Name=thrL;locus_tag=SL1344_0001\n"
+    "eins\tzwei\tgene\t300\t6000\tsechs\tsieben\tacht\tID=gene0;Name=thrL;locus_tag=SL1344_0001\n"
+    "eins\tzwei\ttRNA\t350\t450\tsechs\tsieben\tacht\tneun\n")
+
+dummy_df = pd.DataFrame([
+        ['eins', 'zwei', 'gene', '4000', '5000', 'sechs', 'sieben',
+         'acht', 'neun'],
+        ['eins', 'zwei', 'CDS', '4000', '5000', 'sechs', 'sieben',
+         'acht', 'neun'],
+        ['eins', 'zwei', 'gene', '4000', '5000', 'sechs', 'sieben',
+         'acht', 'neun'],
+        ['eins', 'zwei', 'gene', '300', '6000', 'sechs', 'sieben',
+         'acht', 'neun'],
+        ['eins', 'zwei', 'tRNA', '350', '450', 'sechs', 'sieben',
+         'acht', 'neun']
+        ], columns=["Seq_ID", "source", "feature", "start", "end",
+                    "score", "strang", "phase", "attributes"])
+
+dummy_csv = ("Seq_ID,source,feature,start,end,score,strang,phase,attributes\n"
+             "Seq_ID,source,feature,start,end,score,strang,phase,attributes\n"
+             "Seq_ID,source,feature,start,end,score,strang,phase,attributes\n"
+             "Seq_ID,source,feature,start,end,score,strang,phase,attributes")
+
+
+def generate_gff3_df():
+    read_in_file = gff3pd.read_gff3(test_fh)
+    return read_in_file
+
+
+def test_read_gff3_if_df_type():
+    gff3_df = generate_gff3_df()
+    assert type(gff3_df) == gff3pd.Gff3DataFrame
+
+    
+def test_generate_gff_header():
+    object_header = gff3pd.read_gff3('NC_016810B.gff')
+    generate_header = object_header._read_gff_header()
+    return generate_header
+
+
+# object_df3 = gff3pd.read_gff3('NC_016810B.gff')
+# table_df = object_df3._read_gff3_to_df()
+# print(table_df)
+
+
+object_header = gff3pd.read_gff3('NC_016810B.gff')
+generate_header = object_header._read_gff_header()
+print(generate_header)
+    
