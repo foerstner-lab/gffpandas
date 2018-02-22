@@ -1,4 +1,5 @@
 import pandas as pd
+import itertools
 
 
 def read_gff3(input_file):
@@ -21,8 +22,7 @@ class Gff3DataFrame(object):
                                  names=["Seq_ID", "source", "feature", "start",
                                         "end", "score", "strang", "phase",
                                         "attributes"])
-    #    return self._df
-
+        return self._df
 
     def _read_gff_header(self):
         self._header = ''
@@ -75,8 +75,23 @@ class Gff3DataFrame(object):
         gene = dictionary.get(key_locus_tag, 'not available')
         return gene
 
-    # def attributes_to_columns(self):
-    #     pass
+    def attributes_to_columns(self):
+        self._df['at_dic'] = self._df.attributes.apply(lambda attributes:
+                                                       dict([key_value_pair.
+                                                             split('=') for
+                                                             key_value_pair in
+                                                             attributes.
+                                                             split(';')]))
+        self._df['at_dic_keys'] = self._df['at_dic'].apply(lambda at_dic:
+                                                           list(at_dic.keys()))
+        merged_list = list(itertools.chain.from_iterable(self._df
+                                                         ['at_dic_keys']))
+        nonredundant_list = list(set(merged_list))
+        for atr in nonredundant_list:
+            self._df[atr] = self._df['at_dic'].apply(lambda at_dic:
+                                                     at_dic.get(atr))
+        return self._df
+
 
     # def attributes_to_columns2(self):
     #     pass
@@ -84,18 +99,75 @@ class Gff3DataFrame(object):
     # def list_attributes():
     #     pass
 
-    # def stats():
-    #     pass
+    def gene_lenght(self):
+        df_w_region = self._df[self._df.feature != 'region']
+        df_w_region['gene_lenght'] = df_w_region.apply(lambda row:
+                                                       row.end -
+                                                       row.start, axis=1)
+        stringA = 'Maximal_bp_lenght:'
+        max_lenght = df_w_region.loc[df_w_region['gene_lenght'] ==
+                                     df_w_region['gene_lenght'].max()]
+        stringB = 'Minimal_bp_lenght:'
+        min_lenght = df_w_region.loc[df_w_region['gene_lenght'] ==
+                                     df_w_region['gene_lenght'].min()]
+        return [stringA, max_lenght, stringB, min_lenght]
+
+    def count_strang_type(self):
+        frequencytable = {}
+        for key in self._df['strang']:
+            if key in frequencytable:
+                frequencytable[key] += 1
+            else:
+                frequencytable[key] = 1
+        return frequencytable
+
+    def count_feature_types(self):
+        frequencytable2 = {}
+        for key in self._df['feature']:
+            if key in frequencytable2:
+                frequencytable2[key] += 1
+            else:
+                frequencytable2[key] = 1
+        return frequencytable2
+
+    def stats():
+        max_lenghts, min_lenghts = Gff3DataFrame.gene_lenght()
+        number_strang_types = Gff3DataFrame.count_strang_type()
+        number_feature_types = Gff3DataFrame.count_feature_types()
+        return [max_lenghts, min_lenghts, number_strang_types,
+                number_feature_types]
+        
+       
 
     # def overlapping():
     #     pass
 
-    # def find_out_of_region_features():
-    #     pass
+    def find_out_of_region_features(self):
+        region_df = self._df[self._df.feature == 'region']
+        out_of_region = self._df.loc[(self._df.end > int(region_df.end)) |
+                                     (self._df.start < int(region_df.start))]
+        return out_of_region
 
-    # def find_redundant_entries():
-    #     pass
+    def find_redundant_entries(self):
+        df_gene = self._df[self._df.feature == 'gene']
+        if (df_gene[['end', 'start', 'strang']].duplicated().sum() == 0):
+            print('No redundant entries found')
+        else:
+            duplicate = df_gene.loc[df_gene[['end', 'start',
+                                             'strang']].duplicated()]
+            return duplicate
 
+    def drop_redundant_entries(self):
+        df_gene = self._df[self._df.feature == 'gene']
+        if (df_gene[['end', 'start', 'strang']].duplicated().sum() == 0):
+            print('No redundant entries found')
+        else:
+            nonredundant_df = df_gene.drop_duplicates(subset=['end',
+                                                              'start',
+                                                              'strang'])
+            return nonredundant_df
+
+        
     # def get_children_attributes():
     #     pass
 
@@ -108,6 +180,9 @@ class Gff3DataFrame(object):
     
     
 # test_object = read_gff3('NC_016810B.gff')
+# data_frame_new = test_object._read_gff3_to_df()
+# print(data_frame_new)
+
 # data_frame = test_object.get_feature_by_attribute('SL1344_0001')
 # print(data_frame)
 
