@@ -1,0 +1,19 @@
+##gff-version 3
+#!gff-spec-version 1.20
+#!processor NCBI annotwriter
+##sequence-region NC_016810.1 1 4878012
+##species http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=216597
+NC_016810.1	RefSeq	region	1	4878012	.	+	.	ID=id0;Dbxref=taxon:216597;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344
+; NC_016810.1	RefSeq	gene	169	255	.	+	.	ID=gene0;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001
+; NC_016810.1	RefSeq	CDS	169	255	.	+	0	ID=cds0;Name=YP_005179941.1;Parent=gene0;Dbxref=UniProtKB%2FTrEMBL:E; 1W7M4,Genbank:YP_005179941.1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+NC_016810.1	RefSeq	gene	169	255	.	+	.	ID=gene0;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001
+NC_016810.1	RefSeq	CDS	169	255	.	+	0	ID=cds0;Name=YP_005179941.1;Parent=gene0;Dbxref=UniProtKB%2FTrEMBL:E1W7M4,Genbank:YP_005179941.1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+NC_016810.1	RefSeq	gene	169	255	.	+	.	ID=gene0;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001
+NC_016810.1	RefSeq	CDS	169	255	.	+	0	ID=cds0;Name=YP_005179941.1;Parent=gene0;Dbxref=UniProtKB%2FTrEMBL:E1W7M4,Genbank:YP_005179941.1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+NC_016810.1	RefSeq	gene	169	255	.	+	.	ID=gene0;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001
+NC_016810.1	RefSeq	CDS	169	255	.	+	0	ID=cds0;Name=YP_005179941.1;Parent=gene0;Dbxref=UniProtKB%2FTrEMBL:E1W7M4,Genbank:YP_005179941.1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+NC_016810.1	RefSeq	gene	169	255	.	+	.	ID=gene0;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001
+NC_016810.1	RefSeq	CDS	169	255	.	+	0	ID=cds0;Name=YP_005179941.1;Parent=gene0;Dbxref=UniProtKB%2FTrEMBL:E1W7M4,Genbank:YP_005179941.1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+NC_016810.1	RefSeq	gene	169	255	.	+	.	ID=gene0;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001
+NC_016810.1	RefSeq	CDS	169	255	.	+	0	ID=cds0;Name=YP_005179941.1;Parent=gene0;Dbxref=UniProtKB%2FTrEMBL:E1W7M4,Genbank:YP_005179941.1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+
