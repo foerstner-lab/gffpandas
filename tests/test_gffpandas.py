@@ -7,7 +7,7 @@
 
 import gffpandas.gffpandas as gff3pd
 import pandas as pd
-import io
+# import io
 
 from BCBio import GFF
 from Bio.Seq import Seq
@@ -63,6 +63,12 @@ with open(out_file, "w") as out_handle:
     GFF.write([rec], out_handle)
 
 
+dummy_df2 = pd.read_table('your_file.gff', comment='#',
+                                 names=["Seq_ID", "source", "feature", "start",
+                                        "end", "score", "strang", "phase",
+                                        "attributes"])
+
+
 # test_fh = io.StringIO(
 #     "# Identifikation\n"
 #     "# gff3\n"
@@ -71,7 +77,7 @@ with open(out_file, "w") as out_handle:
 #     "eins\tzwei\tgene\t4000\t5000\tsechs\tsieben\tacht\tID=gene0;Name=thrL;locus_tag=SL1344_0001\n"
 #     "eins\tzwei\tgene\t300\t6000\tsechs\tsieben\tacht\tID=gene0;Name=thrL;locus_tag=SL1344_0001\n"
 #     "eins\tzwei\ttRNA\t350\t450\tsechs\tsieben\tacht\tneun\n"
-)
+# )
 
 dummy_df = pd.DataFrame([
         ['NC_016810.1', 'RefSeq', 'region', 1, 4878012, '.', '+', '.', 'ID=id0;Dbxref=taxon:216597;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344'],
@@ -133,7 +139,7 @@ def test_if_df_values_equal_gff_values():
     test_df_object = generate_gff3_df()
     test_df = test_df_object._read_gff3_to_df()
    # assert type(test_df) == type(dummy_df)
-    pd.testing.assert_frame_equal(test_df, dummy_df)
+    pd.testing.assert_frame_equal(test_df, dummy_df2)
 
 # def test_write_gff():
 #     gff3_df = generate_gff3_df()
