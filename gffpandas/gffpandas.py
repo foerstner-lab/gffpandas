@@ -130,9 +130,18 @@ class Gff3DataFrame(object):
         description = self._df.describe(include='all')
         return description
 
-    # def overlapping():
-    #     pass
-
+    def overlapping(self):
+        for row in self._df:
+            overlappings = self._df[(((self._df.start) >=
+                                      (self._df.start + 10))
+                                     & ((self._df.start) <=
+                                        (self._df.end - 10))) | 
+                                    (((self._df.end) <= (self._df.end - 10))
+                                     & ((self._df.end) >=
+                                        (self._df.start + 10)))]
+            pass
+        
+        
     def find_out_of_region_features(self):
         region_df = self._df[self._df.feature == 'region']
         out_of_region = self._df.loc[(self._df.end > int(region_df.end)) |
