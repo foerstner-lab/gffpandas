@@ -146,6 +146,18 @@ dummy_df_plus_length = pd.DataFrame([
                     "score", "strang", "phase", "attributes", "gene_length"])
 # print(dummy_df_plus_length)
 
+# df_empty = pd.DataFrame({"Seq_ID", "source", "feature", "start", "end",
+#                          "score", "strang", "phase", "attributes",
+#                          "gene_length": []})
+# df_empty = pd.DataFrame({'A': []})
+df_empty = pd.DataFrame([], columns=["Seq_ID", "source", "feature", "start",
+                                     "end", "score", "strang", "phase",
+                                     "attributes"]).empty
+
+redundant_entry = pd.DataFrame([
+    ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.', 'ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002'],
+    ], columns=["Seq_ID", "source", "feature", "start", "end", "score", "strang", "phase", "attributes"])
+
 dummy_lenght_df = pd.DataFrame([
         ['eins', 'zwei', 'gene', 'vier', 'fünf', 'sechs', 'sieben',
          'acht', 'neun', 'zehn'],
@@ -227,13 +239,14 @@ def test_filter_by_length():
     length_object, length_filter, header = gff3_df.filter_by_length()
     assert type(length_object) == gff3pd.Gff3DataFrame
     # ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all():
-    assert length_filter == dummy_df_plus_length
+    assert length_filter.all() == dummy_df_plus_length.all()
     assert header == written_header
 
-    
-# gff3_df = generate_gff3_df()
-# gff3_df_filtered = gff3_df.filter_by_length()
-# print(gff3_df_filtered)
+
+gff3_df = generate_gff3_df()
+length_object, length_filter, header = gff3_df.filter_by_length()
+print(length_filter.all())
+print(dummy_df_plus_length.all())
 
 
 def test_get_feature_by_attribute():
@@ -253,17 +266,30 @@ def test_attributes_to_columns():
 #     pass
 
 
+def test_stats():
+    gff3_df = generate_gff3_df()
+    stats_gff3_df = gff3_df.stats()
+    pass
+   
+
 def test_describe():
     gff3_df = generate_gff3_df()
     description_test = gff3_df.describe()
     pass
 
 
-gff3_df = generate_gff3_df()
-gff3_description = gff3_df.describe()
-gff3_stat = gff3_df.stats()
-print(gff3_description)
-print(gff3_stat)
+# return feature that are outside of the range defined by the region/source feature
+def test_find_out_of_region_features():
+    gff3_df = generate_gff3_df()
+    out_of_region_df = gff3_df.find_out_of_region_features()
+    assert out_of_region_df.empty == df_empty
+
+
+def test_find_redundant_entries():
+    gff3_df = generate_gff3_df()
+    redundant_df = gff3_df.find_redundant_entries()
+    assert type(redundant_df) == gff3pd.Gff3DataFrame
+
 
 # def test_attributes_to_columns_2():
 #     gff3_df = generate_gff3_df()
@@ -299,12 +325,6 @@ print(gff3_stat)
 #     gff3_df.overlapping(
 #         start=400, end=1400, feature=["gene"], strand=["+"], min_overlap=10)
 #     pass
-
-# return feature that are outside of the range defined by the region/source feature
-def test_find_out_of_region_features():
-    gff3_df = generate_gff3_df()
-    out_of_region_df = gff3_df.find_out_of_region_features()
-    assert type(out_of_region_df) == type(dummy_df)
 
 
 #
