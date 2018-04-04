@@ -125,6 +125,8 @@ class Gff3DataFrame(object):
                 frequencytable2]
 
     def describe(self):
+        self._df['gene_length'] = self._df.apply(lambda row:
+                                                 row.end - row.start, axis=1)
         description = self._df.describe(include='all')
         return description
 
@@ -144,7 +146,7 @@ class Gff3DataFrame(object):
         else:
             duplicate = df_gene.loc[df_gene[['end', 'start',
                                              'strang']].duplicated()]
-            return duplicate
+            return Gff3DataFrame(input_df=duplicate, input_header=self._header)
 
     def drop_redundant_entries(self):
         df_gene = self._df[self._df.feature == 'gene']
