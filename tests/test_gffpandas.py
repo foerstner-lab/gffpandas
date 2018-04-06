@@ -9,24 +9,7 @@ import gffpandas.gffpandas as gff3pd
 import pandas as pd
 # import io
 
-
-input_gff = ('##gff-version 3\n'
-             '##sequence-region NC_016810.1 1 20\n'
-             'NC_016810.1\tRefSeq\tregion\t1\t4000\t.\t+\t.\tDbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344\n'
-             'NC_016810.1\tRefSeq\tgene\t1\t20\t.\t+\t.\tID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001\n'
-             'NC_016810.1\tRefSeq\tCDS\t13\t235\t.\t+\t0\tDbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n'
-             'NC_016810.1\tRefSeq\tgene\t1\t20\t.\t+\t.\tID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002\n'
-             'NC_016810.1\tRefSeq\tCDS\t341\t523\t.\t+\t0\tDbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n'
-             'NC_016810.1\tRefSeq\tgene\t1\t600\t.\t-\t.\tID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_tag=SL1344_0003\n'
-             'NC_016810.1\tRefSeq\tCDS\t21\t345\t.\t-\t0\tDbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n'
-             'NC_016810.1\tRefSeq\tgene\t41\t255\t.\t+\t.\tID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0004\n'
-             'NC_016810.1\tRefSeq\tCDS\t61\t195\t.\t+\t0\tDbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n'
-             'NC_016810.1\tRefSeq\tgene\t170\t546\t.\t+\t.\tID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005\n'
-             'NC_016810.1\tRefSeq\tCDS\t34\t335\t.\t+\t0\tDbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n')
-
-# print(input_gff)
-
-dummy_df = pd.DataFrame([
+written_df = pd.DataFrame([
         ['NC_016810.1', 'RefSeq', 'region', 1, 4000, '.', '+', '.', 'Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344'],
         ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.', 'ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001'],
         ['NC_016810.1', 'RefSeq', 'CDS', 13, 235, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11'],
@@ -45,7 +28,7 @@ written_header = ('##gff-version 3\n'
                   '##sequence-region NC_016810.1 1 20\n')
 
 
-dummy_csv = ('Seq_ID,source,feature,start,end,score,strang,phase,attributes\n'
+written_csv = ('Seq_ID,source,feature,start,end,score,strang,phase,attributes\n'
              'NC_016810.1,RefSeq,region,1,4000,.,+,.,Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344\n'
              'NC_016810.1,RefSeq,gene,1,20,.,+,.,ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001\n'
              'NC_016810.1,RefSeq,CDS,13,235,.,+,0,Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n'
@@ -58,7 +41,7 @@ dummy_csv = ('Seq_ID,source,feature,start,end,score,strang,phase,attributes\n'
              'NC_016810.1,RefSeq,gene,170,546,.,+,.,ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005\n'
              'NC_016810.1,RefSeq,CDS,34,335,.,+,0,Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n')
 
-dummy_tsv = ('Seq_ID\tsource\tfeature\tstart\tend\tscore\tstrang\tphase\tattributes\n'
+written_tsv = ('Seq_ID\tsource\tfeature\tstart\tend\tscore\tstrang\tphase\tattributes\n'
              'NC_016810.1\tRefSeq\tregion\t1\t4000\t.\t+\t.\tDbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344\n'
              'NC_016810.1\tRefSeq\tgene\t1\t20\t.\t+\t.\tID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001\n'
              'NC_016810.1\tRefSeq\tCDS\t13\t235\t.\t+\t0\tDbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n'
@@ -70,21 +53,6 @@ dummy_tsv = ('Seq_ID\tsource\tfeature\tstart\tend\tscore\tstrang\tphase\tattribu
              'NC_016810.1\tRefSeq\tCDS\t61\t195\t.\t+\t0\tDbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n'
              'NC_016810.1\tRefSeq\tgene\t170\t546\t.\t+\t.\tID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005\n'
              'NC_016810.1\tRefSeq\tCDS\t34\t335\t.\t+\t0\tDbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n')
-
-# dummy_df_plus_length = pd.DataFrame([
-#         ['NC_016810.1', 'RefSeq', 'region', 1, 4000, '.', '+', '.', 'Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344', 3999],
-#         ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.', 'ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001', 19],
-#         ['NC_016810.1', 'RefSeq', 'CDS', 13, 235, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 222],
-#         ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.', 'ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002', 19],
-#         ['NC_016810.1', 'RefSeq', 'CDS', 341, 523, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 182],
-#         ['NC_016810.1', 'RefSeq', 'gene', 1, 600, '.', '-', '.', 'ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_tag=SL1344_0003', 599],
-#         ['NC_016810.1', 'RefSeq', 'CDS', 21, 345, '.', '-', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 324],
-#         ['NC_016810.1', 'RefSeq', 'gene', 41, 255, '.', '+', '.', 'ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0004', 214],
-#         ['NC_016810.1', 'RefSeq', 'CDS', 61, 195, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 134],
-#         ['NC_016810.1', 'RefSeq', 'gene', 170, 546, '.', '+', '.', 'ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005', 376],
-#         ['NC_016810.1', 'RefSeq', 'CDS', 34, 335, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 301],
-#         ], columns=["Seq_ID", "source", "feature", "start", "end",
-#                     "score", "strang", "phase", "attributes", "gene_length"])
 
 df_empty = pd.DataFrame([], columns=["Seq_ID", "source", "feature", "start",
                                      "end", "score", "strang", "phase",
@@ -119,7 +87,7 @@ def test_generate_gff_header():
 def test_if_df_values_equal_gff_values():
     test_df_object = generate_gff3_df()
     test_df = test_df_object._read_gff3_to_df()
-    pd.testing.assert_frame_equal(test_df, dummy_df)
+    pd.testing.assert_frame_equal(test_df, written_df)
 
 # def test_write_gff():
 #     gff3_df = generate_gff3_df()
@@ -132,14 +100,14 @@ def test_write_csv():
     gff3_df = generate_gff3_df()
     gff3_df.write_csv('temp.csv')
     csv_content = open('temp.csv').read()
-    assert csv_content == dummy_csv
+    assert csv_content == written_csv
 
 
 def test_write_tsv():
     gff3_df = generate_gff3_df()
     gff3_df.write_tsv('temp.tsv')
     tsv_content = open('temp.tsv').read()
-    assert tsv_content == dummy_tsv
+    assert tsv_content == written_tsv
 
 # ?
 # def test_write_csv_with_parent_child():
@@ -189,9 +157,9 @@ def test_attributes_to_columns():
 #     pass
 
 
-def test_stats():
+def test_stats_dic():
     gff3_df = generate_gff3_df()
-    stats_gff3_df = gff3_df.stats()
+    stats_gff3_df = gff3_df.stats_dic()
     pass
    
 
