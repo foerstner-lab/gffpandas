@@ -1,5 +1,6 @@
 import pandas as pd
 import itertools
+from collections import defaultdict
 
 
 def read_gff3(input_file):
@@ -53,11 +54,11 @@ class Gff3DataFrame(object):
         return Gff3DataFrame(input_df=feature_df, input_header=self._header)
               #  feature_df, self._header
 
-    def filter_by_length(self):
-        self._df['gene_length'] = self._df.apply(lambda row:
-                                                 row.end - row.start, axis=1)
-        filtered_length = self._df[(self._df.gene_length > 10) &
-                                   (self._df.gene_length < 5000)]
+    def filter_by_length(self, min_length: int, max_length: int):
+        gene_length = pd.Series(self._df.apply(lambda row:
+                                               row.end - row.start, axis=1))
+        filtered_length = (gene_length >= min_length) & (gene_length
+                                                         <= max_length)
         return [Gff3DataFrame(input_df=filtered_length,
                               input_header=self._header),
                 filtered_length, self._header]
@@ -95,34 +96,46 @@ class Gff3DataFrame(object):
     # def list_attributes():
     #     pass
 
-    def stats(self):
-        # max_min_gene_lenght
+    def stats_dic(self) -> dict:
         df_w_region = self._df[self._df.feature != 'region']
         df_w_region['gene_lenght'] = df_w_region.apply(lambda row:
                                                        row.end -
                                                        row.start, axis=1)
-        stringA = 'Maximal_bp_lenght:'
-        max_lenght = df_w_region.loc[df_w_region['gene_lenght'] ==
-                                     df_w_region['gene_lenght'].max()]
-        stringB = 'Minimal_bp_lenght:'
-        min_lenght = df_w_region.loc[df_w_region['gene_lenght'] ==
-                                     df_w_region['gene_lenght'].min()]
-        # count_strang_type
-        frequencytable = {}
+        strang_counts = defaultdict(int)
         for key in self._df['strang']:
-            if key in frequencytable:
-                frequencytable[key] += 1
-            else:
-                frequencytable[key] = 1
-        # count_feature_types
-        frequencytable2 = {}
+            strang_counts[key] += 1
+        feature_counts = defaultdict(int)
         for key in self._df['feature']:
-            if key in frequencytable2:
-                frequencytable2[key] += 1
-            else:
-                frequencytable2[key] = 1
-        return [stringA, max_lenght, stringB, min_lenght, frequencytable,
-                frequencytable2]
+            feature_counts[key] += 1
+        stats_dic = {
+            'Maximal_bp_lenght':
+            df_w_region.loc[df_w_region['gene_lenght'] ==
+                            df_w_region['gene_lenght'].max()],
+            'Minimal_bp_lenght':
+            df_w_region.loc[df_w_region['gene_lenght'] ==
+                            df_w_region['gene_lenght'].min()],
+            'Counted_strangs': strang_counts,
+            'Counted_features': feature_counts
+        }
+        return stats_dic
+
+
+    # def stats_print(self):
+    #     df_w_region = self._df[self._df.feature != 'region']
+    #     df_w_region['gene_lenght'] = df_w_region.apply(lambda row:
+    #                                                    row.end -
+    #                                                    row.start, axis=1)
+    #     stats_dic = {
+    #         'Maximal_bp_lenght':
+    #         df_w_region.loc[df_w_region['gene_lenght'] ==
+    #                         df_w_region['gene_lenght'].max()],
+    #         'Minimal_bp_lenght':
+    #         df_w_region.loc[df_w_region['gene_lenght'] ==
+    #                         df_w_region['gene_lenght'].min()]
+    #     }
+    #     print("The maximal bp_lenght is:{}\n"
+    #           "The minimal bp_lenght is:{}".format
+    #           (stats_dic['Maximal_bp_lenght'], stats_dic['Minimal_bp_lenght']))
 
     def describe(self):
         self._df['gene_length'] = self._df.apply(lambda row:
@@ -139,8 +152,7 @@ class Gff3DataFrame(object):
                                     (((self._df.end) <= (self._df.end - 10))
                                      & ((self._df.end) >=
                                         (self._df.start + 10)))]
-            pass
-        
+        pass
         
     def find_out_of_region_features(self):
         region_df = self._df[self._df.feature == 'region']
@@ -173,8 +185,9 @@ class Gff3DataFrame(object):
 
 
 
-
-
+# test_object = read_gff3('NC_016810B.gff')
+# printed_dic = test_object.stats_dic()
+# print(printed_dic)
 
 
     
