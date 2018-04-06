@@ -130,51 +130,34 @@ dummy_tsv = ('Seq_ID\tsource\tfeature\tstart\tend\tscore\tstrang\tphase\tattribu
              'NC_016810.1\tRefSeq\tgene\t170\t546\t.\t+\t.\tID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005\n'
              'NC_016810.1\tRefSeq\tCDS\t34\t335\t.\t+\t0\tDbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n')
 
-dummy_df_plus_length = pd.DataFrame([
-        ['NC_016810.1', 'RefSeq', 'region', 1, 4000, '.', '+', '.', 'Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344', 3999],
-        ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.', 'ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001', 19],
-        ['NC_016810.1', 'RefSeq', 'CDS', 13, 235, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 222],
-        ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.', 'ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002', 19],
-        ['NC_016810.1', 'RefSeq', 'CDS', 341, 523, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 182],
-        ['NC_016810.1', 'RefSeq', 'gene', 1, 600, '.', '-', '.', 'ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_tag=SL1344_0003', 599],
-        ['NC_016810.1', 'RefSeq', 'CDS', 21, 345, '.', '-', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 324],
-        ['NC_016810.1', 'RefSeq', 'gene', 41, 255, '.', '+', '.', 'ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0004', 214],
-        ['NC_016810.1', 'RefSeq', 'CDS', 61, 195, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 134],
-        ['NC_016810.1', 'RefSeq', 'gene', 170, 546, '.', '+', '.', 'ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005', 376],
-        ['NC_016810.1', 'RefSeq', 'CDS', 34, 335, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 301],
-        ], columns=["Seq_ID", "source", "feature", "start", "end",
-                    "score", "strang", "phase", "attributes", "gene_length"])
-# print(dummy_df_plus_length)
+# dummy_df_plus_length = pd.DataFrame([
+#         ['NC_016810.1', 'RefSeq', 'region', 1, 4000, '.', '+', '.', 'Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344', 3999],
+#         ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.', 'ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001', 19],
+#         ['NC_016810.1', 'RefSeq', 'CDS', 13, 235, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 222],
+#         ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.', 'ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002', 19],
+#         ['NC_016810.1', 'RefSeq', 'CDS', 341, 523, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 182],
+#         ['NC_016810.1', 'RefSeq', 'gene', 1, 600, '.', '-', '.', 'ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_tag=SL1344_0003', 599],
+#         ['NC_016810.1', 'RefSeq', 'CDS', 21, 345, '.', '-', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 324],
+#         ['NC_016810.1', 'RefSeq', 'gene', 41, 255, '.', '+', '.', 'ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0004', 214],
+#         ['NC_016810.1', 'RefSeq', 'CDS', 61, 195, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 134],
+#         ['NC_016810.1', 'RefSeq', 'gene', 170, 546, '.', '+', '.', 'ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005', 376],
+#         ['NC_016810.1', 'RefSeq', 'CDS', 34, 335, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11', 301],
+#         ], columns=["Seq_ID", "source", "feature", "start", "end",
+#                     "score", "strang", "phase", "attributes", "gene_length"])
 
-# df_empty = pd.DataFrame({"Seq_ID", "source", "feature", "start", "end",
-#                          "score", "strang", "phase", "attributes",
-#                          "gene_length": []})
-# df_empty = pd.DataFrame({'A': []})
 df_empty = pd.DataFrame([], columns=["Seq_ID", "source", "feature", "start",
                                      "end", "score", "strang", "phase",
                                      "attributes"]).empty
 
 redundant_entry = pd.DataFrame([
-    ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.', 'ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002'],
-    ], columns=["Seq_ID", "source", "feature", "start", "end", "score", "strang", "phase", "attributes"])
-
-dummy_lenght_df = pd.DataFrame([
-        ['eins', 'zwei', 'gene', 'vier', 'fünf', 'sechs', 'sieben',
-         'acht', 'neun', 'zehn'],
-        ['eins', 'zwei', 'CDS', 'vier', 'fünf', 'sechs', 'sieben',
-         'acht', 'neun', 'zehn'],
-        ['eins', 'zwei', 'gene', 'vier', 'fünf', 'sechs', 'sieben',
-         'acht', 'neun', 'zehn'],
-        ['eins', 'zwei', 'gene', 'vier', 'fünf', 'sechs', 'sieben',
-         'acht', 'neun', 'zehn'],
-        ['eins', 'zwei', 'tRNA', 'vier', 'fünf', 'sechs', 'sieben',
-         'acht', 'neun', 'zehn']
-        ], columns=["Seq_ID", "source", "feature", "start", "end",
-                    "score", "strang", "phase", "attributes", "gene_lenght"])
+    ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.',
+     'ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002'],
+    ], columns=["Seq_ID", "source", "feature", "start", "end", "score",
+                "strang", "phase", "attributes"])
 
 
 def generate_gff3_df():
-    read_in_file = gff3pd.read_gff3('your_file.gff')
+    read_in_file = gff3pd.read_gff3('fixtures/test_file.gff')
     return read_in_file
 
 
@@ -217,7 +200,6 @@ def test_write_tsv():
     tsv_content = open('temp.tsv').read()
     assert tsv_content == dummy_tsv
 
-
 # ?
 # def test_write_csv_with_parent_child():
 #     gff3_df = generate_gff3_df()
@@ -236,17 +218,17 @@ def test_filter_feature():
 
 def test_filter_by_length():
     gff3_df = generate_gff3_df()
-    length_object, length_filter, header = gff3_df.filter_by_length()
+    length_object, length_filter, header = gff3_df.filter_by_length('10', '1000')
     assert type(length_object) == gff3pd.Gff3DataFrame
     # ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all():
-    assert length_filter.all() == dummy_df_plus_length.all()
+    assert length_filter == dummy_df_plus_length
     assert header == written_header
 
 
 gff3_df = generate_gff3_df()
-length_object, length_filter, header = gff3_df.filter_by_length()
-print(length_filter.all())
-print(dummy_df_plus_length.all())
+length_object, length_filter, header = gff3_df.filter_by_length(10, 90)
+print(length_filter)
+
 
 
 def test_get_feature_by_attribute():
