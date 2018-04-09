@@ -117,7 +117,8 @@ class Gff3DataFrame(object):
             'Counted_strangs': strang_counts,
             'Counted_features': feature_counts
         }
-        return stats_dic
+        return Gff3DataFrame(input_df=stats_dic)
+                             # input_header=self._header)
 
 
     # def stats_print(self):
@@ -143,16 +144,16 @@ class Gff3DataFrame(object):
         description = self._df.describe(include='all')
         return description
 
-    def overlapping(self):
-        for row in self._df:
-            overlappings = self._df[(((self._df.start) >=
-                                      (self._df.start + 10))
-                                     & ((self._df.start) <=
-                                        (self._df.end - 10))) | 
-                                    (((self._df.end) <= (self._df.end - 10))
-                                     & ((self._df.end) >=
-                                        (self._df.start + 10)))]
-        pass
+    def overlaps_with(self, chrom, start=None, end=None,
+                      Seq_ID=None, strand=None):
+        self._df = self._df[((self._df.start > start) &
+                             (self._df.start < end)) |
+                            ((self._df.end > start) & (self._df.end < end))]
+        if start is not None:
+            self._df = self._df[self._df.strand == strand]
+        if start is not None:
+            self._df = self._df[self._df.Seq_ID == Seq_ID]
+        return Gff3DataFrame(input_df=self._df, input_header=self._header)
         
     def find_out_of_region_features(self):
         region_df = self._df[self._df.feature == 'region']
