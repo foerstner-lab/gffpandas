@@ -75,7 +75,7 @@ class Gff3DataFrame(object):
         dictionary = dict(zip(locus_tag_list, gene_ID_list))
         gene = dictionary.get(key_locus_tag, 'not available')
         return gene
-
+        
     def attributes_to_columns(self):
         self._df['at_dic'] = self._df.attributes.apply(lambda attributes:
                                                        dict([key_value_pair.
@@ -92,9 +92,6 @@ class Gff3DataFrame(object):
             self._df[atr] = self._df['at_dic'].apply(lambda at_dic:
                                                      at_dic.get(atr))
         return Gff3DataFrame(input_df=self._df, input_header=self._header)
-
-    # def list_attributes():
-    #     pass
 
     def stats_dic(self) -> dict:
         df_w_region = self._df[self._df.feature != 'region']
@@ -117,30 +114,6 @@ class Gff3DataFrame(object):
         return Gff3DataFrame(input_df=stats_dic)
                              # input_header=self._header)
 
-
-    # def stats_print(self):
-    #     df_w_region = self._df[self._df.feature != 'region']
-    #     df_w_region['gene_lenght'] = df_w_region.apply(lambda row:
-    #                                                    row.end -
-    #                                                    row.start, axis=1)
-    #     stats_dic = {
-    #         'Maximal_bp_lenght':
-    #         df_w_region.loc[df_w_region['gene_lenght'] ==
-    #                         df_w_region['gene_lenght'].max()],
-    #         'Minimal_bp_lenght':
-    #         df_w_region.loc[df_w_region['gene_lenght'] ==
-    #                         df_w_region['gene_lenght'].min()]
-    #     }
-    #     print("The maximal bp_lenght is:{}\n"
-    #           "The minimal bp_lenght is:{}".format
-    #           (stats_dic['Maximal_bp_lenght'], stats_dic['Minimal_bp_lenght']))
-
-    def describe(self):
-        self._df['gene_length'] = self._df.apply(lambda row:
-                                                 row.end - row.start, axis=1)
-        description = self._df.describe(include='all')
-        return description
-
     def overlaps_with(self, start=None, end=None,
                       Seq_ID=None, strand=None):
         self._df = self._df[((self._df.start > start) &
@@ -156,7 +129,8 @@ class Gff3DataFrame(object):
         region_df = self._df[self._df.feature == 'region']
         out_of_region = self._df.loc[(self._df.end > int(region_df.end)) |
                                      (self._df.start < int(region_df.start))]
-        return out_of_region
+        return Gff3DataFrame(input_df=out_of_region, input_header=self._header)
+        # return out_of_region
 
     def find_redundant_entries(self):
         df_gene = self._df[self._df.feature == 'gene']
@@ -167,50 +141,12 @@ class Gff3DataFrame(object):
                                              'strang']].duplicated()]
             return Gff3DataFrame(input_df=duplicate, input_header=self._header)
 
-    def drop_redundant_entries(self):
-        df_gene = self._df[self._df.feature == 'gene']
-        if (df_gene[['end', 'start', 'strang']].duplicated().sum() == 0):
-            print('No redundant entries found')
-        else:
-            nonredundant_df = df_gene.drop_duplicates(subset=['end',
-                                                              'start',
-                                                              'strang'])
-            return nonredundant_df
-
-        
-    # def get_children_attributes():
-    #     pass
 
 
 
-# test_object = read_gff3('NC_016810B.gff')
-# printed_dic = test_object.stats_dic()
-# print(printed_dic)
 
 
-    
-    
+
 # test_object = read_gff3('NC_016810B.gff')
 # data_frame_new = test_object._read_gff3_to_df()
 # print(data_frame_new)
-
-# data_frame = test_object.get_feature_by_attribute('SL1344_0001')
-# print(data_frame)
-
-# test_object = read_gff3('NC_016810B.gff')
-# lenght = test_object.find_redundant_entries()
-# print(lenght)
-
-# f = 'NC_016810B.gff'
-# test_object = read_gff3(f)
-# header = test_object._read_gff_header()
-# print(header)
-
-# test_object = read_gff3('NC_016810B.gff')
-# gene_feature_df = test_object.filter_feature_of_type('gene')
-# print(gene_feature_df._df)
-
-# test_object = read_gff3('NC_016810B.gff')
-# attri_df = test_object.attributes_to_columns()
-# print(attri_df)
-
