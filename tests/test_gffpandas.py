@@ -54,6 +54,11 @@ written_tsv = ('Seq_ID\tsource\tfeature\tstart\tend\tscore\tstrang\tphase\tattri
              'NC_016810.1\tRefSeq\tgene\t170\t546\t.\t+\t.\tID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005\n'
              'NC_016810.1\tRefSeq\tCDS\t34\t335\t.\t+\t0\tDbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n')
 
+gene_length = pd.Series(written_df.apply(lambda row:
+                                         row.end - row.start, axis=1))
+written_filtered_length = (gene_length >= 10) & (gene_length <= 500)
+
+
 df_empty = pd.DataFrame([], columns=["Seq_ID", "source", "feature", "start",
                                      "end", "score", "strang", "phase",
                                      "attributes"]).empty
@@ -127,17 +132,11 @@ def test_filter_feature():
 
 def test_filter_by_length():
     gff3_df = generate_gff3_df()
-    length_object, length_filter, header = gff3_df.filter_by_length('10', '1000')
+    length_object, length_filter, header = gff3_df.filter_by_length(10, 500)
     assert type(length_object) == gff3pd.Gff3DataFrame
     # ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all():
-    assert length_filter == dummy_df_plus_length
+    assert length_filter.all() == written_filtered_length.all()
     assert header == written_header
-
-
-# gff3_df = generate_gff3_df()
-# length_object, length_filter, header = gff3_df.filter_by_length(10, 90)
-# print(length_filter)
-
 
 
 def test_get_feature_by_attribute():
@@ -160,13 +159,29 @@ def test_attributes_to_columns():
 def test_stats_dic():
     gff3_df = generate_gff3_df()
     stats_gff3_df = gff3_df.stats_dic()
-    pass
+    assert type(stats_gff3_df) == gff3pd.Gff3DataFrame
+
+
+# gff3_df = generate_gff3_df()
+# stats_gff3_df = gff3_df.stats_dic()
+# print(stats_gff3_df._df)
    
 
 def test_describe():
     gff3_df = generate_gff3_df()
     description_test = gff3_df.describe()
     pass
+
+
+def test_overlaps_with():
+    gff3_df = generate_gff3_df()
+    overlap_with_test = gff3_df.overlaps_with()
+    assert type(overlap_with_test) == gff3pd.Gff3DataFrame
+
+    
+gff3_df = generate_gff3_df()
+overlap_with_test = gff3_df.overlaps_with()
+print(overlap_with_test._df)
 
 
 # return feature that are outside of the range defined by the region/source feature
