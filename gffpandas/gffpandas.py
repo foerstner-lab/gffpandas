@@ -98,9 +98,8 @@ class Gff3DataFrame(object):
 
     def stats_dic(self) -> dict:
         df_w_region = self._df[self._df.feature != 'region']
-        df_w_region['gene_lenght'] = df_w_region.apply(lambda row:
-                                                       row.end -
-                                                       row.start, axis=1)
+        gene_length = pd.Series(df_w_region.apply(lambda row:
+                                                  row.end - row.start, axis=1))
         strang_counts = defaultdict(int)
         for key in self._df['strang']:
             strang_counts[key] += 1
@@ -109,11 +108,9 @@ class Gff3DataFrame(object):
             feature_counts[key] += 1
         stats_dic = {
             'Maximal_bp_lenght':
-            df_w_region.loc[df_w_region['gene_lenght'] ==
-                            df_w_region['gene_lenght'].max()],
+            gene_length.max(),
             'Minimal_bp_lenght':
-            df_w_region.loc[df_w_region['gene_lenght'] ==
-                            df_w_region['gene_lenght'].min()],
+            gene_length.min(),
             'Counted_strangs': strang_counts,
             'Counted_features': feature_counts
         }
@@ -144,7 +141,7 @@ class Gff3DataFrame(object):
         description = self._df.describe(include='all')
         return description
 
-    def overlaps_with(self, chrom, start=None, end=None,
+    def overlaps_with(self, start=None, end=None,
                       Seq_ID=None, strand=None):
         self._df = self._df[((self._df.start > start) &
                              (self._df.start < end)) |
