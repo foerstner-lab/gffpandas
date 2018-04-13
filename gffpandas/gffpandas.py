@@ -20,7 +20,7 @@ class Gff3DataFrame(object):
 
     def _read_gff3_to_df(self):
         self._df = pd.read_table(self._gff_file, comment='#',
-                                 names=["Seq_ID", "source", "feature", "start",
+                                 names=["Seq_id", "source", "feature", "start",
                                         "end", "score", "strang", "phase",
                                         "attributes"])
         return self._df
@@ -34,18 +34,15 @@ class Gff3DataFrame(object):
                 break
         return(self._header)
 
-    def write_gff():
-        pass
-
     def write_csv(self, csv_file):
         self._df.to_csv(csv_file, sep=',', index=False,
-                        header=["Seq_ID", "source", "feature", "start",
+                        header=["Seq_id", "source", "feature", "start",
                                 "end", "score", "strang", "phase",
                                 "attributes"])
 
     def write_tsv(self, tsv_file):
         self._df.to_csv(tsv_file, sep='\t', index=False,
-                        header=["Seq_ID", "source", "feature", "start",
+                        header=["Seq_id", "source", "feature", "start",
                                 "end", "score", "strang", "phase",
                                 "attributes"])
 
@@ -114,16 +111,21 @@ class Gff3DataFrame(object):
         return Gff3DataFrame(input_df=stats_dic)
                              # input_header=self._header)
 
-    def overlaps_with(self, start=None, end=None,
-                      Seq_ID=None, strand=None):
-        self._df = self._df[((self._df.start > start) &
-                             (self._df.start < end)) |
-                            ((self._df.end > start) & (self._df.end < end))]
+    def overlaps_with(self, feature=None, Seq_id=None, start=None,
+                      end=None, strang=None):
+        if feature is not None:
+            self._df = self._df[self._df.feature == feature]
+        overlap_df = self._df[((self._df.start > start) &
+                               (self._df.start < end)) |
+                              ((self._df.end > start) &
+                               (self._df.end < end)) |
+                              ((self._df.start < start) &
+                               (self._df.end > start))]
         if start is not None:
-            self._df = self._df[self._df.strand == strand]
+            self._df = self._df[self._df.strang == strang]
         if start is not None:
-            self._df = self._df[self._df.Seq_ID == Seq_ID]
-        return Gff3DataFrame(input_df=self._df, input_header=self._header)
+            self._df = self._df[self._df.Seq_id == Seq_id]
+        return Gff3DataFrame(input_df=overlap_df, input_header=self._header)
         
     def find_out_of_region_features(self):
         region_df = self._df[self._df.feature == 'region']
