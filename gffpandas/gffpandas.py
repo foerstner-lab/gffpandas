@@ -47,13 +47,14 @@ class Gff3DataFrame(object):
                                 "attributes"])
 
     def filter_feature_of_type(self, type):
-        feature_df = self._df[self._df.feature == type]
+        feature_df = self._df
+        feature_df = feature_df[feature_df.feature == type]
         return Gff3DataFrame(input_df=feature_df, input_header=self._header)
-              #  feature_df, self._header
 
     def filter_by_length(self, min_length: int, max_length: int):
-        gene_length = pd.Series(self._df.apply(lambda row:
-                                               row.end - row.start, axis=1))
+        gene_length = self._df
+        gene_length = pd.Series(gene_length.apply(lambda row:
+                                                  row.end - row.start, axis=1))
         filtered_length = (gene_length >= min_length) & (gene_length
                                                          <= max_length)
         return [Gff3DataFrame(input_df=filtered_length,
@@ -61,7 +62,8 @@ class Gff3DataFrame(object):
                 filtered_length, self._header]
 
     def get_feature_by_attribute(self, key_locus_tag):
-        gene_df = self._df[self._df.feature == 'gene']
+        gene_df = self._df
+        gene_df = gene_df[gene_df.feature == 'gene']
         gene_ID = gene_df.attributes.apply(lambda attribute: attribute.split
                                            ('ID=')[1].split(';')[0])
         gene_ID_list = gene_ID.tolist()
@@ -74,31 +76,30 @@ class Gff3DataFrame(object):
         return gene
         
     def attributes_to_columns(self):
-        self._df['at_dic'] = self._df.attributes.apply(lambda attributes:
-                                                       dict([key_value_pair.
-                                                             split('=') for
-                                                             key_value_pair in
-                                                             attributes.
-                                                             split(';')]))
-        self._df['at_dic_keys'] = self._df['at_dic'].apply(lambda at_dic:
-                                                           list(at_dic.keys()))
-        merged_list = list(itertools.chain.from_iterable(self._df
+        attribute_df = self._df
+        attribute_df['at_dic'] = attribute_df.attributes.apply(
+            lambda attributes: dict([key_value_pair.split('=') for
+                                     key_value_pair in attributes.split(';')]))
+        attribute_df['at_dic_keys'] = attribute_df['at_dic'].apply(
+            lambda at_dic: list(at_dic.keys()))
+        merged_list = list(itertools.chain.from_iterable(attribute_df
                                                          ['at_dic_keys']))
         nonredundant_list = list(set(merged_list))
         for atr in nonredundant_list:
-            self._df[atr] = self._df['at_dic'].apply(lambda at_dic:
-                                                     at_dic.get(atr))
-        return Gff3DataFrame(input_df=self._df, input_header=self._header)
+            attribute_df[atr] = attribute_df['at_dic'].apply(lambda at_dic:
+                                                             at_dic.get(atr))
+        return Gff3DataFrame(input_df=attribute_df, input_header=self._header)
 
     def stats_dic(self) -> dict:
-        df_w_region = self._df[self._df.feature != 'region']
+        input_df = self._df
+        df_w_region = input_df[input_df.feature != 'region']
         gene_length = pd.Series(df_w_region.apply(lambda row:
                                                   row.end - row.start, axis=1))
         strand_counts = defaultdict(int)
-        for key in self._df['strand']:
+        for key in input_df['strand']:
             strand_counts[key] += 1
         feature_counts = defaultdict(int)
-        for key in self._df['feature']:
+        for key in input_df['feature']:
             feature_counts[key] += 1
         stats_dic = {
             'Maximal_bp_lenght':
@@ -126,16 +127,18 @@ class Gff3DataFrame(object):
                                 ((overlap_df.start < start) &
                                  (overlap_df.end > start))]
         return Gff3DataFrame(input_df=overlap_df, input_header=self._header)
-        
+
     def find_out_of_region_features(self):
-        region_df = self._df[self._df.feature == 'region']
-        out_of_region = self._df.loc[(self._df.end > int(region_df.end)) |
-                                     (self._df.start < int(region_df.start))]
+        input_df = self._df
+        region_df = input_df[input_df.feature == 'region']
+        out_of_region = input_df.loc[(input_df.end > int(region_df.end)) |
+                                     (input_df.start < int(region_df.start))]
         return Gff3DataFrame(input_df=out_of_region, input_header=self._header)
         # return out_of_region
 
     def find_redundant_entries(self):
-        df_gene = self._df[self._df.feature == 'gene']
+        input_df = self._df
+        df_gene = input_df[input_df.feature == 'gene']
         if (df_gene[['end', 'start', 'strand']].duplicated().sum() == 0):
             print('No redundant entries found')
         else:
