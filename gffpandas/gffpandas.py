@@ -21,7 +21,7 @@ class Gff3DataFrame(object):
     def _read_gff3_to_df(self):
         self._df = pd.read_table(self._gff_file, comment='#',
                                  names=["Seq_id", "source", "feature", "start",
-                                        "end", "score", "strang", "phase",
+                                        "end", "score", "strand", "phase",
                                         "attributes"])
         return self._df
 
@@ -37,13 +37,13 @@ class Gff3DataFrame(object):
     def write_csv(self, csv_file):
         self._df.to_csv(csv_file, sep=',', index=False,
                         header=["Seq_id", "source", "feature", "start",
-                                "end", "score", "strang", "phase",
+                                "end", "score", "strand", "phase",
                                 "attributes"])
 
     def write_tsv(self, tsv_file):
         self._df.to_csv(tsv_file, sep='\t', index=False,
                         header=["Seq_id", "source", "feature", "start",
-                                "end", "score", "strang", "phase",
+                                "end", "score", "strand", "phase",
                                 "attributes"])
 
     def filter_feature_of_type(self, type):
@@ -94,9 +94,9 @@ class Gff3DataFrame(object):
         df_w_region = self._df[self._df.feature != 'region']
         gene_length = pd.Series(df_w_region.apply(lambda row:
                                                   row.end - row.start, axis=1))
-        strang_counts = defaultdict(int)
-        for key in self._df['strang']:
-            strang_counts[key] += 1
+        strand_counts = defaultdict(int)
+        for key in self._df['strand']:
+            strand_counts[key] += 1
         feature_counts = defaultdict(int)
         for key in self._df['feature']:
             feature_counts[key] += 1
@@ -105,26 +105,26 @@ class Gff3DataFrame(object):
             gene_length.max(),
             'Minimal_bp_lenght':
             gene_length.min(),
-            'Counted_strangs': strang_counts,
+            'Counted_strands': strand_counts,
             'Counted_features': feature_counts
         }
         return Gff3DataFrame(input_df=stats_dic)
                              # input_header=self._header)
 
-    def overlaps_with(self, feature=None, Seq_id=None, start=None,
-                      end=None, strang=None):
+    def overlaps_with(self, Seq_id=None, start=None, end=None,
+                      feature=None, strand=None):
+        overlap_df = self._df
+        overlap_df = overlap_df[overlap_df.Seq_id == Seq_id]
         if feature is not None:
-            self._df = self._df[self._df.feature == feature]
-        overlap_df = self._df[((self._df.start > start) &
-                               (self._df.start < end)) |
-                              ((self._df.end > start) &
-                               (self._df.end < end)) |
-                              ((self._df.start < start) &
-                               (self._df.end > start))]
-        if start is not None:
-            self._df = self._df[self._df.strang == strang]
-        if start is not None:
-            self._df = self._df[self._df.Seq_id == Seq_id]
+            overlap_df = overlap_df[overlap_df.feature == feature]
+        if strand is not None:
+            overlap_df = overlap_df[overlap_df.strand == strand]
+        overlap_df = overlap_df[((overlap_df.start > start) &
+                                 (overlap_df.start < end)) |
+                                ((overlap_df.end > start) &
+                                 (overlap_df.end < end)) |
+                                ((overlap_df.start < start) &
+                                 (overlap_df.end > start))]
         return Gff3DataFrame(input_df=overlap_df, input_header=self._header)
         
     def find_out_of_region_features(self):
@@ -136,11 +136,11 @@ class Gff3DataFrame(object):
 
     def find_redundant_entries(self):
         df_gene = self._df[self._df.feature == 'gene']
-        if (df_gene[['end', 'start', 'strang']].duplicated().sum() == 0):
+        if (df_gene[['end', 'start', 'strand']].duplicated().sum() == 0):
             print('No redundant entries found')
         else:
             duplicate = df_gene.loc[df_gene[['end', 'start',
-                                             'strang']].duplicated()]
+                                             'strand']].duplicated()]
             return Gff3DataFrame(input_df=duplicate, input_header=self._header)
 
 
