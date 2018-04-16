@@ -32,7 +32,7 @@ class Gff3DataFrame(object):
                 self._header += line
             else:
                 break
-        return(self._header)
+        return self._header
 
     def write_csv(self, csv_file):
         self._df.to_csv(csv_file, sep=',', index=False,
@@ -73,7 +73,7 @@ class Gff3DataFrame(object):
         locus_tag_list = locus_tag.tolist()
         dictionary = dict(zip(locus_tag_list, gene_ID_list))
         gene = dictionary.get(key_locus_tag, 'not available')
-        return gene
+        return Gff3DataFrame(input_df=gene)
         
     def attributes_to_columns(self):
         attribute_df = self._df
@@ -102,15 +102,14 @@ class Gff3DataFrame(object):
         for key in input_df['feature']:
             feature_counts[key] += 1
         stats_dic = {
-            'Maximal_bp_lenght':
+            'Maximal_bp_length':
             gene_length.max(),
-            'Minimal_bp_lenght':
+            'Minimal_bp_length':
             gene_length.min(),
             'Counted_strands': strand_counts,
             'Counted_features': feature_counts
         }
-        return Gff3DataFrame(input_df=stats_dic)
-                             # input_header=self._header)
+        return Gff3DataFrame(input_df=stats_dic, input_header=self._header)
 
     def overlaps_with(self, Seq_id=None, start=None, end=None,
                       feature=None, strand=None):
