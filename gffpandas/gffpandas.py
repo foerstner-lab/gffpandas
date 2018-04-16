@@ -82,9 +82,10 @@ class Gff3DataFrame(object):
                                      key_value_pair in attributes.split(';')]))
         attribute_df['at_dic_keys'] = attribute_df['at_dic'].apply(
             lambda at_dic: list(at_dic.keys()))
-        merged_list = list(itertools.chain.from_iterable(attribute_df
-                                                         ['at_dic_keys']))
-        nonredundant_list = list(set(merged_list))
+        merged_attribute_list = list(itertools.chain.
+                                     from_iterable(attribute_df
+                                                   ['at_dic_keys']))
+        nonredundant_list = sorted(list(set(merged_attribute_list)))
         for atr in nonredundant_list:
             attribute_df[atr] = attribute_df['at_dic'].apply(lambda at_dic:
                                                              at_dic.get(atr))
@@ -112,19 +113,27 @@ class Gff3DataFrame(object):
         return Gff3DataFrame(input_df=stats_dic, input_header=self._header)
 
     def overlaps_with(self, Seq_id=None, start=None, end=None,
-                      feature=None, strand=None):
+                      feature=None, strand=None, complement=False):
         overlap_df = self._df
         overlap_df = overlap_df[overlap_df.Seq_id == Seq_id]
         if feature is not None:
             overlap_df = overlap_df[overlap_df.feature == feature]
         if strand is not None:
             overlap_df = overlap_df[overlap_df.strand == strand]
-        overlap_df = overlap_df[((overlap_df.start > start) &
-                                 (overlap_df.start < end)) |
-                                ((overlap_df.end > start) &
-                                 (overlap_df.end < end)) |
-                                ((overlap_df.start < start) &
-                                 (overlap_df.end > start))]
+        if not complement:
+            overlap_df = overlap_df[((overlap_df.start > start) &
+                                     (overlap_df.start < end)) |
+                                    ((overlap_df.end > start) &
+                                     (overlap_df.end < end)) |
+                                    ((overlap_df.start < start) &
+                                     (overlap_df.end > start))]
+        else:
+            overlap_df = overlap_df[~(((overlap_df.start > start) &
+                                       (overlap_df.start < end)) |
+                                      ((overlap_df.end > start) &
+                                       (overlap_df.end < end)) |
+                                      ((overlap_df.start < start) &
+                                      (overlap_df.end > start)))]
         return Gff3DataFrame(input_df=overlap_df, input_header=self._header)
 
     def find_out_of_region_features(self):
