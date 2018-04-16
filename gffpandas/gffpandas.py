@@ -20,7 +20,7 @@ class Gff3DataFrame(object):
 
     def _read_gff3_to_df(self):
         self._df = pd.read_table(self._gff_file, comment='#',
-                                 names=["Seq_id", "source", "feature", "start",
+                                 names=["seq_id", "source", "feature", "start",
                                         "end", "score", "strand", "phase",
                                         "attributes"])
         return self._df
@@ -36,13 +36,13 @@ class Gff3DataFrame(object):
 
     def write_csv(self, csv_file):
         self._df.to_csv(csv_file, sep=',', index=False,
-                        header=["Seq_id", "source", "feature", "start",
+                        header=["seq_id", "source", "feature", "start",
                                 "end", "score", "strand", "phase",
                                 "attributes"])
 
     def write_tsv(self, tsv_file):
         self._df.to_csv(tsv_file, sep='\t', index=False,
-                        header=["Seq_id", "source", "feature", "start",
+                        header=["seq_id", "source", "feature", "start",
                                 "end", "score", "strand", "phase",
                                 "attributes"])
 
@@ -52,11 +52,12 @@ class Gff3DataFrame(object):
         return Gff3DataFrame(input_df=feature_df, input_header=self._header)
 
     def filter_by_length(self, min_length: int, max_length: int):
-        gene_length = self._df
-        gene_length = pd.Series(gene_length.apply(lambda row:
-                                                  row.end - row.start, axis=1))
-        filtered_length = (gene_length >= min_length) & (gene_length
-                                                         <= max_length)
+        filtered_length = self._df
+        gene_length = pd.Series(filtered_length.apply(lambda row:
+                                                      row.end - row.start,
+                                                      axis=1))
+        filtered_length = filtered_length[(gene_length >= min_length) &
+                                          (gene_length <= max_length)]
         return [Gff3DataFrame(input_df=filtered_length,
                               input_header=self._header),
                 filtered_length, self._header]
@@ -112,10 +113,10 @@ class Gff3DataFrame(object):
         }
         return Gff3DataFrame(input_df=stats_dic, input_header=self._header)
 
-    def overlaps_with(self, Seq_id=None, start=None, end=None,
+    def overlaps_with(self, seq_id=None, start=None, end=None,
                       feature=None, strand=None, complement=False):
         overlap_df = self._df
-        overlap_df = overlap_df[overlap_df.Seq_id == Seq_id]
+        overlap_df = overlap_df[overlap_df.seq_id == seq_id]
         if feature is not None:
             overlap_df = overlap_df[overlap_df.feature == feature]
         if strand is not None:
