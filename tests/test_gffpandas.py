@@ -185,6 +185,17 @@ compare_overlap_525_545 = pd.DataFrame([
                 "strand", "phase", "attributes"],
                                index=[0, 9])
 
+compare_overlap_341_500 = pd.DataFrame([
+    ['NC_016810.1', 'RefSeq', 'region', 1, 4000, '.', '+', '.',
+     'Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344'],
+    ['NC_016810.1', 'RefSeq', 'CDS', 341, 523, '.', '+', '0', 'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11'],
+    ['NC_016810.1', 'RefSeq', 'gene', 170, 546, '.', '+', '.',
+     'ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005'],
+    ], columns=["seq_id", "source", "feature", "start", "end", "score",
+                "strand", "phase", "attributes"],
+                               index=[0, 4, 9])
+
+
 compare_complement = pd.DataFrame([
     ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.', 'ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001'],
     ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.', 'ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002'],
@@ -292,32 +303,42 @@ def test_overlaps_with():
                                             start=170, end=171, strand='-')
     overlap_525_545 = gff3_df.overlaps_with(seq_id='NC_016810.1',
                                             start=525, end=545, strand='+')
+    overlap_341_500 = gff3_df.overlaps_with(seq_id='NC_016810.1',
+                                            start=341, end=500, strand='+')
     complement_test = gff3_df.overlaps_with(seq_id='NC_016810.1',
                                             start=40, end=300, strand='+',
                                             complement=True)
+    out_of_region = gff3_df.overlaps_with(seq_id='NC_016810.1',
+                                          start=1, end=4000, strand='+',
+                                          complement=True)
     assert type(overlap_gene_1_40) == gff3pd.Gff3DataFrame
     assert type(overlap_40_300) == gff3pd.Gff3DataFrame
     assert type(overlap_170_171) == gff3pd.Gff3DataFrame
     assert type(overlap_525_545) == gff3pd.Gff3DataFrame
+    assert type(overlap_341_500) == gff3pd.Gff3DataFrame
     assert type(complement_test) == gff3pd.Gff3DataFrame
+    assert type(out_of_region) == gff3pd.Gff3DataFrame
     pd.testing.assert_frame_equal(overlap_gene_1_40._df,
                                   compare_overlap_gene_1_40)
     pd.testing.assert_frame_equal(overlap_40_300._df, compare_overlap_40_300)
     pd.testing.assert_frame_equal(overlap_170_171._df, compare_overlap_170_171)
     pd.testing.assert_frame_equal(overlap_525_545._df, compare_overlap_525_545)
+    pd.testing.assert_frame_equal(overlap_341_500._df, compare_overlap_341_500)
     pd.testing.assert_frame_equal(complement_test._df, compare_complement)
+    assert out_of_region._df.shape == df_empty.shape
 
 
 def test_find_out_of_region_features():
     gff3_df = generate_gff3_df()
-    out_of_region_df = gff3_df.find_out_of_region_features()
-    assert (type(out_of_region_df)) == gff3pd.Gff3DataFrame
-    assert out_of_region_df._df.shape == df_empty.shape
+    out_of_region = gff3_df.find_out_of_region_features(seq_id='NC_016810.1')
+    assert (type(out_of_region)) == gff3pd.Gff3DataFrame
+    assert out_of_region._df.shape == df_empty.shape
 
 
 def test_find_redundant_entries():
     gff3_df = generate_gff3_df()
-    redundant_df = gff3_df.find_redundant_entries()
+    redundant_df = gff3_df.find_redundant_entries(seq_id='NC_016810.1',
+                                                  feature='gene')
     assert type(redundant_df) == gff3pd.Gff3DataFrame
     pd.testing.assert_frame_equal(redundant_df._df, redundant_entry)
     assert redundant_df._df.empty == redundant_entry.empty
