@@ -127,27 +127,41 @@ class Gff3DataFrame(object):
                                     ((overlap_df.end > start) &
                                      (overlap_df.end < end)) |
                                     ((overlap_df.start < start) &
-                                     (overlap_df.end > start))]
+                                     (overlap_df.end > start)) |
+                                    ((overlap_df.start == start) &
+                                     (overlap_df.end == end)) |
+                                    ((overlap_df.start == start) &
+                                     (overlap_df.end > end)) |
+                                    ((overlap_df.start < start) &
+                                     (overlap_df.end == end))]
         else:
             overlap_df = overlap_df[~(((overlap_df.start > start) &
                                        (overlap_df.start < end)) |
                                       ((overlap_df.end > start) &
                                        (overlap_df.end < end)) |
                                       ((overlap_df.start < start) &
-                                      (overlap_df.end > start)))]
+                                       (overlap_df.end > start)) |
+                                      ((overlap_df.start == start) &
+                                       (overlap_df.end == end)) |
+                                      ((overlap_df.start == start) &
+                                       (overlap_df.end > end)) |
+                                      ((overlap_df.start < start) &
+                                       (overlap_df.end == end)))]
         return Gff3DataFrame(input_df=overlap_df, input_header=self._header)
 
-    def find_out_of_region_features(self):
+    def find_out_of_region_features(self, seq_id=None):
         input_df = self._df
+        input_df = input_df[input_df.seq_id == seq_id]
         region_df = input_df[input_df.feature == 'region']
         out_of_region = input_df.loc[(input_df.end > int(region_df.end)) |
                                      (input_df.start < int(region_df.start))]
         return Gff3DataFrame(input_df=out_of_region, input_header=self._header)
         # return out_of_region
 
-    def find_redundant_entries(self):
+    def find_redundant_entries(self, seq_id=None, feature=None):
         input_df = self._df
-        df_gene = input_df[input_df.feature == 'gene']
+        input_df = input_df[input_df.seq_id == seq_id]
+        df_gene = input_df[input_df.feature == feature]
         if (df_gene[['end', 'start', 'strand']].duplicated().sum() == 0):
             print('No redundant entries found')
         else:
