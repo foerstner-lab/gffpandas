@@ -102,7 +102,7 @@ class Gff3DataFrame(object):
         For this function the desired attribute tag as well as the
         corresponding value have to be given. If the value is not available
         an empty dataframe would be returned."""
-        attribute_df = self._df
+        attribute_df = self._df.copy()
         attribute_df['at_dic'] = attribute_df.attributes.apply(
             lambda attributes: dict([key_value_pair.split('=') for
                                      key_value_pair in attributes.split(';')]))
@@ -115,8 +115,7 @@ class Gff3DataFrame(object):
         for atr in nonredundant_list:
             attribute_df[atr] = attribute_df['at_dic'].apply(lambda at_dic:
                                                              at_dic.get(atr))
-        filtered_by_attr_df = attribute_df[(attribute_df[attr_key]
-                                            == attr_value)]
+        filtered_by_attr_df = self._df[(attribute_df[attr_key] == attr_value)]
         return Gff3DataFrame(input_df=filtered_by_attr_df,
                              input_header=self._header)
             
