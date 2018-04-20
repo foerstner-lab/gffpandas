@@ -8,6 +8,7 @@
 import gffpandas.gffpandas as gff3pd
 import pandas as pd
 from collections import defaultdict
+
 # import io
 
 written_df = pd.DataFrame([
@@ -266,9 +267,16 @@ def test_filter_by_length():
 
 def test_get_feature_by_attribute():
     gff3_df = generate_gff3_df()
-    filtered_gff3_df = gff3_df.get_feature_by_attribute('SL1344_0001')
+    filtered_gff3_df = gff3_df.get_feature_by_attribute('gbkey', 'Gene')
+    filtered_gff3_df2 = gff3_df.get_feature_by_attribute('Parent', 'gene2')
+    filtered_gff3_df3 = gff3_df.get_feature_by_attribute('locus_tag',
+                                                         'SL1344_0006')
     assert type(filtered_gff3_df) == gff3pd.Gff3DataFrame
-    assert filtered_gff3_df._df == 'gene1'
+    assert type(filtered_gff3_df2) == gff3pd.Gff3DataFrame
+    assert type(filtered_gff3_df3) == gff3pd.Gff3DataFrame
+    assert filtered_gff3_df._df.shape == (5, 25)
+    assert filtered_gff3_df2._df.shape == (1, 25)
+    assert filtered_gff3_df3._df.shape == (0, 25)
 
 
 def test_attributes_to_columns():
