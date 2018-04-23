@@ -102,35 +102,58 @@ compare_get_feature_by_attribute2 = pd.DataFrame([
     ], columns=["seq_id", "source", "feature", "start", "end",
                 "score", "strand", "phase", "attributes"],
                                                 index=[4])
-    
 
 
-
-# written_attribute_df = pd.DataFrame([
-#         ['NC_016810.1', 'RefSeq', 'region', 1, 4000, '.', '+', '.',
-#          'Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344'],
-#         ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.',
-#          'ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001'],
-#         ['NC_016810.1', 'RefSeq', 'CDS', 13, 235, '.', '+', '0',
-#          'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11'],
-#         ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.',
-#          'ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002'],
-#         ['NC_016810.1', 'RefSeq', 'CDS', 341, 523, '.', '+', '0',
-#          'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11'],
-#         ['NC_016810.1', 'RefSeq', 'gene', 1, 600, '.', '-', '.',
-#          'ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_tag=SL1344_0003'],
-#         ['NC_016810.1', 'RefSeq', 'CDS', 21, 345, '.', '-', '0',
-#          'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11'],
-#         ['NC_016810.1', 'RefSeq', 'gene', 41, 255, '.', '+', '.',
-#          'ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0004'],
-#         ['NC_016810.1', 'RefSeq', 'CDS', 61, 195, '.', '+', '0',
-#          'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11'],
-#         ['NC_016810.1', 'RefSeq', 'gene', 170, 546, '.', '+', '.',
-#          'ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005'],
-#         ['NC_016810.1', 'RefSeq', 'CDS', 34, 335, '.', '+', '0',
-#          'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11'],
-#         ], columns=["seq_id", "source", "feature", "start", "end",
-#                     "score", "strand", "phase", "attributes", "at_dic", "at_dic_keys", "Dbxref", "ID", "Name", "Parent", "gbkey", "gene", "genome", "locus_tag", "mol_type", "product", "protein_id", "serovar", "strain", "transl_table"])
+written_attribute_df = pd.DataFrame([
+        ['NC_016810.1', 'RefSeq', 'region', 1, 4000, '.', '+', '.',
+         'taxon:216597', 'id0', 'None', 'None', 'Src', 'None', 'genomic',
+         'None', 'genomic DNA', 'None', 'None', 'Typhimurium', 'SL1344',
+         'None'],
+        ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.',
+         'None', 'gene1', 'thrL', 'None', 'Gene', 'thrL', 'None',
+         'SL1344_0001', 'None', 'None', 'None', 'None', 'None', 'None'],
+        ['NC_016810.1', 'RefSeq', 'CDS', 13, 235, '.', '+', '0',
+         'UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1',
+         'cds0', 'YP_005179941.1', 'gene1', 'CDS', 'None', 'None',
+         'None', 'None', 'thr operon leader peptide',
+         'YP_005179941.1', 'None', 'None', '11'],
+        ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.',
+         'None', 'gene2', 'thrA', 'None', 'Gene', 'thrA', 'None',
+         'SL1344_0002', 'None', 'None', 'None', 'None', 'None', 'None'],
+        ['NC_016810.1', 'RefSeq', 'CDS', 341, 523, '.', '+', '0',
+         'UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1', 'cds0',
+         'YP_005179941.1', 'gene2', 'CDS', 'None', 'None', 'None', 'None',
+         'thr operon leader peptide',
+         'YP_005179941.1', 'None', 'None', '11'],
+        ['NC_016810.1', 'RefSeq', 'gene', 1, 600, '.', '-', '.',
+         'None', 'gene3', 'thrX', 'None', 'Gene', 'thrX', 'None',
+         'SL1344_0003', 'None', 'None', 'None', 'None', 'None', 'None'],
+        ['NC_016810.1', 'RefSeq', 'CDS', 21, 345, '.', '-', '0',
+         'UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1', 'cds0',
+         'YP_005179941.1', 'gene3', 'CDS', 'None', 'None', 'None', 'None',
+         'thr operon leader peptide',
+         'YP_005179941.1', 'None', 'None', '11'],
+        ['NC_016810.1', 'RefSeq', 'gene', 41, 255, '.', '+', '.',
+         'None', 'gene4', 'thrB', 'None', 'Gene', 'thrB', 'None',
+         'SL1344_0004', 'None', 'None', 'None', 'None', 'None', 'None'],
+        ['NC_016810.1', 'RefSeq', 'CDS', 61, 195, '.', '+', '0',
+         'UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1', 'cds0',
+         'YP_005179941.1', 'gene4', 'CDS', 'None', 'None', 'None', 'None',
+         'thr operon leader peptide',
+         'YP_005179941.1', 'None', 'None', '11'],
+        ['NC_016810.1', 'RefSeq', 'gene', 170, 546, '.', '+', '.',
+         'None', 'gene5', 'thrC', 'None', 'Gene', 'thrC', 'None',
+         'SL1344_0005', 'None', 'None', 'None', 'None', 'None', 'None'],
+        ['NC_016810.1', 'RefSeq', 'CDS', 34, 335, '.', '+', '0',
+         'UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1', 'cds0',
+         'YP_005179941.1', 'gene5', 'CDS', 'None', 'None', 'None', 'None',
+         'thr operon leader peptide',
+         'YP_005179941.1', 'None', 'None', '11'],
+        ], columns=["seq_id", "source", "feature", "start", "end",
+                    "score", "strand", "phase", "Dbxref", "ID", "Name",
+                    "Parent", "gbkey", "gene", "genome", "locus_tag",
+                    "mol_type", "product", "protein_id", "serovar",
+                    "strain", "transl_table"])
 
 
 strand_counts = defaultdict(int)
@@ -327,7 +350,9 @@ def test_attributes_to_columns():
     gff3_df = generate_gff3_df()
     gff3_df_with_attr_columns = gff3_df.attributes_to_columns()
     assert type(gff3_df_with_attr_columns) == gff3pd.Gff3DataFrame
-    assert gff3_df_with_attr_columns._df.shape == (11, 25)
+    assert gff3_df_with_attr_columns._df.shape == (11, 22)
+    assert gff3_df_with_attr_columns._df.shape == written_attribute_df.shape
+    assert type(gff3_df_with_attr_columns._df) == type(written_attribute_df)
 
 
 def test_stats_dic():
