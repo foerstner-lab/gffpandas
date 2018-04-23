@@ -119,11 +119,31 @@ class Gff3DataFrame(object):
         return Gff3DataFrame(input_df=filtered_by_attr_df,
                              input_header=self._header)
             
+    # def attributes_to_columns(self):
+    #     """ Converting each attribute-tag to a single column.
+
+    #     A dataframe with 25 columns will be returned."""
+    #     attribute_df = self._df
+    #     attribute_df['at_dic'] = attribute_df.attributes.apply(
+    #         lambda attributes: dict([key_value_pair.split('=') for
+    #                                  key_value_pair in attributes.split(';')]))
+    #     attribute_df['at_dic_keys'] = attribute_df['at_dic'].apply(
+    #         lambda at_dic: list(at_dic.keys()))
+    #     merged_attribute_list = list(itertools.chain.
+    #                                  from_iterable(attribute_df
+    #                                                ['at_dic_keys']))
+    #     nonredundant_list = sorted(list(set(merged_attribute_list)))
+    #     for atr in nonredundant_list:
+    #         attribute_df[atr] = attribute_df['at_dic'].apply(lambda at_dic:
+    #                                                          at_dic.get(atr))
+    #     return Gff3DataFrame(input_df=attribute_df, input_header=self._header)
+
     def attributes_to_columns(self):
         """ Converting each attribute-tag to a single column.
 
         A dataframe with 25 columns will be returned."""
         attribute_df = self._df
+        df_attributes = attribute_df.loc[:, 'seq_id':'phase']
         attribute_df['at_dic'] = attribute_df.attributes.apply(
             lambda attributes: dict([key_value_pair.split('=') for
                                      key_value_pair in attributes.split(';')]))
@@ -134,9 +154,9 @@ class Gff3DataFrame(object):
                                                    ['at_dic_keys']))
         nonredundant_list = sorted(list(set(merged_attribute_list)))
         for atr in nonredundant_list:
-            attribute_df[atr] = attribute_df['at_dic'].apply(lambda at_dic:
-                                                             at_dic.get(atr))
-        return Gff3DataFrame(input_df=attribute_df, input_header=self._header)
+            df_attributes[atr] = attribute_df['at_dic'].apply(lambda at_dic:
+                                                              at_dic.get(atr))
+        return Gff3DataFrame(input_df=df_attributes, input_header=self._header)
 
     def stats_dic(self) -> dict:
         """ Gives the following statistics for the data:
