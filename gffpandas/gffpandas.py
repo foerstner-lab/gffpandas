@@ -141,7 +141,7 @@ class Gff3DataFrame(object):
     def attributes_to_columns(self):
         """ Converting each attribute-tag to a single column.
 
-        A dataframe with 25 columns will be returned."""
+        Attribute column will be split to 14 single columns."""
         attribute_df = self._df
         df_attributes = attribute_df.loc[:, 'seq_id':'phase']
         attribute_df['at_dic'] = attribute_df.attributes.apply(
