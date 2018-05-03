@@ -1,7 +1,7 @@
-Project summary:
+Project introduction:
 =========================
 
-The gff3pandas library facilitates working on gff3-files (gff3 = Generic Feature Format Version 3).
+The gffpandas library facilitates working on gff3-files (gff3 = Generic Feature Format Version 3).
 
 The gff3-file is used to get information about features, as e.g. genes, of DNA, RNA or protein sequences. It has one general format. This format begins with a header, which is marked with a hashtag at the begin of the lines. The header gives meta-data about the file.
 Then the format is splitted into nine columns, which give information about the features:
@@ -28,23 +28,8 @@ Then the format is splitted into nine columns, which give information about the 
    The phase is requiered for all coding sequence (CDS)-features and gives the information about, at which position the CDS begins in the reading frame. It can be position 0, 1 or 2.
 9. **attributes:**
    The attribute column is written in a 'tag=value' format and contains information about the following tags [#]_:
-|     - ID
-|     - Dbxref
-|     - gbkey 
-|     - genome
-|     - genomic
-|     - mol_type
-|     - serovar
-|     - strain
-|     - Name
-|     - gene
-|     - locus_tag
-|     - Parent
-|     - Genbank
-|     - product
-|     - protein_id
-|     - transl_table
+|     - ID, Dbxref, gbkey, genome, genomic, mol_type, serovar, strain, Name, gene, locus_tag, Parent, Genbank, product, protein_id, transl_table
 
-With the gff3pandas library a dataframe out of the gff3file will be created. Furthermore, can this dataframe be filtered by different criteria (see tutorial) to the desired features.
+With the gffpandas library a dataframe out of the gff3 file will be created. Furthermore, can this dataframe be filtered by different criteria (see tutorial) to the desired features.
 
 .. [#] https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md
