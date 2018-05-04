@@ -16,7 +16,7 @@ First step is to read in the gff_file with the method called 'read_gff3'. Then a
    >>> print(object_file._df)
    
    Out[1]:
-            seq_id  source feature  start   end score strand phase  \		
+            seq_id  source    type  start   end score strand phase  \		
    0   NC_016810.1  RefSeq  region      1  4000     .      +     .   
    1   NC_016810.1  RefSeq    gene      1    20     .      +     .   
    2   NC_016810.1  RefSeq     CDS     13   235     .      +     0   
@@ -48,7 +48,7 @@ The following methods are included in this library:
 ***************************************************
   
 | **filter_feature_of_type**
-| For this method the requested feature type has to be given as argument. A filtered dataframe will be then returned as object containing only the data of the given feature type.
+| For this method the requested feature-type has to be given as argument. A filtered dataframe will be then returned as object containing only the data of the given feature-type.
   
 For example:
 ::
@@ -56,7 +56,7 @@ For example:
    >>> print(filtered_df._df)
 
    Out[2]:
-           seq_id  source feature  start  end score strand phase  \
+           seq_id  source    type  start  end score strand phase  \
    1  NC_016810.1  RefSeq    gene      1   20     .      +     .   
    3  NC_016810.1  RefSeq    gene      1   20     .      +     .   
    5  NC_016810.1  RefSeq    gene      1  600     .      -     .   
@@ -72,7 +72,7 @@ For example:
      
 
 | **filter_by_length**
-| For this method the required minimal and maximal bp-length have to be given. A filtered dataframe will be then returned with all datas within the given bp-length.
+| For this method the required minimal and maximal bp-length have to be given. A filtered dataframe will then be returned with all features within the given bp-length.
   
 For example:
 ::
@@ -80,7 +80,7 @@ For example:
    >>> print(filtered_by_length._df)
 
    Out[3]:
-           seq_id  source feature  start  end score strand phase  \
+           seq_id  source    type  start  end score strand phase  \
    1  NC_016810.1  RefSeq    gene      1   20     .      +     .   
    2  NC_016810.1  RefSeq     CDS     13  235     .      +     0   
    3  NC_016810.1  RefSeq    gene      1   20     .      +     .   
@@ -106,7 +106,7 @@ For example:
    >>> print(feature_by_attribute._df)
 
    Out[4]:
-            seq_id  source feature  start  end score strand phase  \
+            seq_id  source    type  start  end score strand phase  \
    2   NC_016810.1  RefSeq     CDS     13  235     .      +     0   
    4   NC_016810.1  RefSeq     CDS    341  523     .      +     0   
    6   NC_016810.1  RefSeq     CDS     21  345     .      -     0   
@@ -130,7 +130,7 @@ For example:
    >>> print(attr_columns._df)
 
    Out[5]:
-            seq_id  source feature  start   end score strand phase  \
+            seq_id  source    type  start   end score strand phase  \
    0   NC_016810.1  RefSeq  region      1  4000     .      +     .   
    1   NC_016810.1  RefSeq    gene      1    20     .      +     .   
    2   NC_016810.1  RefSeq     CDS     13   235     .      +     0   
@@ -201,7 +201,7 @@ For example:
 
 For example:
 ::
-   >>> overlapings = object_file.overlaps_with(seq_id='NC_016811.1', feature='gene',
+   >>> overlapings = object_file.overlaps_with(seq_id='NC_016811.1', type='gene',
                                                start=40, end=300, strand='+')
    >>> out_of_region = object_file.overlaps_with(seq_id='NC_016811.1', start=1, end=4000,
                                                  strand='+', complement=True)
@@ -209,7 +209,7 @@ For example:
    >>> print(out_of_region._df)
 
    Out[6]:
-            seq_id  source feature  start   end score strand phase  \
+            seq_id  source    type  start   end score strand phase  \
    0   NC_016810.1  RefSeq  region      1  4000     .      +     .   
    2   NC_016810.1  RefSeq     CDS     13   235     .      +     0   
    7   NC_016810.1  RefSeq    gene     41   255     .      +     .   
@@ -227,7 +227,7 @@ For example:
 
    Out[7]:
    Empty DataFrame
-   Columns: [seq_id, source, feature, start, end, score, strand, phase, attributes]
+   Columns: [seq_id, source, type, start, end, score, strand, phase, attributes]
    Index: [] 
      
 
@@ -236,11 +236,11 @@ For example:
 
 For example:
 ::
-   >>> redundant_entries = object_file.find_redundant_entries(seq_id='NC_016811.1', feature='gene')
+   >>> redundant_entries = object_file.find_redundant_entries(seq_id='NC_016811.1', type='gene')
    >>> print(redundant_entries._df)
 
    Out[8]:
-           seq_id  source feature  start  end score strand phase  \
+           seq_id  source    type  start  end score strand phase  \
    3  NC_016810.1  RefSeq    gene      1   20     .      +     .   
 
                                              attributes  
@@ -261,7 +261,7 @@ For example:
    >>> print(csv_content)
 
    Out[9]:
-   seq_id,source,feature,start,end,score,strand,phase,attributes
+   seq_id,source,type,start,end,score,strand,phase,attributes
    NC_016810.1,RefSeq,region,1,4000,.,+,.,Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344
    NC_016810.1,RefSeq,gene,1,20,.,+,.,ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001
    NC_016810.1,RefSeq,CDS,13,235,.,+,0,Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
@@ -285,7 +285,7 @@ For example:
    >>> print(tsv_content)
 
    Out[10]:
-   seq_id	source	feature	start	end	score	strand	phase	attributes
+   seq_id	source	type	start	end	score	strand	phase	attributes
    NC_016810.1	RefSeq	region	1	4000	.	+	.	Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344
    NC_016810.1	RefSeq	gene	1	20	.	+	.	ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001
    NC_016810.1	RefSeq	CDS	13	235	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
@@ -301,7 +301,7 @@ For example:
 
 | **stats_dic**
 | Gives the following statistics for the entries:
-  The maximal bp-length, minimal bp-length, the count of sense (+) and antisense (-) strands as well as the count of each available feature.
+  The maximal bp-length, minimal bp-length, the count of sense (+) and antisense (-) strands as well as the count of each available feature-type.
 
 For example:
 ::
@@ -311,7 +311,7 @@ For example:
    Out[11]:
    {'Maximal_bp_length': 599, 'Minimal_bp_length': 19,
    'Counted_strands': defaultdict(<class 'int'>, {'+': 9, '-': 2}),
-   'Counted_features': defaultdict(<class 'int'>, {'region': 1, 'gene': 5, 'CDS': 5})}
+   'Counted_feature_types': defaultdict(<class 'int'>, {'region': 1, 'gene': 5, 'CDS': 5})}
 
 
 **All methods can be combined to achieve the desired datas.**
@@ -322,7 +322,7 @@ For example:
    >>> print(combined_df._df)
 
    Out[12]:   
-           seq_id  source feature  start  end score strand phase  \
+           seq_id  source    type  start  end score strand phase  \
    2  NC_016810.1  RefSeq     CDS     13  235     .      +     0   
    4  NC_016810.1  RefSeq     CDS    341  523     .      +     0   
    8  NC_016810.1  RefSeq     CDS     61  195     .      +     0   
