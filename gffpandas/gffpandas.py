@@ -30,7 +30,7 @@ class Gff3DataFrame(object):
         By the pandas library the gff3 file is read and
         a pd dataframe with the given column-names is returned """
         self._df = pd.read_table(self._gff_file, comment='#',
-                                 names=["seq_id", "source", "feature", "start",
+                                 names=["seq_id", "source", "type", "start",
                                         "end", "score", "strand", "phase",
                                         "attributes"])
         return self._df
@@ -51,38 +51,34 @@ class Gff3DataFrame(object):
     def write_csv(self, csv_file):
         """ Create a csv_file.
 
-        The pd dataframe is converted to a csv_file. """
+        The pd dataframe is safed as a csv_file. """
         self._df.to_csv(csv_file, sep=',', index=False,
-                        header=["seq_id", "source", "feature", "start",
+                        header=["seq_id", "source", "type", "start",
                                 "end", "score", "strand", "phase",
                                 "attributes"])
 
     def write_tsv(self, tsv_file):
         """ Create a tsv_file.
 
-        The pd dataframe is converted to a tsv_file. """
+        The pd dataframe is safed as a tsv_file. """
         self._df.to_csv(tsv_file, sep='\t', index=False,
-                        header=["seq_id", "source", "feature", "start",
+                        header=["seq_id", "source", "type", "start",
                                 "end", "score", "strand", "phase",
                                 "attributes"])
 
-    def filter_feature_of_type(self, type):
+    def filter_feature_of_type(self, feature_type):
         """ Filtering the pd dataframe by a feature_type.
 
-        For this function a feature-argument has to be given, as e.x. 'CDS'.
-        As output an object will be created.
-        By printing 'object._df' a filtered dataframe will be returned
-        containing only the datas of the given feature.
-        By printing 'object._header' the header will be returned.
+        For this method a feature-type has to be given, as e.x. 'CDS'.
         """
         feature_df = self._df
-        feature_df = feature_df[feature_df.feature == type]
+        feature_df = feature_df[feature_df.type == feature_type]
         return Gff3DataFrame(input_df=feature_df, input_header=self._header)
 
     def filter_by_length(self, min_length: int, max_length: int):
         """ Filtering the pd dataframe by the gene_length.
 
-        For this function the desired minimal and maximal bp length
+        For this method the desired minimal and maximal bp length
         have to be given. """
         filtered_length = self._df
         gene_length = pd.Series(filtered_length.apply(lambda row:
@@ -90,16 +86,15 @@ class Gff3DataFrame(object):
                                                       axis=1))
         filtered_length = filtered_length[(gene_length >= min_length) &
                                           (gene_length <= max_length)]
-        return [Gff3DataFrame(input_df=filtered_length,
-                              input_header=self._header),
-                filtered_length, self._header]
+        return Gff3DataFrame(input_df=filtered_length,
+                             input_header=self._header)
 
-    def get_feature_by_attribute(self, attr_key, attr_value):
+    def get_feature_by_attribute(self, attr_tag, attr_value):
         """ Filtering the pd dataframe by a attribute.
 
         The 9th column of a gff3-file contains the list of feature
         attributes in a tag=value format.
-        For this function the desired attribute tag as well as the
+        For this mmethod the desired attribute tag as well as the
         corresponding value have to be given. If the value is not available
         an empty dataframe would be returned."""
         attribute_df = self._df.copy()
@@ -115,35 +110,16 @@ class Gff3DataFrame(object):
         for atr in nonredundant_list:
             attribute_df[atr] = attribute_df['at_dic'].apply(lambda at_dic:
                                                              at_dic.get(atr))
-        filtered_by_attr_df = self._df[(attribute_df[attr_key] == attr_value)]
+        filtered_by_attr_df = self._df[(attribute_df[attr_tag] == attr_value)]
         return Gff3DataFrame(input_df=filtered_by_attr_df,
                              input_header=self._header)
-            
-    # def attributes_to_columns(self):
-    #     """ Converting each attribute-tag to a single column.
-
-    #     A dataframe with 25 columns will be returned."""
-    #     attribute_df = self._df
-    #     attribute_df['at_dic'] = attribute_df.attributes.apply(
-    #         lambda attributes: dict([key_value_pair.split('=') for
-    #                                  key_value_pair in attributes.split(';')]))
-    #     attribute_df['at_dic_keys'] = attribute_df['at_dic'].apply(
-    #         lambda at_dic: list(at_dic.keys()))
-    #     merged_attribute_list = list(itertools.chain.
-    #                                  from_iterable(attribute_df
-    #                                                ['at_dic_keys']))
-    #     nonredundant_list = sorted(list(set(merged_attribute_list)))
-    #     for atr in nonredundant_list:
-    #         attribute_df[atr] = attribute_df['at_dic'].apply(lambda at_dic:
-    #                                                          at_dic.get(atr))
-    #     return Gff3DataFrame(input_df=attribute_df, input_header=self._header)
 
     def attributes_to_columns(self):
-        """ Converting each attribute-tag to a single column.
+        """ Safing each attribute-tag to a single column.
 
         Attribute column will be split to 14 single columns."""
         attribute_df = self._df
-        df_attributes = attribute_df.loc[:, 'seq_id':'phase']
+        df_attributes = attribute_df.loc[:, 'seq_id':'attributes']
         attribute_df['at_dic'] = attribute_df.attributes.apply(
             lambda attributes: dict([key_value_pair.split('=') for
                                      key_value_pair in attributes.split(';')]))
@@ -163,33 +139,32 @@ class Gff3DataFrame(object):
 
         The maximal bp-length, minimal bp-length, the count of sense (+) and
         antisense (-) strands as well as the count of each available feature.
-        seq_id has to be given?
         """
         input_df = self._df
-        df_w_region = input_df[input_df.feature != 'region']
+        df_w_region = input_df[input_df.type != 'region']
         gene_length = pd.Series(df_w_region.apply(lambda row:
                                                   row.end - row.start, axis=1))
         strand_counts = defaultdict(int)
         for key in input_df['strand']:
             strand_counts[key] += 1
-        feature_counts = defaultdict(int)
-        for key in input_df['feature']:
-            feature_counts[key] += 1
+        feature_type_counts = defaultdict(int)
+        for key in input_df['type']:
+            feature_type_counts[key] += 1
         stats_dic = {
             'Maximal_bp_length':
             gene_length.max(),
             'Minimal_bp_length':
             gene_length.min(),
             'Counted_strands': strand_counts,
-            'Counted_features': feature_counts
+            'Counted_feature_types': feature_type_counts
         }
         return Gff3DataFrame(input_df=stats_dic, input_header=self._header)
 
     def overlaps_with(self, seq_id=None, start=None, end=None,
-                      feature=None, strand=None, complement=False):
+                      type=None, strand=None, complement=False):
         """ To see which entries overlap with a to comparable feature.
 
-        For this function the chromosom accesion number has to be given.
+        For this method the chromosom accession number has to be given.
         The start and end bp position for the to comparable feature have to be
         given, as well as optional the feature-type of it and if it is on the
         sense (+) or antisense (-) strand.
@@ -199,8 +174,8 @@ class Gff3DataFrame(object):
         Therefore, the bp position of the genome region have to be given. """
         overlap_df = self._df
         overlap_df = overlap_df[overlap_df.seq_id == seq_id]
-        if feature is not None:
-            overlap_df = overlap_df[overlap_df.feature == feature]
+        if type is not None:
+            overlap_df = overlap_df[overlap_df.type == type]
         if strand is not None:
             overlap_df = overlap_df[overlap_df.strand == strand]
         if not complement:
@@ -231,16 +206,16 @@ class Gff3DataFrame(object):
                                        (overlap_df.end == end)))]
         return Gff3DataFrame(input_df=overlap_df, input_header=self._header)
 
-    def find_redundant_entries(self, seq_id=None, feature=None):
+    def find_redundant_entries(self, seq_id=None, type=None):
         """ Find entries which are redundant.
 
-        For this function the chromosom accesion number (seq_id) as well as the
+        For this method the chromosom accession number (seq_id) as well as the
         feature-type have to be given. Then all entries which are redundant
         according to start- and end-position as well as strand-type will be
         found."""
         input_df = self._df
         input_df = input_df[input_df.seq_id == seq_id]
-        df_gene = input_df[input_df.feature == feature]
+        df_gene = input_df[input_df.type == type]
         if (df_gene[['end', 'start', 'strand']].duplicated().sum() == 0):
             print('No redundant entries found')
         else:
@@ -252,11 +227,9 @@ class Gff3DataFrame(object):
 
 
 
-
-
 # test_object = read_gff3('NC_016810B.gff')
-# data_frame_new = test_object._read_gff3_to_df()
-# print(data_frame_new)
+# data_frame_new = test_object.attributes_to_columns()
+# print(data_frame_new._df)
 
 # print(__doc__)
 # print(Gff3DataFrame.__doc__)
