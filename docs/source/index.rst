@@ -4,7 +4,10 @@
    contain the root `toctree` directive.
 
 Welcome to gffpandas's documentation!
-=====================================
+*************************************
+
+Table of content
+================
 
 .. toctree::
    :maxdepth: 2
