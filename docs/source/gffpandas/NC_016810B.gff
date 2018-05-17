@@ -1,0 +1,21 @@
+##gff-version 3
+#!gff-spec-version 1.20
+#!processor NCBI annotwriter
+##sequence-region NC_016810.1 1 4878012
+##species http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=216597
+NC_016810.1	RefSeq	region	1	4878012	.	+	.	ID=id0;Dbxref=taxon:216597;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344
+NC_016810.1	RefSeq	gene	169	5000000	.	+	.	ID=gene0;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001
+NC_016810.1	RefSeq	CDS	169	255	.	+	0	ID=cds0;Name=YP_005179941.1;Parent=gene0;Dbxref=UniProtKB%2FTrEMBL:E1W7M4,Genbank:YP_005179941.1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+NC_016810.1	RefSeq	gene	169	5000000	.	+	.	ID=gene1;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002
+NC_016810.1	RefSeq	CDS	337	2799	.	+	0	ID=cds1;Name=YP_005179942.1;Parent=gene1;Dbxref=UniProtKB%2FTrEMBL:E1W7M5,Genbank:YP_005179942.1;gbkey=CDS;product=aspartokinase I%2Fhomoserine dehydrogenase I;protein_id=YP_005179942.1;transl_table=11
+NC_016810.1	RefSeq	gene	0	3730	.	+	.	ID=gene2;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0003
+NC_016810.1	RefSeq	CDS	2801	3730	.	+	0	ID=cds2;Name=YP_005179943.1;Parent=gene2;Dbxref=UniProtKB%2FTrEMBL:E1W7M6,Genbank:YP_005179943.1;gbkey=CDS;product=Homoserine kinase;protein_id=YP_005179943.1;transl_table=11
+NC_016810.1	RefSeq	gene	3734	5020	.	+	.	ID=gene3;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0004
+NC_016810.1	RefSeq	CDS	3734	5020	.	+	0	ID=cds3;Name=YP_005179944.1;Parent=gene3;Dbxref=UniProtKB%2FTrEMBL:E1W7M7,Genbank:YP_005179944.1;gbkey=CDS;product=threonine synthase;protein_id=YP_005179944.1;transl_table=11
+NC_016810.1	RefSeq	gene	5114	5887	.	-	.	ID=gene4;Name=SL1344_0005;gbkey=Gene;locus_tag=SL1344_0005
+NC_016810.1	RefSeq	CDS	5114	5887	.	-	0	ID=cds4;Name=YP_005179945.1;Parent=gene4;Dbxref=UniProtKB%2FTrEMBL:E1W7M8,Genbank:YP_005179945.1;gbkey=CDS;product=hypothetical protein;protein_id=YP_005179945.1;transl_table=11
+NC_016810.1	RefSeq	gene	5966	7396	.	-	.	ID=gene5;Name=yaaJ;gbkey=Gene;gene=yaaJ;locus_tag=SL1344_0006
+NC_016810.1	RefSeq	CDS	5966	7396	.	-	0	ID=cds5;Name=YP_005179946.1;Parent=gene5;Dbxref=UniProtKB%2FTrEMBL:E1W7M9,Genbank:YP_005179946.1;gbkey=CDS;product=putative amino-acid transport protein;protein_id=YP_005179946.1;transl_table=11
+NC_016810.1	RefSeq	gene	7665	8618	.	+	.	ID=gene6;Name=talB;gbkey=Gene;gene=talB;locus_tag=SL1344_0007
+NC_016810.1	RefSeq	CDS	7665	8618	.	+	0	ID=cds6;Name=YP_005179947.1;Parent=gene6;Dbxref=UniProtKB%2FTrEMBL:E1W7N0,Genbank:YP_005179947.1;gbkey=CDS;product=transaldolase B;protein_id=YP_005179947.1;transl_table=11
+
