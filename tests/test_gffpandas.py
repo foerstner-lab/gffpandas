@@ -361,7 +361,7 @@ def test_filter_feature_of_type():
 
 def test_filter_by_length():
     gff3_df = generate_gff3_df()
-    filtered_length = gff3_df.filter_by_length(10, 300)
+    filtered_length = gff3_df.filter_by_length(min_length=10, max_length=300)
     assert type(filtered_length) == gff3pd.Gff3DataFrame
     pd.testing.assert_frame_equal(filtered_length._df, written_filtered_length)
     assert filtered_length._header == written_header
