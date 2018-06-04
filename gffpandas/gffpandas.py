@@ -51,7 +51,7 @@ class Gff3DataFrame(object):
     def write_csv(self, csv_file):
         """ Create a csv_file.
 
-        The pd dataframe is safed as a csv_file. """
+        The pd dataframe is saved as a csv_file. """
         self._df.to_csv(csv_file, sep=',', index=False,
                         header=["seq_id", "source", "type", "start",
                                 "end", "score", "strand", "phase",
@@ -60,11 +60,36 @@ class Gff3DataFrame(object):
     def write_tsv(self, tsv_file):
         """ Create a tsv_file.
 
-        The pd dataframe is safed as a tsv_file. """
+        The pd dataframe is saved as a tsv_file. """
         self._df.to_csv(tsv_file, sep='\t', index=False,
                         header=["seq_id", "source", "type", "start",
                                 "end", "score", "strand", "phase",
                                 "attributes"])
+
+    # def write_gff(self):
+    #     """ Create a tsv_file.
+
+    #     The pd dataframe is saved as a gff_file. """
+    #     list_gff = []
+    #     header = self._header
+    #     gff_feature = self._df.to_csv(sep='\t', index=False,
+    #                                   header=None)
+    #     list_gff.append(header)
+    #     list_gff.append(gff_feature)
+    #     gff_file = ''.join(list_gff)
+    #     return gff_file
+
+    def write_gff2(self, gff_file):
+        """ Create a tsv_file.
+
+        The pd dataframe is saved as a gff_file. """
+        header = self._header
+        gff_feature = self._df.to_csv(sep='\t', index=False,
+                                      header=None)
+        fh = open(gff_file, 'w')
+        fh.write(header)
+        fh.write(gff_feature)
+        fh = open(gff_file, 'r')
 
     def filter_feature_of_type(self, feature_type):
         """ Filtering the pd dataframe by a feature_type.
@@ -94,7 +119,7 @@ class Gff3DataFrame(object):
 
         The 9th column of a gff3-file contains the list of feature
         attributes in a tag=value format.
-        For this mmethod the desired attribute tag as well as the
+        For this method the desired attribute tag as well as the
         corresponding value have to be given. If the value is not available
         an empty dataframe would be returned."""
         attribute_df = self._df.copy()
@@ -115,7 +140,7 @@ class Gff3DataFrame(object):
                              input_header=self._header)
 
     def attributes_to_columns(self):
-        """ Safing each attribute-tag to a single column.
+        """ Saving each attribute-tag to a single column.
 
         Attribute column will be split to 14 single columns."""
         attribute_df = self._df
@@ -169,9 +194,7 @@ class Gff3DataFrame(object):
         given, as well as optional the feature-type of it and if it is on the
         sense (+) or antisense (-) strand.
         By selecting 'complement=True', all the feature, which do not overlap
-        with the to comparable feature will be returned. This is usefull for
-        finding features which are outside of the given genome region.
-        Therefore, the bp position of the genome region have to be given. """
+        with the to comparable feature will be returned. """
         overlap_df = self._df
         overlap_df = overlap_df[overlap_df.seq_id == seq_id]
         if type is not None:
