@@ -100,7 +100,7 @@ class Gff3DataFrame(object):
         feature_df = feature_df[feature_df.type == feature_type]
         return Gff3DataFrame(input_df=feature_df, input_header=self._header)
 
-    def filter_by_length(self, min_length: int, max_length: int):
+    def filter_by_length(self, min_length=None, max_length=None):
         """ Filtering the pd dataframe by the gene_length.
 
         For this method the desired minimal and maximal bp length
