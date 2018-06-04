@@ -64,6 +64,21 @@ written_tsv = ('seq_id\tsource\ttype\tstart\tend\tscore\tstrand\tphase\tattribut
              'NC_016810.1\tRefSeq\tgene\t170\t546\t.\t+\t.\tID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005\n'
              'NC_016810.1\tRefSeq\tCDS\t34\t335\t.\t+\t0\tDbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n')
 
+written_gff = ('##gff-version 3\n'
+'##sequence-region NC_016810.1 1 20\n'
+'NC_016810.1	RefSeq	region	1	4000	.	+	.	Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344\n'
+'NC_016810.1	RefSeq	gene	1	20	.	+	.	ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001\n'
+'NC_016810.1	RefSeq	CDS	13	235	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n'
+'NC_016810.1	RefSeq	gene	1	20	.	+	.	ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002\n'
+'NC_016810.1	RefSeq	CDS	341	523	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n'
+'NC_016810.1	RefSeq	gene	1	600	.	-	.	ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_tag=SL1344_0003\n'
+'NC_016810.1	RefSeq	CDS	21	345	.	-	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n'
+'NC_016810.1	RefSeq	gene	41	255	.	+	.	ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0004\n'
+'NC_016810.1	RefSeq	CDS	61	195	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n'
+'NC_016810.1	RefSeq	gene	170	546	.	+	.	ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005\n'
+'NC_016810.1	RefSeq	CDS	34	335	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11\n')
+
+
 written_filtered_length = pd.DataFrame([
     ['NC_016810.1', 'RefSeq', 'gene', 1, 20, '.', '+', '.',
      'ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001'],
@@ -319,6 +334,19 @@ def test_write_tsv():
     gff3_df.write_tsv('temp.tsv')
     tsv_content = open('temp.tsv').read()
     assert tsv_content == written_tsv
+
+
+# def test_write_gff():
+#     gff3_df = generate_gff3_df()
+#     gff_file = gff3_df.write_gff()
+#     assert gff_file == written_gff
+
+
+def test_write_gff2():
+    gff3_df = generate_gff3_df()
+    gff3_df.write_gff2('temp.gff')
+    gff_content = open('temp.gff').read()
+    assert gff_content == written_gff
 
 
 def test_filter_feature_of_type():
