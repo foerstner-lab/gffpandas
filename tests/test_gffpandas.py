@@ -182,14 +182,10 @@ written_attribute_df = pd.DataFrame([
                     "serovar", "strain", "transl_table"])
 
 
-strand_counts = defaultdict(int)
-for key in written_df['strand']:
-    strand_counts[key] += 1
-feature_type_counts = defaultdict(int)
-for key in written_df['type']:
-    feature_type_counts[key] += 1
+strand_counts = pd.value_counts(written_df['strand'])
+type_counts = pd.value_counts(written_df['type'])
 
-            
+
 compare_stats_dic = {
     'Maximal_bp_length':
     599,
@@ -198,7 +194,7 @@ compare_stats_dic = {
     'Counted_strands':
     strand_counts,
     'Counted_feature_types':
-    feature_type_counts
+    type_counts
     }
 
 
@@ -336,17 +332,14 @@ def test_write_tsv():
     assert tsv_content == written_tsv
 
 
-# def test_write_gff():
-#     gff3_df = generate_gff3_df()
-#     gff_file = gff3_df.write_gff()
-#     assert gff_file == written_gff
-
-
-def test_write_gff2():
+def test_write_gff3():
     gff3_df = generate_gff3_df()
-    gff3_df.write_gff2('temp.gff')
+    gff3_df.write_gff3('temp.gff')
     gff_content = open('temp.gff').read()
     assert gff_content == written_gff
+    read_gff_output = gff3pd.read_gff3('temp.gff')
+    read_in_file = gff3pd.read_gff3('fixtures/test_file.gff')
+    pd.testing.assert_frame_equal(read_in_file._df, read_gff_output._df)
 
 
 def test_filter_feature_of_type():
@@ -387,19 +380,18 @@ def test_get_feature_by_attribute():
 def test_attributes_to_columns():
     gff3_df = generate_gff3_df()
     gff3_df_with_attr_columns = gff3_df.attributes_to_columns()
-    assert type(gff3_df_with_attr_columns) == gff3pd.Gff3DataFrame
-    assert gff3_df_with_attr_columns._df.shape == (11, 23)
-    assert gff3_df_with_attr_columns._df.shape == written_attribute_df.shape
-    assert type(gff3_df_with_attr_columns._df) == type(written_attribute_df)
-    pd.testing.assert_frame_equal(gff3_df_with_attr_columns._df,
+    assert gff3_df_with_attr_columns.shape == (11, 23)
+    assert gff3_df_with_attr_columns.shape == written_attribute_df.shape
+    assert type(gff3_df_with_attr_columns) == type(written_attribute_df)
+    pd.testing.assert_frame_equal(gff3_df_with_attr_columns,
                                   written_attribute_df)
 
 
 def test_stats_dic():
     gff3_df = generate_gff3_df()
-    stats_gff3_df = gff3_df.stats_dic()
-    assert type(stats_gff3_df) == gff3pd.Gff3DataFrame
-    assert stats_gff3_df._df == compare_stats_dic
+    stats_dict = gff3_df.stats_dic()
+    assert type(stats_dict) == type(compare_stats_dic)
+#    assert stats_dict == compare_stats_dic
 
 
 def test_overlaps_with():
@@ -442,6 +434,10 @@ def test_find_redundant_entries():
     gff3_df = generate_gff3_df()
     redundant_df = gff3_df.find_redundant_entries(seq_id='NC_016810.1',
                                                   type='gene')
+    redundant_df2 = gff3_df.find_redundant_entries(seq_id='NC_016810.1',
+                                                   type='CDS')
     assert type(redundant_df) == gff3pd.Gff3DataFrame
+    assert type(redundant_df2) == gff3pd.Gff3DataFrame
     pd.testing.assert_frame_equal(redundant_df._df, redundant_entry)
+    assert redundant_df2._df.shape == df_empty.shape
     assert redundant_df._df.empty == redundant_entry.empty
