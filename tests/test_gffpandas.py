@@ -5,7 +5,6 @@
 
 import gffpandas.gffpandas as gff3pd
 import pandas as pd
-from collections import defaultdict
 
 
 written_df = pd.DataFrame([
@@ -318,17 +317,13 @@ def test_if_df_values_equal_gff_values():
     pd.testing.assert_frame_equal(test_df, written_df)
 
 
-def test_write_csv():
+def test_write_xsv():
     gff3_df = generate_gff3_df()
-    gff3_df.write_csv('temp.csv')
+    gff3_df.write_xsv(tsv_file='temp.tsv')
+    gff3_df.write_xsv('temp.csv')
+    tsv_content = open('temp.tsv').read()
     csv_content = open('temp.csv').read()
     assert csv_content == written_csv
-
-
-def test_write_tsv():
-    gff3_df = generate_gff3_df()
-    gff3_df.write_tsv('temp.tsv')
-    tsv_content = open('temp.tsv').read()
     assert tsv_content == written_tsv
 
 
