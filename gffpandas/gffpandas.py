@@ -44,20 +44,17 @@ class Gff3DataFrame(object):
                 break
         return self._header
 
-    def write_csv(self, csv_file):
-        """Create a csv file.
+    def write_xsv(self, csv_file=None, tsv_file=False):
+        """Create a csv or tsv file.
 
-        The pd dataframe is saved as a csv file."""
-        self._df.to_csv(csv_file, sep=',', index=False,
-                        header=["seq_id", "source", "type", "start",
-                                "end", "score", "strand", "phase",
-                                "attributes"])
-
-    def write_tsv(self, tsv_file):
-        """Create a tsv file.
-
-        The pd dataframe is saved as a tsv file."""
-        self._df.to_csv(tsv_file, sep='\t', index=False,
+        The pd dataframe is saved as a csv file or optional as tsv file."""
+        if not tsv_file:
+            file_type = csv_file
+            seperation = ','
+        else:
+            file_type = tsv_file
+            seperation = '\t'
+        self._df.to_csv(file_type, sep=seperation, index=False,
                         header=["seq_id", "source", "type", "start",
                                 "end", "score", "strand", "phase",
                                 "attributes"])
