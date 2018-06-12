@@ -153,15 +153,14 @@ class Gff3DataFrame(object):
         For this method the chromosom accession number has to be given.
         The start and end bp position for the to comparable feature have to be
         given, as well as optional the feature-type of it and if it is on the
-        sense (+) or antisense (-) strand.
-        Possible overlaps:
-            ----------------
-        --------
-                     ------------
-            -------
-                     -------
-            ----------------
-                            
+        sense (+) or antisense (-) strand. \n
+        Possible overlaps: \n
+        _______nnnnnnnnnnnnnnnnnnnnnn__________ --> to comparable sequence (y) \n
+        xxxxxxxxxxxxxxxxxxxx______________________ --> overlaping at the begin of y \n
+        ____________________xxxxxxxxxxxxxxxxxxxxxx --> overlaping at the end of y \n
+        _______xxxxxxxxxxxxxx_____________________ --> starts are identical and end is within y \n
+        ___________________xxxxxxxxxxxxxx_________ --> ends are identiacal and start is within y \n
+        _______xxxxxxxxxxxxxxxxxxxxxxxxx__________ --> start and end positions are identical to start and end of y \n
         By selecting 'complement=True', all the feature, which do not overlap
         with the to comparable feature will be returned."""
         overlap_df = self._df
