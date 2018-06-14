@@ -7,17 +7,17 @@ tags:
   - gff3 file
   - pandas
 author:
-	- name: Vivian A. Monzon
-	  affiliation: 1
-	- name: Konrad U. Förstner
-	  affiliation: "1, 2, 3"
+  - name: Vivian A. Monzon
+    affiliation: 1
+  - name: Konrad U. Förstner
+    affiliation: "1, 2, 3"
 affiliations:
-	- name: Institut for Molecular Infection Biology, Julius-Maximilian-Universität Wuerzburg, Wuerzburg, Germany
-	  index: 1
-	- name: Core Unit Systemmedizin, Julius-Maximilian-Universität Wuerzburg, Wuerzburg, Germany
-	  index: 2
-	- name: ZB MED Information Centre for Life Sciences, Koeln, Germany
-	  index: 3
+  - name: Institut for Molecular Infection Biology, Julius-Maximilian-Universität Wuerzburg, Wuerzburg, Germany
+    index: 1
+  - name: Core Unit Systemmedizin, Julius-Maximilian-Universität Wuerzburg, Wuerzburg, Germany
+    index: 2
+  - name: ZB MED Information Centre for Life Sciences, Koeln, Germany
+    index: 3
 date: XX June 2018
 bibliography: paper.bib
 ---
