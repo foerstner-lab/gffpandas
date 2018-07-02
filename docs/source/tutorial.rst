@@ -1,21 +1,45 @@
-How to use gffpandas:
+How to use gffpandas
 #####################
 
-| The library gffpandas facilitates the work with gff3 files. The given gff file will be read by the pandas library and a dataframe will be returned as instance variable of the class ('self._df'). Additionally, will be the header read and returned as another instance variable of the class ('self._header'). The instance method is so coded that when no gff file (input_gff_file) is given, the self._df is the input_df or rather the self._header is the input_header. Therefore, the created dataframe will be taken and changed by the executed methods. Afterwards a modified dataframe will be returned as object of the class.
-| **To obtain the dataframe or rather header, the object name has to be printed with the instance '._df' or rather '._header'.**
+| The Python library gffpandas facilitates the work with gff3 files. Thereby, different conditions can be choosen to filter the annotation data, as e.g. to retain only the entries of a specific feature. The big advantages are that several functions and thus filter options, can be combined and that a gff file or even csv or tsv file can be returned.
+| In this gffpandas version only files, which contain one gff3 file can be used.
+| The given gff3 file will be read by the Pandas library and a data frame will be returned as instance variable of the class of gffpandas. Additionally, will be the header read and returned as another instance variable of this class. The data frame and header can be printed before or after filtering the annotation data by one or several functions. For selecting to print the data frame or the header or even both, the suffix '.df' or rather '.header' has to be used.
+| In this tutorial it will be shown how to read in a gff3 file, how to filter the annnotation data and how to return again a gff3 file by gffpandas. Additionally, all functions of gffpandas will be presented.
 
+
+Example Tutorial:
+*****************
+
+The following gff3 file will be used as example, to show how gffpandas has to be used. It contains a header and eleven annotation entries.
+::
+  ##gff-version 3
+  ##sequence-region NC_016810.1 1 20
+  NC_016810.1	RefSeq	region	1	4000	.	+	.	Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344
+  NC_016810.1	RefSeq	gene	1	20	.	+	.	ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001
+  NC_016810.1	RefSeq	CDS	13	235	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+  NC_016810.1	RefSeq	gene	1	20	.	+	.	ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002
+  NC_016810.1	RefSeq	CDS	341	523	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+  NC_016810.1	RefSeq	gene	1	600	.	-	.	ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_tag=SL1344_0003
+  NC_016810.1	RefSeq	CDS	21	345	.	-	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+  NC_016810.1	RefSeq	gene	41	255	.	+	.	ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0004
+  NC_016810.1	RefSeq	CDS	61	195	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+  NC_016810.1	RefSeq	gene	170	546	.	+	.	ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005
+  NC_016810.1	RefSeq	CDS	34	335	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11 
 
 The library can be imported as the following:
 ::
-   import gffpandas as gff3pd
+   import gffpandas as gffpd
 
 
-First step is to read in the gff_file with the method called 'read_gff3'. Then a dataframe (._df) or rather header (._header) can be returned:
+First step is to read in the gff3 file with the method called 'read_gff3'. Then a dataframe (.df) or rather header (.header) can be returned:
 ::
-   >>> object_file = gff3pd.read_gff3('gff3-file.gff')
-   >>> print(object_file._df)
+   >>> annotation = gffpd.read_gff3('annotation.gff')
+   >>> print(annotation.header)
+   >>> print(annotation.df)
    
    Out[1]:
+   ##gff-version 3
+   ##sequence-region NC_016810.1 1 20
             seq_id  source    type  start   end score strand phase  \		
    0   NC_016810.1  RefSeq  region      1  4000     .      +     .   
    1   NC_016810.1  RefSeq    gene      1    20     .      +     .   
@@ -42,18 +66,35 @@ First step is to read in the gff_file with the method called 'read_gff3'. Then a
    9   ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_...  
    10  Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...  
 
+   
+The created data frame contains all eleven annotation entries and can be changed now. Depending on which annotation entries are desired, different filter options can be used and/or combined.
+
+In this example, the user wants to return a gff3 file, but only the coding sequences ('CDS'), which base pair length (bp) is minimal 10 bp long and maximal 250 bp long. Therefore, the following functions will be combined:
+::
+   >>> combined_df = annotation.filter_feature_of_type('CDS').filter_by_length(10, 250).to_gff3('temp.gff')
+   >>> gff_content = open('temp.gff').read()
+   >>> print(gff_content)
+
+   Out[2]:
+   ##gff-version 3
+   ##sequence-region NC_016810.1 1 20
+   NC_016810.1	RefSeq	CDS	13	235	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+   NC_016810.1	RefSeq	CDS	341	523	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+   NC_016810.1	RefSeq	CDS	61	195	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+
 
    
-The following methods are included in this library:
-***************************************************
+Methods included in gffpandas:
+******************************
+In this subsection, the possible functions of gffpandas will be presented.
   
 | **filter_feature_of_type**
-| For this method the requested feature-type has to be given as argument. A filtered dataframe will be then returned as object containing only the data of the given feature-type.
+| For this method the requested feature-type has to be given as argument. A filtered data frame will be then returned containing only the entries of the given feature-type.
   
 For example:
 ::
-   >>> filtered_df = object_file.filter_feature_of_type('gene')
-   >>> print(filtered_df._df)
+   >>> filtered_df = annotation.filter_feature_of_type('gene')
+   >>> print(filtered_df.df)
 
    Out[2]:
            seq_id  source    type  start  end score strand phase  \
@@ -72,12 +113,12 @@ For example:
      
 
 | **filter_by_length**
-| For this method the required minimal and maximal bp-length have to be given. A filtered dataframe will then be returned with all features within the given bp-length.
+| For this method the required minimal and maximal bp-length have to be given. A filtered data frame will then be returned with all entries within the given bp-length.
   
 For example:
 ::
-   >>> filtered_by_length = object_file.filter_by_length(10, 300)
-   >>> print(filtered_by_length._df)
+   >>> filtered_by_length = annotation.filter_by_length(min_length=10, max_length=300)
+   >>> print(filtered_by_length.df)
 
    Out[3]:
            seq_id  source    type  start  end score strand phase  \
@@ -98,12 +139,12 @@ For example:
      
 
 | **get_feature_by_attribute**
-| For this method the desired attribute tag as well as the corresponding value have to be given.
+| For this method the desired attribute tag as well as the corresponding value have to be given. A filtered data frame will then be returned which contain the regarding attribute tag with the corresponding attribute value.
   
 For example:
 ::
-   >>> feature_by_attribute = object_file.get_feature_by_attribute('gbkey', 'CDS')
-   >>> print(feature_by_attribute._df)
+   >>> feature_by_attribute = annotation.get_feature_by_attribute('gbkey', 'CDS')
+   >>> print(feature_by_attribute.df)
 
    Out[4]:
             seq_id  source    type  start  end score strand phase  \
@@ -122,12 +163,12 @@ For example:
      
 
 | **attributes_to_columns**
-| This method splits the attribute column in 14 seperate columns, for each tag.
+| This method splits the attribute column in 14 seperate columns, for each tag and returns a data frame. This method doesn't give an object file back. Therefore, it is not possible to combine it with other methods. 
 
 For example:
 ::
-   >>> attr_columns = object_file.attributes_to_columns()
-   >>> print(attr_columns._df)
+   >>> attr_to_columns = annotation.attributes_to_columns()
+   >>> print(attr_to_columns)
 
    Out[5]:
             seq_id  source    type  start   end score strand phase  \
@@ -197,16 +238,16 @@ For example:
      
 
 | **overlaps_with**
-| Here, a to comparable feature will be compared to all entries to find out, with which entries it is overlapping. Therefore, the chromosom accesion number of this feature has to be given, as well as start and end position. Optional, it's feature-type can be given as well as if it is coded on the sense (+) or antisense (-) strand. By selecting 'complement=True', all the feature, which do not overlap with the to comparable feature will be returned. This is usefull for finding features which are outside of the given genome region. Therefore, the bp position of the genome region have to be given.
+| Here, a to comparable feature will be compared to all entries of the gff3 file, to find out, with which entries it is overlapping. Therefore, the sequence id of this feature has to be given, as well as start and end position. Optional, it's feature-type can be given as well as if it is coded on the sense (+) or antisense (-) strand. By selecting 'complement=True', all the feature, which do not overlap with the to comparable feature will be returned. 
 
 For example:
 ::
-   >>> overlapings = object_file.overlaps_with(seq_id='NC_016811.1', type='gene',
-                                               start=40, end=300, strand='+')
-   >>> out_of_region = object_file.overlaps_with(seq_id='NC_016811.1', start=1, end=4000,
-                                                 strand='+', complement=True)
-   >>> print(overlapings._df)
-   >>> print(out_of_region._df)
+   >>> overlapings = annotation.overlaps_with(seq_id='NC_016811.1', type='gene',
+                                              start=40, end=300, strand='+')
+   >>> no_overlap = annotation.overlaps_with(seq_id='NC_016811.1', start=1, end=4000,
+                                             strand='+', complement=True)
+   >>> print(overlapings.df)
+   >>> print(no_overlap.df)
 
    Out[6]:
             seq_id  source    type  start   end score strand phase  \
@@ -231,13 +272,13 @@ For example:
    Index: [] 
      
 
-| **find_redundant_entries**
-| For this method the chromosom accession number (seq_id) as well as the feature-type have to be given. Then all entries which are redundant according to start- and end-position as well as strand-type will be returned.
+| **find_duplicated_entries**
+| For this method the sequence id as well as the feature-type have to be given. Then all entries which are redundant according to start- and end-position as well as strand-type will be returned.
 
 For example:
 ::
-   >>> redundant_entries = object_file.find_redundant_entries(seq_id='NC_016811.1', type='gene')
-   >>> print(redundant_entries._df)
+   >>> redundant_entries = annotation.find_duplicated_entries(seq_id='NC_016811.1', type='gene')
+   >>> print(redundant_entries.df)
 
    Out[8]:
            seq_id  source    type  start  end score strand phase  \
@@ -248,17 +289,42 @@ For example:
    
 
    
-**The following methods of the library won't return a dataframe:**
+**The following methods of the library won't return a data frame:**
 
 
-| **write_csv**
-| Instead of a dataframe-object will be a csv-file of the given gff-file returned for this method.
+| **to_gff3**
+| By this method will be the data frame safed as gff3 file. This gff3 file will be the original file or if it was change by other methods of gffpandas, the corresponding changed gff3 file. The desired name of the outcome gff3 file has to be given as argument.
 
 For example:
 ::
-   >>> csv_file = object_file.write_csv('temp.csv')
-   >>> csv_content = open('temp.csv').read()
-   >>> print(csv_content)
+   >>> annotation.to_gff3('temp.gff')
+   >>> gff3_file = open('temp.gff').read()
+   >>> print(gff3_file)
+
+   Out[9]:
+   ##gff-version 3
+   ##sequence-region NC_016810.1 1 20
+   NC_016810.1	RefSeq	region	1	4000	.	+	.	Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344
+   NC_016810.1	RefSeq	gene	1	20	.	+	.	ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001
+   NC_016810.1	RefSeq	CDS	13	235	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+   NC_016810.1	RefSeq	gene	1	20	.	+	.	ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002
+   NC_016810.1	RefSeq	CDS	341	523	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+   NC_016810.1	RefSeq	gene	1	600	.	-	.	ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_tag=SL1344_0003
+   NC_016810.1	RefSeq	CDS	21	345	.	-	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+   NC_016810.1	RefSeq	gene	41	255	.	+	.	ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0004
+   NC_016810.1	RefSeq	CDS	61	195	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+   NC_016810.1	RefSeq	gene	170	546	.	+	.	ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005
+   NC_016810.1	RefSeq	CDS	34	335	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
+
+
+| **to_csv**
+| By this method, the data frame will be safed as csv file. The csv file can contain the entries of the original data frame or if it was changed, then the filtered entries. The desired name of the outcome csv file has to be given as argument.
+
+For example:
+::
+   >>> annotation.to_csv('temp.csv')
+   >>> csv_file = open('temp.csv').read()
+   >>> print(csv_file)
 
    Out[9]:
    seq_id,source,type,start,end,score,strand,phase,attributes
@@ -275,14 +341,14 @@ For example:
    NC_016810.1,RefSeq,CDS,34,335,.,+,0,Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11
 
 
-| **write_tsv**
-| Instead of a dataframe-object will be a tsv-file of the given gff-file returned for this method.
+| **to_tsv**
+| By this method, the data frame will be safed as tsv file. The tsv file can contain the entries of the original data frame or if it was changed, then the filtered entries. The desired name of the outcome csv file has to be given as argument.
 
 For example:
 ::
-   >>> tsv_file = object_file.write_tsv('temp.tsv')
-   >>> tsv_content = open('temp.tsv').read()
-   >>> print(tsv_content)
+   >>> annotation.to_tsv('temp.tsv')
+   >>> tsv_file = open('temp.tsv').read()
+   >>> print(tsv_file)
 
    Out[10]:
    seq_id	source	type	start	end	score	strand	phase	attributes
@@ -300,36 +366,20 @@ For example:
 
 
 | **stats_dic** -> dict
-| Gives the following statistics for the entries:
-  The maximal bp-length, minimal bp-length, the count of sense (+) and antisense (-) strands as well as the count of each available feature-type.
+| Gives the following statistics for the entries of the original or changed data frame:
+  The maximal and minimal bp-length, the number of sense (+) and antisense (-) strands as well as the number of each available feature-type.
 
 For example:
 ::
-   >>> statistics = object_file.stats_dic()
-   >>> print(statistics._df)
+   >>> statistics = annotation.stats_dic()
+   >>> print(statistics.df)
 
    Out[11]:
-   {'Maximal_bp_length': 599, 'Minimal_bp_length': 19,
-   'Counted_strands': defaultdict(<class 'int'>, {'+': 9, '-': 2}),
-   'Counted_feature_types': defaultdict(<class 'int'>, {'region': 1, 'gene': 5, 'CDS': 5})}
-
-
-**All methods can be combined to achieve the desired datas.**
-
-For example:
-::
-   >>> combined_df = object_file.filter_by_length(10, 250).filter_feature_of_type('CDS')
-   >>> print(combined_df._df)
-
-   Out[12]:   
-           seq_id  source    type  start  end score strand phase  \
-   2  NC_016810.1  RefSeq     CDS     13  235     .      +     0   
-   4  NC_016810.1  RefSeq     CDS    341  523     .      +     0   
-   8  NC_016810.1  RefSeq     CDS     61  195     .      +     0   
-
-                                             attributes  
-   2  Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...  
-   4  Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...  
-   8  Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...
+   {'Maximal_bp_length': 599, 'Minimal_bp_length': 19, 'Counted_strands': +    9
+   -    2
+   Name: strand, dtype: int64, 'Counted_feature_types': gene      5
+   CDS       5
+   region    1
+   Name: type, dtype: int64}
 
    

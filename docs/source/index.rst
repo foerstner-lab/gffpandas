@@ -11,10 +11,14 @@ Table of content
 
 .. toctree::
    :maxdepth: 2
-
+   :numbered:
+	      
+   introduction
+   background
    tutorial
-   project
    code
+   installation
+
 
 
 
