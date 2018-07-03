@@ -28,10 +28,10 @@ test_requirements = [
 setup(
     name='gffpandas',
     version='0.1.0',
-    description="GFF annotations in panda dataframes",
+    description="GFF annotations in panda data frames",
     long_description=readme + '\n\n' + history,
-    author="Konrad U. Förstner",
-    author_email='konrad@foerstner.org',
+    author="Vivian A. Monzon, Konrad U. Förstner",
+    author_email='vivian.monzon@stud-mail.uni-wuerzburg.de, konrad@foerstner.org',
     url='https://github.com/konrad/gffpandas',
     packages=find_packages(include=['gffpandas']),
     include_package_data=True,
