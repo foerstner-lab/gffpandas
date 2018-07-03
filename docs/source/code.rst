@@ -1,5 +1,5 @@
 API
-===
+###
 
 .. automodule:: gffpandas
    :members: 

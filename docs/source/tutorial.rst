@@ -3,7 +3,7 @@ How to use gffpandas
 
 | The Python library gffpandas facilitates the work with gff3 files. Thereby, different conditions can be choosen to filter the annotation data, as e.g. to retain only the entries of a specific feature. The big advantages are that several functions and thus filter options, can be combined and that a gff file or even csv or tsv file can be returned.
 | In this gffpandas version only files, which contain one gff3 file can be used.
-| The given gff3 file will be read by the Pandas library and a data frame will be returned as instance variable of the class of gffpandas. Additionally, will be the header read and returned as another instance variable of this class. The data frame and header can be printed before or after filtering the annotation data by one or several functions. For selecting to print the data frame or the header or even both, the suffix '.df' or rather '.header' has to be used.
+| The given gff3 file will be read by the pandas library and a data frame will be returned as instance variable of the class of gffpandas. Additionally, will be the header read and returned as another instance variable of this class. The data frame and header can be printed before or after filtering the annotation data by one or several functions. For selecting to print the data frame or the header or even both, the suffix '.df' or rather '.header' has to be used.
 | In this tutorial it will be shown how to read in a gff3 file, how to filter the annnotation data and how to return again a gff3 file by gffpandas. Additionally, all functions of gffpandas will be presented.
 
 

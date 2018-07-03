@@ -1,5 +1,5 @@
 Background information
-=======================
+######################
 
 The Python library gffpandas facilitates working on generatic feature format version 3 (gff3) files.
 
