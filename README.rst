@@ -28,9 +28,9 @@ GFF annotations in panda dataframes
 About gffpandas
 ---------------
 
-gffpandas is a Python library, which can be used to work with annotation data. It facilitates the work with gff3 files in regard to filter desired annotation entries of the gff3 file. A gff3 file contains information about the location and attributes of genes and transcript features. The gffpandas library is an easy to use library and time-saving.
+gffpandas is a Python library, which can be used to work with annotation data. It facilitates the work with gff3 files in regard to filter desired annotation entries of the gff3 file. A gff3 file contains information about the location and attributes of genomic features. The gffpandas library is an easy to use and time-saving library.
 
-This gffpandas library is an alternative to gffutils for example, but it is inspired by the Python library Pandas. This means that the data frame structure is used to work with the annotation data. With gffpandas it is possible to filter a gff3 file by different functions. Another big adventage is that several filter functions can be combined so that the required annotation entries can be selected. Furthermore, can the filtered annotation data be safed again as gff3 file or as csv or tsv file.
+This gffpandas library is an alternative to gffutils as example, but it is inspired by the Python library Pandas. This means that the data frame structure is used to work with the annotation data. With gffpandas it is possible to filter a gff3 file by different functions. Another big adventage is that several filter functions can be combined so that the required annotation entries can be selected. Furthermore, can the filtered annotation data be safed again as gff3 file or as csv or tsv file.
 
 For the documentation see `gffpandas_repository`_.
 
