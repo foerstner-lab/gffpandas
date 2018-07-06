@@ -29,7 +29,7 @@ gffpandas is a Python library, which can be used to work with annotation data. I
 A gff3 file contains information about the location and attributes of genomic features as for example a gene, or exon. It is always written in the same format, which has a header with meta-information and nine columns with the feature information  [@gff3-The-Sequence-Ontology].  
 If only entries with specific characteristics are needed, there is no simple tool to extract these from the whole gff3 file. With the gffpandas library it is possible to return desired entries of a gff3 file, as for example all entries of a specific feature type or a given feature length.
 
-The gffpandas library is an alternative to gffutils as example, but it is inspired by the Python library pandas. Based on pandas, gffpandas reads in a gff3 file into a data frame, to use this structure for further functions. One big advantage is that several filter functions can be combined so that the required annotation entries can be selected. Furthermore, can the annotation data be safed again as gff3 file or as csv or tsv file.
+The gffpandas library is an alternative to gffutils or bcbio-gff, but it is inspired by the Python library pandas. Based on the pandas library, gffpandas reads in a gff3 file into a data frame, to use this structure for further functions. One big advantage is that several filter functions can be combined so that the required annotation entries can be selected. Furthermore, can the annotation data be safed again as gff3 file or as csv or tsv file.
 
 Further options of the gffpandas library are described in the project documentation [@Git-Repository].
 
