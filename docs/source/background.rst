@@ -28,10 +28,10 @@ The location and attribute information are described in nine columns, which are 
    The phase is required for all coding sequence (CDS)-features and gives the information about, at which position the CDS begins in the reading frame. It can be position 0, 1 or 2.
 9. **attributes:**
    The attribute column is written in a 'tag=value' format and contains information about the following tags [#]_:
-|     - ID, Dbxref, gbkey, genome, genomic, mol_type, serovar, strain, Name, gene, locus_tag, Parent, Genbank, product, protein_id, transl_table
+   ID, Dbxref, gbkey, genome, genomic, mol_type, serovar, strain, Name, gene, locus_tag, Parent, Genbank, product, protein_id, transl_table
 |
-| With the gffpandas library a gff3 file can be read in as a pandas data frame. Furthermore, can this dataframe be filtered by different criteria (see `How to use gffpandas`__) to achieve the desired features. Optional, the filtered data frame can be given back as gff3, csv or tsv file.
-So far, only gff3 files containing only one gff3 file can be used. 
+| With the gffpandas library a gff3 file can be read in as a pandas data frame. Furthermore, can this data frame be filtered by different criteria (see `How to use gffpandas`__) to achieve the desired features. Optional, the filtered data frame can be given back as gff3, csv or tsv file.
+So far, only gff3 files containing only one gff3 file, i.e. one header, can be used. 
 
 .. [#] https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md
 
