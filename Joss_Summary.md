@@ -1,11 +1,12 @@
 ---
-title: 'gffpandas: a Python library to filter gff3 file entries'
+title: 'gffpandas: A Python library to process gff3 files as panda dataframes'
 tags:
   - bioinformatics
   - computational biology
   - data analyses
-  - gff3 file
+  - gff3 format
   - pandas
+  - genome annotation
 author:
   - name: Vivian A. Monzon
     affiliation: 1
