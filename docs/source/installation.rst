@@ -9,7 +9,10 @@ The Python library gffpandas was developed with Python3. Thus, the user is advis
 Installation:
 **************
 
+gffpandas is hosted on the PyPI server and can thus be installed by pip3.
 
+::
+   $ pip3 install gffpandas
 
 .. _pip: https://pip.pypa.io/en/stable/
 .. _setuptools: https://pypi.org/project/setuptools/
