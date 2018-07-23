@@ -1,5 +1,5 @@
 ---
-title: 'gffpandas: A Python library to process gff3 files as panda dataframes'
+title: 'gffpandas: A Python library to process gff3 files as pandas data frames'
 tags:
   - bioinformatics
   - computational biology
