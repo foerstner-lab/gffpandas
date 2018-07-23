@@ -10,7 +10,7 @@ install:
   - "pip install -r requirements_dev.txt"
 
 # command to run tests
-script: cd test && pytest && cd ..
+script: cd tests && pytest && cd ..
 
 # After you create the Github repo and add it to Travis, run the
 # travis_pypi_setup.py script to finish PyPI deployment setup
