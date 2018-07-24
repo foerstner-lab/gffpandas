@@ -53,8 +53,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'gffpandas'
-copyright = '2018, Vivian Monzon, Konrad Förstner'
-author = 'Vivian Monzon, Konrad Förstner'
+copyright = '2018, Vivian Monzon, Konrad Foerstner'
+author = 'Vivian Monzon, Konrad Foerstner'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -157,7 +157,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'gffpandas.tex', 'gffpandas Documentation',
-     'Vivian Monzon, Konrad Förstner', 'manual'),
+     'Vivian Monzon, Konrad Foerstner', 'manual'),
 ]
 
 
