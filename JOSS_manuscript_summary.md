@@ -10,10 +10,10 @@ tags:
 author:
   - name: Vivian A. Monzon
     affiliation: 1
-    orcid:
+    orcid: 0000-0001-7125-6212
   - name: Konrad U. Förstner
     affiliation: "1, 2, 3, 4"
-    orcid: 
+    orcid: 0000-0002-1481-2996
 affiliations:
   - name: Institut for Molecular Infection Biology, Julius-Maximilian-University Wuerzburg, Wuerzburg, Germany
     index: 1
