@@ -2,10 +2,10 @@
 History
 =======
 
-0.1.0 (2017-07-11)
+0.1.2 (2018-09-07)
 ------------------
 
-* Start of the project gffpandas
+* Removing of small text errors
 
 
 0.1.1 (2018-09-07)
@@ -13,7 +13,8 @@ History
 
 * First release on PyPI
 
-0.1.2 (2018-09-07)
+
+0.1.0 (2017-07-11)
 ------------------
 
-* Removing of small text errors
+* Start of the project gffpandas

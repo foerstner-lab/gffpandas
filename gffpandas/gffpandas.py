@@ -20,7 +20,7 @@ class Gff3DataFrame(object):
             self.df = input_df
             self.header = input_header
 
-    def _read_gff3_to_df(self):
+    def _read_gff3_to_df(self)-> pd.DataFrame: 
         """Create a pd dataframe.
 
         By the pandas library the gff3 file is read and
