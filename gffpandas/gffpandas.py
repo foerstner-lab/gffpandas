@@ -10,7 +10,8 @@ class Gff3DataFrame(object):
     """Creating 'Gff3DataFrame' class for bundling data
     and functionalities together."""
 
-    def __init__(self, input_gff_file=None, input_df=None, input_header=None):
+    def __init__(self, input_gff_file=None,
+                 input_df=None, input_header=None)-> None:
         """Create an instance."""
         if input_gff_file is not None:
             self._gff_file = input_gff_file
@@ -20,7 +21,7 @@ class Gff3DataFrame(object):
             self.df = input_df
             self.header = input_header
 
-    def _read_gff3_to_df(self)-> pd.DataFrame: 
+    def _read_gff3_to_df(self)-> pd.DataFrame:
         """Create a pd dataframe.
 
         By the pandas library the gff3 file is read and
@@ -31,7 +32,7 @@ class Gff3DataFrame(object):
                                        "attributes"])
         return self.df
 
-    def _read_gff_header(self):
+    def _read_gff_header(self)-> str:
         """Create a header.
 
         The header of the gff file is read, means all lines,
@@ -44,7 +45,7 @@ class Gff3DataFrame(object):
                 break
         return self.header
 
-    def _to_xsv(self, output_file=None, sep=None):
+    def _to_xsv(self, output_file=None, sep=None)-> None:
         """Function for creating a csv or tsv file."""
 
         self.df.to_csv(output_file, sep=sep, index=False,
@@ -52,19 +53,19 @@ class Gff3DataFrame(object):
                                "end", "score", "strand", "phase",
                                "attributes"])
     
-    def to_csv(self, output_file=None):
+    def to_csv(self, output_file=None)-> None:
         """Create a csv file.
 
         The pd data frame is saved as a csv file."""
         self._to_xsv(output_file=output_file, sep=',')
 
-    def to_tsv(self, output_file=None):
+    def to_tsv(self, output_file=None)-> None:
         """Create a tsv file.
 
         The pd data frame is saved as a tsv file."""
         self._to_xsv(output_file=output_file, sep='\t')
 
-    def to_gff3(self, gff_file):
+    def to_gff3(self, gff_file)-> None:
         """Create a gff3 file.
 
         The pd dataframe is saved as a gff3 file."""
@@ -74,14 +75,15 @@ class Gff3DataFrame(object):
             fh.write(self.header)
             fh.write(gff_feature)
 
-    def filter_feature_of_type(self, feature_type):
+    def filter_feature_of_type(self, feature_type)-> "Gff3DataFrame":
         """Filtering the pd dataframe by a feature_type.
 
         For this method a feature-type has to be given, as e.g. 'CDS'."""
         feature_df = self.df[self.df.type == feature_type]
         return Gff3DataFrame(input_df=feature_df, input_header=self.header)
 
-    def filter_by_length(self, min_length=None, max_length=None):
+    def filter_by_length(self, min_length=None,
+                         max_length=None)-> "Gff3DataFrame":
         """Filtering the pd dataframe by the gene_length.
 
         For this method the desired minimal and maximal bp length
@@ -92,7 +94,7 @@ class Gff3DataFrame(object):
         return Gff3DataFrame(input_df=filtered_by_length,
                              input_header=self.header)
 
-    def attributes_to_columns(self):
+    def attributes_to_columns(self)-> pd.DataFrame:
         """Saving each attribute-tag to a single column.
 
         Attribute column will be split to 14 single columns.
@@ -114,7 +116,7 @@ class Gff3DataFrame(object):
                                                               at_dic.get(atr))
         return df_attributes
 
-    def get_feature_by_attribute(self, attr_tag, attr_value):
+    def get_feature_by_attribute(self, attr_tag, attr_value)-> "Gff3DataFrame":
         """Filtering the pd dataframe by a attribute.
 
         The 9th column of a gff3-file contains the list of feature
@@ -149,7 +151,8 @@ class Gff3DataFrame(object):
         return stats_dic
 
     def overlaps_with(self, seq_id=None, start=None, end=None,
-                      type=None, strand=None, complement=False):
+                      type=None, strand=None,
+                      complement=False)-> "Gff3DataFrame":
         """To see which entries overlap with a comparable feature.
 
         For this method the chromosom accession number has to be given.
@@ -194,7 +197,8 @@ class Gff3DataFrame(object):
             overlap_df = overlap_df[~condition]
         return Gff3DataFrame(input_df=overlap_df, input_header=self.header)
 
-    def find_duplicated_entries(self, seq_id=None, type=None):
+    def find_duplicated_entries(self, seq_id=None,
+                                type=None)-> "Gff3DataFrame":
         """Find entries which are redundant.
 
         For this method the chromosom accession number (seq_id) as well as the
