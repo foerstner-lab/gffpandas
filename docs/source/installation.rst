@@ -10,8 +10,7 @@ Installation:
 **************
 
 gffpandas is hosted on the PyPI server and can thus be installed by pip3.
-
-::
+: :
    $ pip3 install gffpandas
 
 .. _pip: https://pip.pypa.io/en/stable/
