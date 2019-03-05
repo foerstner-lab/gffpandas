@@ -27,12 +27,12 @@ test_requirements = [
 
 setup(
     name='gffpandas',
-    version='0.1.1',
+    version='1.0.0',
     description="GFF annotations in panda data frames",
     long_description=readme + '\n\n' + history,
     author="Vivian A. Monzon, Konrad U. Förstner",
     author_email='vivian.monzon@stud-mail.uni-wuerzburg.de, konrad@foerstner.org',
-    url='https://github.com/konrad/gffpandas',
+    url='https://github.com/foerstner-lab/gffpandas',
     packages=find_packages(include=['gffpandas']),
     include_package_data=True,
     install_requires=requirements,
@@ -40,7 +40,7 @@ setup(
     zip_safe=False,
     keywords='gffpandas',
     classifiers=[
-        'Development Status :: 4 - Production/Stable',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: ISC License (ISCL)',
         'Natural Language :: English',
