@@ -17,6 +17,7 @@ Table of content
    background
    tutorial
    code
+   gffpandas
    installation
 
 
