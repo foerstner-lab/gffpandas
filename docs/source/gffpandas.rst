@@ -1,8 +1,6 @@
-gffpandas package
-=================
+gffpandas API
+=============
 
-Submodules
-----------
 
 gffpandas\.gffpandas module
 ---------------------------
@@ -13,10 +11,3 @@ gffpandas\.gffpandas module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: gffpandas
-    :members:
-    :undoc-members:
-    :show-inheritance:
