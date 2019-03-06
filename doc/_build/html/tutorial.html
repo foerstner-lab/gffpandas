@@ -1,0 +1,632 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>How to use gffpandas &mdash; gffpandas 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="API" href="code.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> gffpandas
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="code.html">API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to use gffpandas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-tutorial">Example Tutorial:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#methods-included-in-gffpandas">Methods included in gffpandas:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#filter-feature-of-type">filter_feature_of_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-by-length">filter_by_length</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-feature-by-attribute">get_feature_by_attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#attributes-to-columns">attributes_to_columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#overlaps-with">overlaps_with</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#find-duplicated-entries">find_duplicated_entries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#to-gff3">to_gff3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#to-csv">to_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#to-tsv">to_tsv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stats-dic">stats_dic</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">gffpandas</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>How to use gffpandas</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="how-to-use-gffpandas">
+<h1>How to use gffpandas<a class="headerlink" href="#how-to-use-gffpandas" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">The Python library gffpandas facilitates the work with gff3 files. Thereby, different conditions can be choosen to process the annotation data, as e.g. to retain only the entries of a specific feature. The big advantages are that several functions and thus options, can be combined and that a gff3 file or even csv or tsv file can be returned.</div>
+<div class="line">In this gffpandas version only files, which contain one gff3 file, i.e. one header, can be used.</div>
+<div class="line">The given gff3 file will be read by the pandas library and a data frame will be returned as instance variable of the class of gffpandas. Additionally, the header will be read and returned as another instance variable of this class. The data frame and header can be printed before or after filtering the annotation data by one or several functions. For printing the data frame or the header or even both, the suffix ‘.df’ or rather ‘.header’ has to be used.</div>
+<div class="line">In this tutorial it will be shown how to read in a gff3 file, how to process the annnotation data and how to return again a gff3 file by gffpandas. Additionally, all functions of gffpandas will be presented.</div>
+</div>
+<div class="section" id="example-tutorial">
+<h2>Example Tutorial:<a class="headerlink" href="#example-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>The following gff3 file will be used as example, to show how gffpandas has to be used. It contains a header and eleven annotation entries.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">##gff-version 3</span>
+<span class="c1">##sequence-region NC_016810.1 1 20</span>
+<span class="n">NC_016810</span><span class="o">.</span><span class="mi">1</span>   <span class="n">RefSeq</span>  <span class="n">region</span>  <span class="mi">1</span>       <span class="mi">4000</span>    <span class="o">.</span>       <span class="o">+</span>       <span class="o">.</span>       <span class="n">Dbxref</span><span class="o">=</span><span class="n">taxon</span><span class="p">:</span><span class="mi">216597</span><span class="p">;</span><span class="n">ID</span><span class="o">=</span><span class="n">id0</span><span class="p">;</span><span class="n">gbkey</span><span class="o">=</span><span class="n">Src</span><span class="p">;</span><span class="n">genome</span><span class="o">=</span><span class="n">genomic</span><span class="p">;</span><span class="n">mol_type</span><span class="o">=</span><span class="n">genomic</span> <span class="n">DNA</span><span class="p">;</span><span class="n">serovar</span><span class="o">=</span><span class="n">Typhimurium</span><span class="p">;</span><span class="n">strain</span><span class="o">=</span><span class="n">SL1344</span>
+<span class="n">NC_016810</span><span class="o">.</span><span class="mi">1</span>   <span class="n">RefSeq</span>  <span class="n">gene</span>    <span class="mi">1</span>       <span class="mi">20</span>      <span class="o">.</span>       <span class="o">+</span>       <span class="o">.</span>       <span class="n">ID</span><span class="o">=</span><span class="n">gene1</span><span class="p">;</span><span class="n">Name</span><span class="o">=</span><span class="n">thrL</span><span class="p">;</span><span class="n">gbkey</span><span class="o">=</span><span class="n">Gene</span><span class="p">;</span><span class="n">gene</span><span class="o">=</span><span class="n">thrL</span><span class="p">;</span><span class="n">locus_tag</span><span class="o">=</span><span class="n">SL1344_0001</span>
+<span class="n">NC_016810</span><span class="o">.</span><span class="mi">1</span>   <span class="n">RefSeq</span>  <span class="n">CDS</span>     <span class="mi">13</span>      <span class="mi">235</span>     <span class="o">.</span>       <span class="o">+</span>       <span class="mi">0</span>       <span class="n">Dbxref</span><span class="o">=</span><span class="n">UniProtKB</span><span class="o">%</span><span class="mi">252</span><span class="n">FTrEMBL</span><span class="p">:</span><span class="n">E1W7M4</span><span class="o">%</span><span class="mi">2</span><span class="n">CGenbank</span><span class="p">:</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">ID</span><span class="o">=</span><span class="n">cds0</span><span class="p">;</span><span class="n">Name</span><span class="o">=</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">Parent</span><span class="o">=</span><span class="n">gene1</span><span class="p">;</span><span class="n">gbkey</span><span class="o">=</span><span class="n">CDS</span><span class="p">;</span><span class="n">product</span><span class="o">=</span><span class="n">thr</span> <span class="n">operon</span> <span class="n">leader</span> <span class="n">peptide</span><span class="p">;</span><span class="n">protein_id</span><span class="o">=</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">transl_table</span><span class="o">=</span><span class="mi">11</span>
+<span class="n">NC_016810</span><span class="o">.</span><span class="mi">1</span>   <span class="n">RefSeq</span>  <span class="n">gene</span>    <span class="mi">1</span>       <span class="mi">20</span>      <span class="o">.</span>       <span class="o">+</span>       <span class="o">.</span>       <span class="n">ID</span><span class="o">=</span><span class="n">gene2</span><span class="p">;</span><span class="n">Name</span><span class="o">=</span><span class="n">thrA</span><span class="p">;</span><span class="n">gbkey</span><span class="o">=</span><span class="n">Gene</span><span class="p">;</span><span class="n">gene</span><span class="o">=</span><span class="n">thrA</span><span class="p">;</span><span class="n">locus_tag</span><span class="o">=</span><span class="n">SL1344_0002</span>
+<span class="n">NC_016810</span><span class="o">.</span><span class="mi">1</span>   <span class="n">RefSeq</span>  <span class="n">CDS</span>     <span class="mi">341</span>     <span class="mi">523</span>     <span class="o">.</span>       <span class="o">+</span>       <span class="mi">0</span>       <span class="n">Dbxref</span><span class="o">=</span><span class="n">UniProtKB</span><span class="o">%</span><span class="mi">252</span><span class="n">FTrEMBL</span><span class="p">:</span><span class="n">E1W7M4</span><span class="o">%</span><span class="mi">2</span><span class="n">CGenbank</span><span class="p">:</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">ID</span><span class="o">=</span><span class="n">cds0</span><span class="p">;</span><span class="n">Name</span><span class="o">=</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">Parent</span><span class="o">=</span><span class="n">gene2</span><span class="p">;</span><span class="n">gbkey</span><span class="o">=</span><span class="n">CDS</span><span class="p">;</span><span class="n">product</span><span class="o">=</span><span class="n">thr</span> <span class="n">operon</span> <span class="n">leader</span> <span class="n">peptide</span><span class="p">;</span><span class="n">protein_id</span><span class="o">=</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">transl_table</span><span class="o">=</span><span class="mi">11</span>
+<span class="n">NC_016810</span><span class="o">.</span><span class="mi">1</span>   <span class="n">RefSeq</span>  <span class="n">gene</span>    <span class="mi">1</span>       <span class="mi">600</span>     <span class="o">.</span>       <span class="o">-</span>       <span class="o">.</span>       <span class="n">ID</span><span class="o">=</span><span class="n">gene3</span><span class="p">;</span><span class="n">Name</span><span class="o">=</span><span class="n">thrX</span><span class="p">;</span><span class="n">gbkey</span><span class="o">=</span><span class="n">Gene</span><span class="p">;</span><span class="n">gene</span><span class="o">=</span><span class="n">thrX</span><span class="p">;</span><span class="n">locus_tag</span><span class="o">=</span><span class="n">SL1344_0003</span>
+<span class="n">NC_016810</span><span class="o">.</span><span class="mi">1</span>   <span class="n">RefSeq</span>  <span class="n">CDS</span>     <span class="mi">21</span>      <span class="mi">345</span>     <span class="o">.</span>       <span class="o">-</span>       <span class="mi">0</span>       <span class="n">Dbxref</span><span class="o">=</span><span class="n">UniProtKB</span><span class="o">%</span><span class="mi">252</span><span class="n">FTrEMBL</span><span class="p">:</span><span class="n">E1W7M4</span><span class="o">%</span><span class="mi">2</span><span class="n">CGenbank</span><span class="p">:</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">ID</span><span class="o">=</span><span class="n">cds0</span><span class="p">;</span><span class="n">Name</span><span class="o">=</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">Parent</span><span class="o">=</span><span class="n">gene3</span><span class="p">;</span><span class="n">gbkey</span><span class="o">=</span><span class="n">CDS</span><span class="p">;</span><span class="n">product</span><span class="o">=</span><span class="n">thr</span> <span class="n">operon</span> <span class="n">leader</span> <span class="n">peptide</span><span class="p">;</span><span class="n">protein_id</span><span class="o">=</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">transl_table</span><span class="o">=</span><span class="mi">11</span>
+<span class="n">NC_016810</span><span class="o">.</span><span class="mi">1</span>   <span class="n">RefSeq</span>  <span class="n">gene</span>    <span class="mi">41</span>      <span class="mi">255</span>     <span class="o">.</span>       <span class="o">+</span>       <span class="o">.</span>       <span class="n">ID</span><span class="o">=</span><span class="n">gene4</span><span class="p">;</span><span class="n">Name</span><span class="o">=</span><span class="n">thrB</span><span class="p">;</span><span class="n">gbkey</span><span class="o">=</span><span class="n">Gene</span><span class="p">;</span><span class="n">gene</span><span class="o">=</span><span class="n">thrB</span><span class="p">;</span><span class="n">locus_tag</span><span class="o">=</span><span class="n">SL1344_0004</span>
+<span class="n">NC_016810</span><span class="o">.</span><span class="mi">1</span>   <span class="n">RefSeq</span>  <span class="n">CDS</span>     <span class="mi">61</span>      <span class="mi">195</span>     <span class="o">.</span>       <span class="o">+</span>       <span class="mi">0</span>       <span class="n">Dbxref</span><span class="o">=</span><span class="n">UniProtKB</span><span class="o">%</span><span class="mi">252</span><span class="n">FTrEMBL</span><span class="p">:</span><span class="n">E1W7M4</span><span class="o">%</span><span class="mi">2</span><span class="n">CGenbank</span><span class="p">:</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">ID</span><span class="o">=</span><span class="n">cds0</span><span class="p">;</span><span class="n">Name</span><span class="o">=</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">Parent</span><span class="o">=</span><span class="n">gene4</span><span class="p">;</span><span class="n">gbkey</span><span class="o">=</span><span class="n">CDS</span><span class="p">;</span><span class="n">product</span><span class="o">=</span><span class="n">thr</span> <span class="n">operon</span> <span class="n">leader</span> <span class="n">peptide</span><span class="p">;</span><span class="n">protein_id</span><span class="o">=</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">transl_table</span><span class="o">=</span><span class="mi">11</span>
+<span class="n">NC_016810</span><span class="o">.</span><span class="mi">1</span>   <span class="n">RefSeq</span>  <span class="n">gene</span>    <span class="mi">170</span>     <span class="mi">546</span>     <span class="o">.</span>       <span class="o">+</span>       <span class="o">.</span>       <span class="n">ID</span><span class="o">=</span><span class="n">gene5</span><span class="p">;</span><span class="n">Name</span><span class="o">=</span><span class="n">thrC</span><span class="p">;</span><span class="n">gbkey</span><span class="o">=</span><span class="n">Gene</span><span class="p">;</span><span class="n">gene</span><span class="o">=</span><span class="n">thrC</span><span class="p">;</span><span class="n">locus_tag</span><span class="o">=</span><span class="n">SL1344_0005</span>
+<span class="n">NC_016810</span><span class="o">.</span><span class="mi">1</span>   <span class="n">RefSeq</span>  <span class="n">CDS</span>     <span class="mi">34</span>      <span class="mi">335</span>     <span class="o">.</span>       <span class="o">+</span>       <span class="mi">0</span>       <span class="n">Dbxref</span><span class="o">=</span><span class="n">UniProtKB</span><span class="o">%</span><span class="mi">252</span><span class="n">FTrEMBL</span><span class="p">:</span><span class="n">E1W7M4</span><span class="o">%</span><span class="mi">2</span><span class="n">CGenbank</span><span class="p">:</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">ID</span><span class="o">=</span><span class="n">cds0</span><span class="p">;</span><span class="n">Name</span><span class="o">=</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">Parent</span><span class="o">=</span><span class="n">gene5</span><span class="p">;</span><span class="n">gbkey</span><span class="o">=</span><span class="n">CDS</span><span class="p">;</span><span class="n">product</span><span class="o">=</span><span class="n">thr</span> <span class="n">operon</span> <span class="n">leader</span> <span class="n">peptide</span><span class="p">;</span><span class="n">protein_id</span><span class="o">=</span><span class="n">YP_005179941</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span><span class="n">transl_table</span><span class="o">=</span><span class="mi">11</span>
+</pre></div>
+</div>
+<p>The library can be imported as the following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gffpandas.gffpandas</span> <span class="k">as</span> <span class="nn">gffpd</span>
+</pre></div>
+</div>
+<p>First step is to read in the gff3 file with the method called ‘read_gff3’. Then a dataframe (.df) or rather header (.header) can be returned:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">annotation</span> <span class="o">=</span> <span class="n">gffpd</span><span class="o">.</span><span class="n">read_gff3</span><span class="p">(</span><span class="s1">&#39;annotation.gff&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">annotation</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">annotation</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+
+<span class="go">Out[1]:</span>
+<span class="go">##gff-version 3</span>
+<span class="go">##sequence-region NC_016810.1 1 20</span>
+<span class="go">         seq_id  source    type  start   end score strand phase  \</span>
+<span class="go">0   NC_016810.1  RefSeq  region      1  4000     .      +     .</span>
+<span class="go">1   NC_016810.1  RefSeq    gene      1    20     .      +     .</span>
+<span class="go">2   NC_016810.1  RefSeq     CDS     13   235     .      +     0</span>
+<span class="go">3   NC_016810.1  RefSeq    gene      1    20     .      +     .</span>
+<span class="go">4   NC_016810.1  RefSeq     CDS    341   523     .      +     0</span>
+<span class="go">5   NC_016810.1  RefSeq    gene      1   600     .      -     .</span>
+<span class="go">6   NC_016810.1  RefSeq     CDS     21   345     .      -     0</span>
+<span class="go">7   NC_016810.1  RefSeq    gene     41   255     .      +     .</span>
+<span class="go">8   NC_016810.1  RefSeq     CDS     61   195     .      +     0</span>
+<span class="go">9   NC_016810.1  RefSeq    gene    170   546     .      +     .</span>
+<span class="go">10  NC_016810.1  RefSeq     CDS     34   335     .      +     0</span>
+
+<span class="go">                                           attributes</span>
+<span class="go">0   Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=ge...</span>
+<span class="go">1   ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_...</span>
+<span class="go">2   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">3   ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_...</span>
+<span class="go">4   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">5   ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_...</span>
+<span class="go">6   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">7   ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_...</span>
+<span class="go">8   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">9   ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_...</span>
+<span class="go">10  Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+</pre></div>
+</div>
+<p>The created data frame contains all eleven annotation entries and can be changed now. Depending on which annotation entries are desired, different options of gffpandas can be used and/or combined.</p>
+<p>In this example, the user wants to return a gff3 file, but only its coding sequences (‘CDS’), which base pair length (bp) is minimal 10 bp long and maximal 250 bp long. Therefore, the following functions will be combined:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">combined_df</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">filter_feature_of_type</span><span class="p">(</span><span class="s1">&#39;CDS&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by_length</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span><span class="o">.</span><span class="n">to_gff3</span><span class="p">(</span><span class="s1">&#39;temp.gff&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gff_content</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;temp.gff&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">gff_content</span><span class="p">)</span>
+
+<span class="go">Out[2]:</span>
+<span class="go">##gff-version 3</span>
+<span class="go">##sequence-region NC_016810.1 1 20</span>
+<span class="go">NC_016810.1  RefSeq  CDS     13      235     .       +       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1  RefSeq  CDS     341     523     .       +       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1  RefSeq  CDS     61      195     .       +       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="methods-included-in-gffpandas">
+<h2>Methods included in gffpandas:<a class="headerlink" href="#methods-included-in-gffpandas" title="Permalink to this headline">¶</a></h2>
+<p>In this subsection, the possible functions of gffpandas will be presented.</p>
+<div class="section" id="filter-feature-of-type">
+<h3>filter_feature_of_type<a class="headerlink" href="#filter-feature-of-type" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">For this method the requested feature-type has to be given as argument. A processed data frame will then be returned containing only the entries of the given feature-type.</div>
+</div>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_df</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">filter_feature_of_type</span><span class="p">(</span><span class="s1">&#39;gene&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">filtered_df</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+
+<span class="go">Out[2]:</span>
+<span class="go">        seq_id  source    type  start  end score strand phase  \</span>
+<span class="go">1  NC_016810.1  RefSeq    gene      1   20     .      +     .</span>
+<span class="go">3  NC_016810.1  RefSeq    gene      1   20     .      +     .</span>
+<span class="go">5  NC_016810.1  RefSeq    gene      1  600     .      -     .</span>
+<span class="go">7  NC_016810.1  RefSeq    gene     41  255     .      +     .</span>
+<span class="go">9  NC_016810.1  RefSeq    gene    170  546     .      +     .</span>
+
+<span class="go">                                          attributes</span>
+<span class="go">1  ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_...</span>
+<span class="go">3  ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_...</span>
+<span class="go">5  ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_...</span>
+<span class="go">7  ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_...</span>
+<span class="go">9  ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="filter-by-length">
+<h3>filter_by_length<a class="headerlink" href="#filter-by-length" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">For this method the required minimal and maximal bp-length have to be given. A processed data frame will then be returned with all entries within the given bp-length.</div>
+</div>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_by_length</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">filter_by_length</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">filtered_by_length</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+
+<span class="go">Out[3]:</span>
+<span class="go">        seq_id  source    type  start  end score strand phase  \</span>
+<span class="go">1  NC_016810.1  RefSeq    gene      1   20     .      +     .</span>
+<span class="go">2  NC_016810.1  RefSeq     CDS     13  235     .      +     0</span>
+<span class="go">3  NC_016810.1  RefSeq    gene      1   20     .      +     .</span>
+<span class="go">4  NC_016810.1  RefSeq     CDS    341  523     .      +     0</span>
+<span class="go">7  NC_016810.1  RefSeq    gene     41  255     .      +     .</span>
+<span class="go">8  NC_016810.1  RefSeq     CDS     61  195     .      +     0</span>
+
+<span class="go">                                          attributes</span>
+<span class="go">1  ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_...</span>
+<span class="go">2  Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">3  ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_...</span>
+<span class="go">4  Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">7  ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_...</span>
+<span class="go">8  Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-feature-by-attribute">
+<h3>get_feature_by_attribute<a class="headerlink" href="#get-feature-by-attribute" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">For this method the desired attribute tag as well as the corresponding value have to be given. A processed data frame will then be returned which contains the regarding attribute tag with the corresponding attribute value.</div>
+</div>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">feature_by_attribute</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">get_feature_by_attribute</span><span class="p">(</span><span class="s1">&#39;gbkey&#39;</span><span class="p">,</span> <span class="s1">&#39;CDS&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">feature_by_attribute</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+
+<span class="go">Out[4]:</span>
+<span class="go">         seq_id  source    type  start  end score strand phase  \</span>
+<span class="go">2   NC_016810.1  RefSeq     CDS     13  235     .      +     0</span>
+<span class="go">4   NC_016810.1  RefSeq     CDS    341  523     .      +     0</span>
+<span class="go">6   NC_016810.1  RefSeq     CDS     21  345     .      -     0</span>
+<span class="go">8   NC_016810.1  RefSeq     CDS     61  195     .      +     0</span>
+<span class="go">10  NC_016810.1  RefSeq     CDS     34  335     .      +     0</span>
+
+<span class="go">                                           attributes</span>
+<span class="go">2   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">4   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">6   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">8   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">10  Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="attributes-to-columns">
+<h3>attributes_to_columns<a class="headerlink" href="#attributes-to-columns" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">This method splits the attribute column in 14 seperate columns, for each tag and returns a data frame. This method doesn’t give an object file back. Therefore, it is not possible to combine it with other methods.</div>
+</div>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">attr_to_columns</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">attributes_to_columns</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">attr_to_columns</span><span class="p">)</span>
+
+<span class="go">Out[5]:</span>
+<span class="go">         seq_id  source    type  start   end score strand phase  \</span>
+<span class="go">0   NC_016810.1  RefSeq  region      1  4000     .      +     .</span>
+<span class="go">1   NC_016810.1  RefSeq    gene      1    20     .      +     .</span>
+<span class="go">2   NC_016810.1  RefSeq     CDS     13   235     .      +     0</span>
+<span class="go">3   NC_016810.1  RefSeq    gene      1    20     .      +     .</span>
+<span class="go">4   NC_016810.1  RefSeq     CDS    341   523     .      +     0</span>
+<span class="go">5   NC_016810.1  RefSeq    gene      1   600     .      -     .</span>
+<span class="go">6   NC_016810.1  RefSeq     CDS     21   345     .      -     0</span>
+<span class="go">7   NC_016810.1  RefSeq    gene     41   255     .      +     .</span>
+<span class="go">8   NC_016810.1  RefSeq     CDS     61   195     .      +     0</span>
+<span class="go">9   NC_016810.1  RefSeq    gene    170   546     .      +     .</span>
+<span class="go">10  NC_016810.1  RefSeq     CDS     34   335     .      +     0</span>
+
+<span class="go">                                           attributes  \</span>
+<span class="go">0   Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=ge...</span>
+<span class="go">1   ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_...</span>
+<span class="go">2   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">3   ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_...</span>
+<span class="go">4   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">5   ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_...</span>
+<span class="go">6   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">7   ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_...</span>
+<span class="go">8   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">9   ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_...</span>
+<span class="go">10  Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+
+<span class="go">                                               Dbxref     ...      gbkey  \</span>
+<span class="go">0                                        taxon:216597     ...        Src</span>
+<span class="go">1                                                None     ...       Gene</span>
+<span class="go">2   UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_00517...     ...        CDS</span>
+<span class="go">3                                                None     ...       Gene</span>
+<span class="go">4   UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_00517...     ...        CDS</span>
+<span class="go">5                                                None     ...       Gene</span>
+<span class="go">6   UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_00517...     ...        CDS</span>
+<span class="go">7                                                None     ...       Gene</span>
+<span class="go">8   UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_00517...     ...        CDS</span>
+<span class="go">9                                                None     ...       Gene</span>
+<span class="go">10  UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_00517...     ...        CDS</span>
+
+<span class="go">    gene   genome    locus_tag     mol_type                    product  \</span>
+<span class="go">0   None  genomic         None  genomic DNA                       None</span>
+<span class="go">1   thrL     None  SL1344_0001         None                       None</span>
+<span class="go">2   None     None         None         None  thr operon leader peptide</span>
+<span class="go">3   thrA     None  SL1344_0002         None                       None</span>
+<span class="go">4   None     None         None         None  thr operon leader peptide</span>
+<span class="go">5   thrX     None  SL1344_0003         None                       None</span>
+<span class="go">6   None     None         None         None  thr operon leader peptide</span>
+<span class="go">7   thrB     None  SL1344_0004         None                       None</span>
+<span class="go">8   None     None         None         None  thr operon leader peptide</span>
+<span class="go">9   thrC     None  SL1344_0005         None                       None</span>
+<span class="go">10  None     None         None         None  thr operon leader peptide</span>
+
+<span class="go">        protein_id      serovar  strain transl_table</span>
+<span class="go">0             None  Typhimurium  SL1344         None</span>
+<span class="go">1             None         None    None         None</span>
+<span class="go">2   YP_005179941.1         None    None           11</span>
+<span class="go">3             None         None    None         None</span>
+<span class="go">4   YP_005179941.1         None    None           11</span>
+<span class="go">5             None         None    None         None</span>
+<span class="go">6   YP_005179941.1         None    None           11</span>
+<span class="go">7             None         None    None         None</span>
+<span class="go">8   YP_005179941.1         None    None           11</span>
+<span class="go">9             None         None    None         None</span>
+<span class="go">10  YP_005179941.1         None    None           11</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="overlaps-with">
+<h3>overlaps_with<a class="headerlink" href="#overlaps-with" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">Here, a to comparable feature will be compared to all entries of the gff3 file, to find out, with which entries it is overlapping. Therefore, the sequence id of this feature has to be given, as well as start and end position. Optional, its feature-type can be given as well as its strand-type (sense (+) or antisense (-)). By selecting ‘complement=True’, all the feature, which do not overlap with the to comparable feature will be returned.</div>
+</div>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">overlapings</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">overlaps_with</span><span class="p">(</span><span class="n">seq_id</span><span class="o">=</span><span class="s1">&#39;NC_016811.1&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;gene&#39;</span><span class="p">,</span>
+<span class="go">                                           start=40, end=300, strand=&#39;+&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">no_overlap</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">overlaps_with</span><span class="p">(</span><span class="n">seq_id</span><span class="o">=</span><span class="s1">&#39;NC_016811.1&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span>
+<span class="go">                                          strand=&#39;+&#39;, complement=True)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">overlapings</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">no_overlap</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+
+<span class="go">Out[6]:</span>
+<span class="go">         seq_id  source    type  start   end score strand phase  \</span>
+<span class="go">0   NC_016810.1  RefSeq  region      1  4000     .      +     .</span>
+<span class="go">2   NC_016810.1  RefSeq     CDS     13   235     .      +     0</span>
+<span class="go">7   NC_016810.1  RefSeq    gene     41   255     .      +     .</span>
+<span class="go">8   NC_016810.1  RefSeq     CDS     61   195     .      +     0</span>
+<span class="go">9   NC_016810.1  RefSeq    gene    170   546     .      +     .</span>
+<span class="go">10  NC_016810.1  RefSeq     CDS     34   335     .      +     0</span>
+
+<span class="go">                                           attributes</span>
+<span class="go">0   Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=ge...</span>
+<span class="go">2   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">7   ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_...</span>
+<span class="go">8   Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+<span class="go">9   ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_...</span>
+<span class="go">10  Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:Y...</span>
+
+<span class="go">Out[7]:</span>
+<span class="go">Empty DataFrame</span>
+<span class="go">Columns: [seq_id, source, type, start, end, score, strand, phase, attributes]</span>
+<span class="go">Index: []</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="find-duplicated-entries">
+<h3>find_duplicated_entries<a class="headerlink" href="#find-duplicated-entries" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">For this method the sequence id as well as the feature-type have to be given. Then all entries which are redundant according to start- and end-position as well as strand-type will be returned.</div>
+</div>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">redundant_entries</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">find_duplicated_entries</span><span class="p">(</span><span class="n">seq_id</span><span class="o">=</span><span class="s1">&#39;NC_016811.1&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;gene&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">redundant_entries</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+
+<span class="go">Out[8]:</span>
+<span class="go">        seq_id  source    type  start  end score strand phase  \</span>
+<span class="go">3  NC_016810.1  RefSeq    gene      1   20     .      +     .</span>
+
+<span class="go">                                          attributes</span>
+<span class="go">3  ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_...</span>
+</pre></div>
+</div>
+<p><strong>The following methods of the library won’t return a data frame:</strong></p>
+</div>
+<div class="section" id="to-gff3">
+<h3>to_gff3<a class="headerlink" href="#to-gff3" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">With this method the header and the data frame will be safed as gff3 file. This gff3 file will be the original file, unless it was changed by other methods of gffpandas. The desired name of the outcome gff3 file has to be given as argument.</div>
+</div>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">annotation</span><span class="o">.</span><span class="n">to_gff3</span><span class="p">(</span><span class="s1">&#39;temp.gff&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gff3_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;temp.gff&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">gff3_file</span><span class="p">)</span>
+
+<span class="go">Out[9]:</span>
+<span class="go">##gff-version 3</span>
+<span class="go">##sequence-region NC_016810.1 1 20</span>
+<span class="go">NC_016810.1  RefSeq  region  1       4000    .       +       .       Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344</span>
+<span class="go">NC_016810.1  RefSeq  gene    1       20      .       +       .       ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001</span>
+<span class="go">NC_016810.1  RefSeq  CDS     13      235     .       +       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1  RefSeq  gene    1       20      .       +       .       ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002</span>
+<span class="go">NC_016810.1  RefSeq  CDS     341     523     .       +       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1  RefSeq  gene    1       600     .       -       .       ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_tag=SL1344_0003</span>
+<span class="go">NC_016810.1  RefSeq  CDS     21      345     .       -       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1  RefSeq  gene    41      255     .       +       .       ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0004</span>
+<span class="go">NC_016810.1  RefSeq  CDS     61      195     .       +       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1  RefSeq  gene    170     546     .       +       .       ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005</span>
+<span class="go">NC_016810.1  RefSeq  CDS     34      335     .       +       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="to-csv">
+<h3>to_csv<a class="headerlink" href="#to-csv" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">By this method, the data frame will be safed as csv file. The csv file can contain the entries of the original data frame or if it was changed, then the filtered entries. The desired name of the outcome csv file has to be given as argument.</div>
+</div>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">annotation</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;temp.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;temp.csv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
+
+<span class="go">Out[9]:</span>
+<span class="go">seq_id,source,type,start,end,score,strand,phase,attributes</span>
+<span class="go">NC_016810.1,RefSeq,region,1,4000,.,+,.,Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344</span>
+<span class="go">NC_016810.1,RefSeq,gene,1,20,.,+,.,ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001</span>
+<span class="go">NC_016810.1,RefSeq,CDS,13,235,.,+,0,Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1,RefSeq,gene,1,20,.,+,.,ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002</span>
+<span class="go">NC_016810.1,RefSeq,CDS,341,523,.,+,0,Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1,RefSeq,gene,1,600,.,-,.,ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_tag=SL1344_0003</span>
+<span class="go">NC_016810.1,RefSeq,CDS,21,345,.,-,0,Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1,RefSeq,gene,41,255,.,+,.,ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0004</span>
+<span class="go">NC_016810.1,RefSeq,CDS,61,195,.,+,0,Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1,RefSeq,gene,170,546,.,+,.,ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005</span>
+<span class="go">NC_016810.1,RefSeq,CDS,34,335,.,+,0,Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="to-tsv">
+<h3>to_tsv<a class="headerlink" href="#to-tsv" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">By this method, the data frame will be safed as tsv file. The tsv file can contain the entries of the original data frame or if it was changed, then the filtered entries. The desired name of the outcome tsv file has to be given as argument.</div>
+</div>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">annotation</span><span class="o">.</span><span class="n">to_tsv</span><span class="p">(</span><span class="s1">&#39;temp.tsv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tsv_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;temp.tsv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tsv_file</span><span class="p">)</span>
+
+<span class="go">Out[10]:</span>
+<span class="go">seq_id       source  type    start   end     score   strand  phase   attributes</span>
+<span class="go">NC_016810.1  RefSeq  region  1       4000    .       +       .       Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344</span>
+<span class="go">NC_016810.1  RefSeq  gene    1       20      .       +       .       ID=gene1;Name=thrL;gbkey=Gene;gene=thrL;locus_tag=SL1344_0001</span>
+<span class="go">NC_016810.1  RefSeq  CDS     13      235     .       +       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene1;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1  RefSeq  gene    1       20      .       +       .       ID=gene2;Name=thrA;gbkey=Gene;gene=thrA;locus_tag=SL1344_0002</span>
+<span class="go">NC_016810.1  RefSeq  CDS     341     523     .       +       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1  RefSeq  gene    1       600     .       -       .       ID=gene3;Name=thrX;gbkey=Gene;gene=thrX;locus_tag=SL1344_0003</span>
+<span class="go">NC_016810.1  RefSeq  CDS     21      345     .       -       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1  RefSeq  gene    41      255     .       +       .       ID=gene4;Name=thrB;gbkey=Gene;gene=thrB;locus_tag=SL1344_0004</span>
+<span class="go">NC_016810.1  RefSeq  CDS     61      195     .       +       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+<span class="go">NC_016810.1  RefSeq  gene    170     546     .       +       .       ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005</span>
+<span class="go">NC_016810.1  RefSeq  CDS     34      335     .       +       0       Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="stats-dic">
+<h3>stats_dic<a class="headerlink" href="#stats-dic" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">Gives the following statistics for the entries of the original or changed data frame:
+The maximal and minimal bp-length, the number of sense (+) and antisense (-) strands as well as the number of each available feature-type.</div>
+</div>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">statistics</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">stats_dic</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">statistics</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+
+<span class="go">Out[11]:</span>
+<span class="go">{&#39;Maximal_bp_length&#39;: 599, &#39;Minimal_bp_length&#39;: 19, &#39;Counted_strands&#39;: +    9</span>
+<span class="go">-    2</span>
+<span class="go">Name: strand, dtype: int64, &#39;Counted_feature_types&#39;: gene      5</span>
+<span class="go">CDS       5</span>
+<span class="go">region    1</span>
+<span class="go">Name: type, dtype: int64}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="code.html" class="btn btn-neutral" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Vivian Monzon, Konrad Foerstner.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
