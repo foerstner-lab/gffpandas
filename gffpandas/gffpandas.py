@@ -7,8 +7,11 @@ def read_gff3(input_file):
 
 
 class Gff3DataFrame(object):
-    """Creating 'Gff3DataFrame' class for bundling data
-    and functionalities together."""
+    """This class contains header information in the header attribute and
+    a actual annotation data in the pandas dataframe in the df
+    attribute.
+
+    """
 
     def __init__(self, input_gff_file=None,
                  input_df=None, input_header=None)-> None:
@@ -22,7 +25,7 @@ class Gff3DataFrame(object):
             self.header = input_header
 
     def _read_gff3_to_df(self)-> pd.DataFrame:
-        """Create a pd dataframe.
+        """Create a pandas dataframe.
 
         By the pandas library the gff3 file is read and
         a pd dataframe with the given column-names is returned."""
@@ -56,19 +59,19 @@ class Gff3DataFrame(object):
     def to_csv(self, output_file=None)-> None:
         """Create a csv file.
 
-        The pd data frame is saved as a csv file."""
+        The pandas data frame is saved as a csv file."""
         self._to_xsv(output_file=output_file, sep=',')
 
     def to_tsv(self, output_file=None)-> None:
         """Create a tsv file.
 
-        The pd data frame is saved as a tsv file."""
+        The pandas data frame is saved as a tsv file."""
         self._to_xsv(output_file=output_file, sep='\t')
 
     def to_gff3(self, gff_file)-> None:
         """Create a gff3 file.
 
-        The pd dataframe is saved as a gff3 file."""
+        The pandas dataframe is saved as a gff3 file."""
         gff_feature = self.df.to_csv(sep='\t', index=False,
                                      header=None)
         with open(gff_file, 'w') as fh:
@@ -76,7 +79,7 @@ class Gff3DataFrame(object):
             fh.write(gff_feature)
 
     def filter_feature_of_type(self, feature_type)-> "Gff3DataFrame":
-        """Filtering the pd dataframe by a feature_type.
+        """Filtering the pandas dataframe by a feature_type.
 
         For this method a feature-type has to be given, as e.g. 'CDS'."""
         feature_df = self.df[self.df.type == feature_type]
@@ -84,7 +87,7 @@ class Gff3DataFrame(object):
 
     def filter_by_length(self, min_length=None,
                          max_length=None)-> "Gff3DataFrame":
-        """Filtering the pd dataframe by the gene_length.
+        """Filtering the pandas dataframe by the gene_length.
 
         For this method the desired minimal and maximal bp length
         have to be given."""
@@ -97,9 +100,11 @@ class Gff3DataFrame(object):
     def attributes_to_columns(self)-> pd.DataFrame:
         """Saving each attribute-tag to a single column.
 
-        Attribute column will be split to 14 single columns.
-        For this method only a data frame and not an object will be
-        returned. Therefore, this data frame can not be saved as gff3 file."""
+        Attribute column will be split to 14 single columns.  For this
+        method only a pandas DataFrame and not a Gff3DataFrame will be
+        returned. Therefore, this data frame can not be saved as gff3
+        file.
+        """
         attribute_df = self.df.copy()
         df_attributes = attribute_df.loc[:, 'seq_id':'attributes']
         attribute_df['at_dic'] = attribute_df.attributes.apply(
@@ -117,7 +122,7 @@ class Gff3DataFrame(object):
         return df_attributes
 
     def get_feature_by_attribute(self, attr_tag, attr_value)-> "Gff3DataFrame":
-        """Filtering the pd dataframe by a attribute.
+        """Filtering the pandas dataframe by a attribute.
 
         The 9th column of a gff3-file contains the list of feature
         attributes in a tag=value format.
