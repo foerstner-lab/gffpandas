@@ -6,7 +6,7 @@ gffpandas
 .. image:: https://img.shields.io/pypi/v/gffpandas.svg
         :target: https://pypi.python.org/pypi/gffpandas
 
-.. image:: https://img.shields.io/travis/konrad/gffpandas.svg
+.. image:: https://img.shields.io/travis/foerstner-lab/gffpandas.svg
         :target: https://travis-ci.org/foerstner-lab/gffpandas
 
 .. image:: https://readthedocs.org/projects/gffpandas/badge/?version=latest
@@ -37,7 +37,7 @@ Credits
 
 This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
 
-.. _gffpandas_repository: https://github.com/konrad/gffpandas
+.. _gffpandas_repository: https://github.com/foerstner-lab/gffpandas
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
 
