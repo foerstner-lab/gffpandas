@@ -1,9 +1,9 @@
 Background information
 ######################
 
-The Python library gffpandas facilitates working on generatic feature format version 3 (gff3) files.
+The Python library gffpandas facilitates working on generatic feature format version 3 (GFF3) files.
 
-The gff3 file contains location and attribute information about features, as e.g. genes, of DNA, RNA or protein sequences. It has one general format. This format includes a header, which is marked with a hash at the begin of the line. The header describes meta-data about the feature.
+The GFF3 file contains location and attribute information about features, as e.g. genes, of DNA, RNA or protein sequences. It has one general format. This format includes a header, which is marked with a hash at the begin of the line. The header describes meta-data about the feature.
 The location and attribute information are described in nine columns, which are the following:
 
 +--------+--------+--------+--------+--------+--------+--------+--------+-----------+
@@ -30,8 +30,8 @@ The location and attribute information are described in nine columns, which are 
    The attribute column is written in a 'tag=value' format and contains information about the following tags [#]_:
    ID, Dbxref, gbkey, genome, genomic, mol_type, serovar, strain, Name, gene, locus_tag, Parent, Genbank, product, protein_id, transl_table
 |
-| With the gffpandas library a gff3 file can be processed as a pandas data frame. Different criteria (see `How to use gffpandas`__) can be selected to obtain the desired entries of the data. Optional, the filtered data frame can be given back as gff3, csv or tsv file.
-So far, only gff3 files containing only one gff3 file, i.e. one header, can be used. 
+| With the gffpandas library a GFF3 file can be processed as a pandas data frame. Different criteria (see `How to use gffpandas`__) can be selected to obtain the desired entries of the data. Optional, the filtered data frame can be given back as GFF3, csv or tsv file.
+So far, only GFF3 files containing only one GFF3 file, i.e. one header, can be used. 
 
 .. [#] https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md
 

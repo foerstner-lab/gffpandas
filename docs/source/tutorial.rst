@@ -1,16 +1,16 @@
 How to use gffpandas
 #####################
 
-| The Python library gffpandas facilitates the work with gff3 files. Thereby, different conditions can be choosen to process the annotation data, as e.g. to retain only the entries of a specific feature. The big advantages are that several functions and thus options, can be combined and that a gff3 file or even csv or tsv file can be returned.
-| In this gffpandas version only files, which contain one gff3 file, i.e. one header, can be used.
-| The given gff3 file will be read by the pandas library and a data frame will be returned as instance variable of the class of gffpandas. Additionally, the header will be read and returned as another instance variable of this class. The data frame and header can be printed before or after filtering the annotation data by one or several functions. For printing the data frame or the header or even both, the suffix '.df' or rather '.header' has to be used.
-| In this tutorial it will be shown how to read in a gff3 file, how to process the annnotation data and how to return again a gff3 file by gffpandas. Additionally, all functions of gffpandas will be presented.
+| The Python library gffpandas facilitates the work with GFF3 files. Thereby, different conditions can be choosen to process the annotation data, as e.g. to retain only the entries of a specific feature. The big advantages are that several functions and thus options, can be combined and that a GFF3 file or even csv or tsv file can be returned.
+| In this gffpandas version only files, which contain one GFF3 file, i.e. one header, can be used.
+| The given GFF3 file will be read by the pandas library and a data frame will be returned as instance variable of the class of gffpandas. Additionally, the header will be read and returned as another instance variable of this class. The data frame and header can be printed before or after filtering the annotation data by one or several functions. For printing the data frame or the header or even both, the suffix '.df' or rather '.header' has to be used.
+| In this tutorial it will be shown how to read in a GFF3 file, how to process the annnotation data and how to return again a GFF3 file by gffpandas. Additionally, all functions of gffpandas will be presented.
 
 
 Example Tutorial:
 *****************
 
-The following gff3 file will be used as example, to show how gffpandas has to be used. It contains a header and eleven annotation entries.
+The following GFF3 file will be used as example, to show how gffpandas has to be used. It contains a header and eleven annotation entries.
 ::
   ##gff-version 3
   ##sequence-region NC_016810.1 1 20
@@ -31,7 +31,7 @@ The library can be imported as the following:
    import gffpandas.gffpandas as gffpd
 
 
-First step is to read in the gff3 file with the method called 'read_gff3'. Then a dataframe (.df) or rather header (.header) can be returned:
+First step is to read in the GFF3 file with the method called 'read_gff3'. Then a dataframe (.df) or rather header (.header) can be returned:
 ::
    >>> annotation = gffpd.read_gff3('annotation.gff')
    >>> print(annotation.header)
@@ -69,7 +69,7 @@ First step is to read in the gff3 file with the method called 'read_gff3'. Then 
    
 The created data frame contains all eleven annotation entries and can be changed now. Depending on which annotation entries are desired, different options of gffpandas can be used and/or combined.
 
-In this example, the user wants to return a gff3 file, but only its coding sequences ('CDS'), which base pair length (bp) is minimal 10 bp long and maximal 250 bp long. Therefore, the following functions will be combined:
+In this example, the user wants to return a GFF3 file, but only its coding sequences ('CDS'), which base pair length (bp) is minimal 10 bp long and maximal 250 bp long. Therefore, the following functions will be combined:
 ::
    >>> combined_df = annotation.filter_feature_of_type('CDS').filter_by_length(10, 250).to_gff3('temp.gff')
    >>> gff_content = open('temp.gff').read()
@@ -243,7 +243,7 @@ For example:
 
 overlaps_with
 =============
-| Here, a to comparable feature will be compared to all entries of the gff3 file, to find out, with which entries it is overlapping. Therefore, the sequence id of this feature has to be given, as well as start and end position. Optional, its feature-type can be given as well as its strand-type (sense (+) or antisense (-)). By selecting 'complement=True', all the feature, which do not overlap with the to comparable feature will be returned. 
+| Here, a to comparable feature will be compared to all entries of the GFF3 file, to find out, with which entries it is overlapping. Therefore, the sequence id of this feature has to be given, as well as start and end position. Optional, its feature-type can be given as well as its strand-type (sense (+) or antisense (-)). By selecting 'complement=True', all the feature, which do not overlap with the to comparable feature will be returned. 
 
 For example:
 ::
@@ -300,7 +300,7 @@ For example:
 
 to_gff3
 =======
-| With this method the header and the data frame will be safed as gff3 file. This gff3 file will be the original file, unless it was changed by other methods of gffpandas. The desired name of the outcome gff3 file has to be given as argument.
+| With this method the header and the data frame will be safed as GFF3 file. This GFF3 file will be the original file, unless it was changed by other methods of gffpandas. The desired name of the outcome GFF3 file has to be given as argument.
 
 For example:
 ::
