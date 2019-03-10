@@ -7,7 +7,7 @@ gffpandas
         :target: https://pypi.python.org/pypi/gffpandas
 
 .. image:: https://img.shields.io/travis/konrad/gffpandas.svg
-        :target: https://travis-ci.org/konrad/gffpandas
+        :target: https://travis-ci.org/foerstner-lab/gffpandas
 
 .. image:: https://readthedocs.org/projects/gffpandas/badge/?version=latest
         :target: https://gffpandas.readthedocs.io/en/latest/?badge=latest
