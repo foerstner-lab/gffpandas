@@ -4,7 +4,11 @@ Requirements and installation
 Requirements:
 **************
 
-The Python library gffpandas was developed with Python3. Thus, the user is advised to run gffpandas on Python3 or a higher version. For an easy installation pip_ and setuptools_ should be installed. gffpandas is dependent on the Python library pandas_, which needs to be installed, when using gffpandas.
+The Python library gffpandas was developed with Python 3. Thus, the
+user is advised to run gffpandas on Python 3.4 or a higher
+version. For an easy installation pip_ and setuptools_ should be
+installed. gffpandas is dependent on the Python library pandas_, which
+needs to be installed, when using gffpandas.
 
 Installation:
 **************
