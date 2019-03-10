@@ -1,10 +1,15 @@
 Background information
 ######################
 
-The Python library gffpandas facilitates working on generatic feature format version 3 (GFF3) files.
+The Python library gffpandas facilitates working on generatic feature
+format version 3 (GFF3) files.
 
-The GFF3 file contains location and attribute information about features, as e.g. genes, of DNA, RNA or protein sequences. It has one general format. This format includes a header, which is marked with a hash at the begin of the line. The header describes meta-data about the feature.
-The location and attribute information are described in nine columns, which are the following:
+The GFF3 file contains location and attribute information about
+features, as e.g. genes, of DNA, RNA or protein sequences. It has one
+general format. This format includes a header, which is marked with a
+hash at the begin of the line. The header describes meta-data about
+the feature.  The location and attribute information are described in
+nine columns, which are the following:
 
 +--------+--------+--------+--------+--------+--------+--------+--------+-----------+
 |seq_id  |source  |type    |start   |end     |score   |strand  |phase   |attributes |
