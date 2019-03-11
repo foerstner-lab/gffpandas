@@ -55,25 +55,36 @@ class Gff3DataFrame(object):
                        header=["seq_id", "source", "type", "start",
                                "end", "score", "strand", "phase",
                                "attributes"])
-    
+
     def to_csv(self, output_file=None)-> None:
         """Create a csv file.
 
-        The pandas data frame is saved as a csv file."""
+        The pandas data frame is saved as a csv file.
+
+        :param output_file: Desired name of the output csv file
+        :type output_file: str"""
         self._to_xsv(output_file=output_file, sep=',')
 
     def to_tsv(self, output_file=None)-> None:
         """Create a tsv file.
 
-        The pandas data frame is saved as a tsv file."""
+        The pandas data frame is saved as a tsv file.
+
+        :param output_file: Desired name of the output tsv file
+        :type output_file: str
+        """
         self._to_xsv(output_file=output_file, sep='\t')
 
     def to_gff3(self, gff_file)-> None:
         """Create a gff3 file.
 
-        The pandas dataframe is saved as a gff3 file."""
-        gff_feature = self.df.to_csv(sep='\t', index=False,
-                                     header=None)
+        The pandas dataframe is saved as a gff3 file.
+
+        :param gff_file: Desired name of the output gff file
+        :type gff_file: str"""
+        if len(self.df.columns) == 9:
+            gff_feature = self.df.to_csv(sep='\t', index=False,
+                                         header=None)
         with open(gff_file, 'w') as fh:
             fh.write(self.header)
             fh.write(gff_feature)
@@ -81,7 +92,10 @@ class Gff3DataFrame(object):
     def filter_feature_of_type(self, feature_type)-> "Gff3DataFrame":
         """Filtering the pandas dataframe by a feature_type.
 
-        For this method a feature-type has to be given, as e.g. 'CDS'."""
+        For this method a feature-type has to be given, as e.g. 'CDS'.
+
+        :param feature_type: Name of the desired feature
+        :type feature_type: str"""
         feature_df = self.df[self.df.type == feature_type]
         return Gff3DataFrame(input_df=feature_df, input_header=self.header)
 
@@ -90,7 +104,13 @@ class Gff3DataFrame(object):
         """Filtering the pandas dataframe by the gene_length.
 
         For this method the desired minimal and maximal bp length
-        have to be given."""
+        have to be given.
+
+        :param min_length: minimal bp length of the feature
+        :type min_length: int
+        :param max_length: maximal bp length of the feature
+        :type max_length: int
+        """
         gene_length = self.df.end - self.df.start
         filtered_by_length = self.df[(gene_length >= min_length) &
                                      (gene_length <= max_length)]
@@ -128,7 +148,16 @@ class Gff3DataFrame(object):
         attributes in a tag=value format.
         For this method the desired attribute tag as well as the
         corresponding value have to be given. If the value is not available
-        an empty dataframe would be returned."""
+        an empty dataframe would be returned.
+
+        :param attr_tag: Name of attribute tag, by which the df
+                         will be filtered
+        :type attr_tag: str
+        :param attr_value: Name of the value, which has to be associated with
+                the attribute tag. If an entry includes this value with the
+                corresponding tag it is selected
+        :type attr_value: str
+        """
         df_copy = self.df.copy()
         attribute_df = Gff3DataFrame.attributes_to_columns(self)
         filtered_by_attr_df = df_copy[(attribute_df[attr_tag] == attr_value)]
@@ -167,7 +196,7 @@ class Gff3DataFrame(object):
         | Possible overlaps (see code): \n
         | --------=================------------------
         | --------------=====================--------
-        | 
+        |
         | -------===================---------------
         | -------===================---------------
         |
@@ -178,7 +207,18 @@ class Gff3DataFrame(object):
         | ------------------============-----------
 
         By selecting 'complement=True', all the feature, which do not overlap
-        with the to comparable feature will be returned."""
+        with the to comparable feature will be returned.
+
+        :param seq_id: accession number of the feature
+        :type seq_id: str
+        :param start: start position of the feature
+        :type start: int
+        :param end: end position of the feature
+        :type end: int
+        :param type: type of the feature
+        :type type: str
+        :param strand: minus (-) for antisense and plus (+) for sense strand
+        :type strand: str"""
         overlap_df = self.df
         condition = (((overlap_df.start > start) &
                      (overlap_df.start < end)) |
@@ -210,7 +250,12 @@ class Gff3DataFrame(object):
         For this method the chromosom accession number (seq_id) as well as the
         feature-type have to be given. Then all entries which are redundant
         according to start- and end-position as well as strand-type will be
-        found."""
+        found.
+
+        :param seq_id: corresponding accession number
+        :type seq_id: str
+        :param type: feature type
+        :type type: str"""
         input_df = self.df[self.df.seq_id == seq_id]
         df_feature = input_df[input_df.type == type]
         duplicate = df_feature.loc[df_feature[['end', 'start',
