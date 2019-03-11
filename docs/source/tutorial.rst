@@ -11,7 +11,8 @@ Example Tutorial:
 *****************
 
 The following GFF3 file will be used as example, to show how gffpandas has to be used. It contains a header and eleven annotation entries.
-::
+.. code-block::
+
   ##gff-version 3
   ##sequence-region NC_016810.1 1 20
   NC_016810.1	RefSeq	region	1	4000	.	+	.	Dbxref=taxon:216597;ID=id0;gbkey=Src;genome=genomic;mol_type=genomic DNA;serovar=Typhimurium;strain=SL1344
