@@ -10,8 +10,7 @@ How to use gffpandas
 Example Tutorial:
 *****************
 
-The following GFF3 file will be used as example, to show how gffpandas has to be used. It contains a header and eleven annotation entries.
-.. code-block::
+The following GFF3 file will be used as example, to show how gffpandas has to be used. It contains a header and eleven annotation entries::
 
   ##gff-version 3
   ##sequence-region NC_016810.1 1 20
@@ -27,13 +26,13 @@ The following GFF3 file will be used as example, to show how gffpandas has to be
   NC_016810.1	RefSeq	gene	170	546	.	+	.	ID=gene5;Name=thrC;gbkey=Gene;gene=thrC;locus_tag=SL1344_0005
   NC_016810.1	RefSeq	CDS	34	335	.	+	0	Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name=YP_005179941.1;Parent=gene5;gbkey=CDS;product=thr operon leader peptide;protein_id=YP_005179941.1;transl_table=11 
 
-The library can be imported as the following:
-::
+The library can be imported as the following::
+  
    import gffpandas.gffpandas as gffpd
 
 
-First step is to read in the GFF3 file with the method called 'read_gff3'. Then a dataframe (.df) or rather header (.header) can be returned:
-::
+First step is to read in the GFF3 file with the method called 'read_gff3'. Then a dataframe (.df) or rather header (.header) can be returned::
+  
    >>> annotation = gffpd.read_gff3('annotation.gff')
    >>> print(annotation.header)
    >>> print(annotation.df)
@@ -70,8 +69,8 @@ First step is to read in the GFF3 file with the method called 'read_gff3'. Then 
    
 The created data frame contains all eleven annotation entries and can be changed now. Depending on which annotation entries are desired, different options of gffpandas can be used and/or combined.
 
-In this example, the user wants to return a GFF3 file, but only its coding sequences ('CDS'), which base pair length (bp) is minimal 10 bp long and maximal 250 bp long. Therefore, the following functions will be combined:
-::
+In this example, the user wants to return a GFF3 file, but only its coding sequences ('CDS'), which base pair length (bp) is minimal 10 bp long and maximal 250 bp long. Therefore, the following functions will be combined::
+  
    >>> combined_df = annotation.filter_feature_of_type('CDS').filter_by_length(10, 250).to_gff3('temp.gff')
    >>> gff_content = open('temp.gff').read()
    >>> print(gff_content)
@@ -93,8 +92,8 @@ filter_feature_of_type
 ======================
 | For this method the requested feature-type has to be given as argument. A processed data frame will then be returned containing only the entries of the given feature-type.
   
-For example:
-::
+For example::
+  
    >>> filtered_df = annotation.filter_feature_of_type('gene')
    >>> print(filtered_df.df)
 
@@ -118,8 +117,8 @@ filter_by_length
 ================
 | For this method the required minimal and maximal bp-length have to be given. A processed data frame will then be returned with all entries within the given bp-length.
   
-For example:
-::
+For example::
+
    >>> filtered_by_length = annotation.filter_by_length(min_length=10, max_length=300)
    >>> print(filtered_by_length.df)
 
@@ -145,8 +144,8 @@ get_feature_by_attribute
 ========================
 | For this method the desired attribute tag as well as the corresponding value have to be given. A processed data frame will then be returned which contains the regarding attribute tag with the corresponding attribute value.
   
-For example:
-::
+For example::
+
    >>> feature_by_attribute = annotation.get_feature_by_attribute('gbkey', 'CDS')
    >>> print(feature_by_attribute.df)
 
@@ -170,8 +169,8 @@ attributes_to_columns
 =====================
 | This method splits the attribute column by the tags in seperate columns and returns a data frame. This method doesn't give an object file back. Therefore, it is not possible to combine it with other methods. 
 
-For example:
-::
+For example::
+
    >>> attr_to_columns = annotation.attributes_to_columns()
    >>> print(attr_to_columns)
 
@@ -246,8 +245,8 @@ overlaps_with
 =============
 | Here, a to comparable feature will be compared to all entries of the GFF3 file, to find out, with which entries it is overlapping. Therefore, the sequence id of this feature has to be given, as well as start and end position. Optional, its feature-type can be given as well as its strand-type (sense (+) or antisense (-)). By selecting 'complement=True', all the feature, which do not overlap with the to comparable feature will be returned. 
 
-For example:
-::
+For example::
+
    >>> overlapings = annotation.overlaps_with(seq_id='NC_016811.1', type='gene',
                                               start=40, end=300, strand='+')
    >>> no_overlap = annotation.overlaps_with(seq_id='NC_016811.1', start=1, end=4000,
@@ -282,8 +281,8 @@ find_duplicated_entries
 =======================
 | For this method the sequence id as well as the feature-type have to be given. Then all entries which are redundant according to start- and end-position as well as strand-type will be returned.
 
-For example:
-::
+For example::
+
    >>> redundant_entries = annotation.find_duplicated_entries(seq_id='NC_016811.1', type='gene')
    >>> print(redundant_entries.df)
 
@@ -303,8 +302,8 @@ to_gff3
 =======
 | With this method the header and the data frame will be safed as GFF3 file. This GFF3 file will be the original file, unless it was changed by other methods of gffpandas. The desired name of the outcome GFF3 file has to be given as argument.
 
-For example:
-::
+For example::
+
    >>> annotation.to_gff3('temp.gff')
    >>> gff3_file = open('temp.gff').read()
    >>> print(gff3_file)
@@ -329,8 +328,8 @@ to_csv
 ======
 | By this method, the data frame will be safed as csv file. The csv file can contain the entries of the original data frame or if it was changed, then the filtered entries. The desired name of the outcome csv file has to be given as argument.
 
-For example:
-::
+For example::
+
    >>> annotation.to_csv('temp.csv')
    >>> csv_file = open('temp.csv').read()
    >>> print(csv_file)
@@ -354,8 +353,8 @@ to_tsv
 ======
 | By this method, the data frame will be safed as tsv file. The tsv file can contain the entries of the original data frame or if it was changed, then the filtered entries. The desired name of the outcome tsv file has to be given as argument.
 
-For example:
-::
+For example::
+
    >>> annotation.to_tsv('temp.tsv')
    >>> tsv_file = open('temp.tsv').read()
    >>> print(tsv_file)
@@ -380,8 +379,8 @@ stats_dic
 | Gives the following statistics for the entries of the original or changed data frame:
   The maximal and minimal bp-length, the number of sense (+) and antisense (-) strands as well as the number of each available feature-type.
 
-For example:
-::
+For example::
+
    >>> statistics = annotation.stats_dic()
    >>> print(statistics.df)
 
