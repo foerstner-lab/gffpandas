@@ -1,12 +1,12 @@
 What is gffpandas?
 ##################
 
-| gffpandas is a Python library, which can be used for annotation
+gffpandas is a Python library, which can be used for annotation
 data. It facilitates the work with GFF3 files in regard to process
 them as to obtain desired annotation entries of them. Thereby, it is
 an easy to use and time-saving library.
 
-| This gffpandas library is an alternative to gffutils or bcbio-gff,
+This gffpandas library is an alternative to gffutils or bcbio-gff,
 but it is inspired by the Python library pandas. This means that the
 data frame structure is used to work with the annotation data, because
 gffpandas reads in the GFF3 file and makes a data frame out of
