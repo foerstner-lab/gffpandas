@@ -168,7 +168,7 @@ For example:
 
 attributes_to_columns
 =====================
-| This method splits the attribute column in 14 seperate columns, for each tag and returns a data frame. This method doesn't give an object file back. Therefore, it is not possible to combine it with other methods. 
+| This method splits the attribute column by the tags in seperate columns and returns a data frame. This method doesn't give an object file back. Therefore, it is not possible to combine it with other methods. 
 
 For example:
 ::

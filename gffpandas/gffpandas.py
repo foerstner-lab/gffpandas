@@ -100,10 +100,10 @@ class Gff3DataFrame(object):
     def attributes_to_columns(self)-> pd.DataFrame:
         """Saving each attribute-tag to a single column.
 
-        Attribute column will be split to 14 single columns.  For this
-        method only a pandas DataFrame and not a Gff3DataFrame will be
-        returned. Therefore, this data frame can not be saved as gff3
-        file.
+        Attribute column will be split by the tags in the single columns.
+        For this method only a pandas DataFrame and not a Gff3DataFrame
+        will be returned. Therefore, this data frame can not be saved as
+        gff3 file.
         """
         attribute_df = self.df.copy()
         df_attributes = attribute_df.loc[:, 'seq_id':'attributes']
