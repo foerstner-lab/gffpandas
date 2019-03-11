@@ -176,6 +176,7 @@ class Gff3DataFrame(object):
         |
         | ---------=====================-----------
         | ------------------============-----------
+
         By selecting 'complement=True', all the feature, which do not overlap
         with the to comparable feature will be returned."""
         overlap_df = self.df
