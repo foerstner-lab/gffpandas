@@ -82,8 +82,9 @@ class Gff3DataFrame(object):
 
         :param gff_file: Desired name of the output gff file
         :type gff_file: str"""
-        if len(self.df.columns) == 9:
-            gff_feature = self.df.to_csv(sep='\t', index=False,
+        df_nine_col = self.df[["seq_id", "source", "type", "start", "end",
+                               "score", "strand", "phase", "attributes"]]
+        gff_feature = df_nine_col.to_csv(sep='\t', index=False,
                                          header=None)
         with open(gff_file, 'w') as fh:
             fh.write(self.header)
