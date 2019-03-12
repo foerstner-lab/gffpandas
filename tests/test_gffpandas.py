@@ -5,6 +5,7 @@
 
 import gffpandas.gffpandas as gff3pd
 import pandas as pd
+import os
 
 
 written_df = pd.DataFrame([
@@ -439,28 +440,38 @@ def test_if_df_values_equal_gff_values():
     pd.testing.assert_frame_equal(test_df, written_df)
 
 
-def test_to_csv():
+def setup_module(module):
     gff3_df = generate_gff3_df()
     gff3_df.to_csv('temp.csv')
+    gff3_df.to_tsv('temp.tsv')
+    gff3_df.to_gff3('temp.gff')
+    global csv_content
+    global tsv_content
+    global gff_content
     csv_content = open('temp.csv').read()
+    tsv_content = open('temp.tsv').read()
+    gff_content = open('temp.gff').read()
+
+
+def test_to_csv():
     assert csv_content == written_csv
 
 
 def test_to_tsv():
-    gff3_df = generate_gff3_df()
-    gff3_df.to_tsv('temp.tsv')
-    tsv_content = open('temp.tsv').read()
     assert tsv_content == written_tsv
 
 
 def test_to_gff3():
-    gff3_df = generate_gff3_df()
-    gff3_df.to_gff3('temp.gff')
-    gff_content = open('temp.gff').read()
     assert gff_content == written_gff
     read_gff_output = gff3pd.read_gff3('temp.gff')
     read_in_file = gff3pd.read_gff3('fixtures/test_file.gff')
     pd.testing.assert_frame_equal(read_in_file.df, read_gff_output.df)
+
+
+def teardown_module(module):
+    os.remove('temp.csv')
+    os.remove('temp.tsv')
+    os.remove('temp.gff')
 
 
 def test_filter_feature_of_type():
