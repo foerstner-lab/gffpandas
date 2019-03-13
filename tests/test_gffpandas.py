@@ -210,9 +210,17 @@ compare_get_feature_by_attribute2 = pd.DataFrame([
      'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name'
      '=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide'
      ';protein_id=YP_005179941.1;transl_table=11'],
+    ['NC_016810.1', 'RefSeq', 'CDS', 21, 345, '.', '-', '0',
+     'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID='
+     'cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon'
+     ' leader peptide;protein_id=YP_005179941.1;transl_table=11'],
+    ['NC_016810.1', 'RefSeq', 'CDS', 61, 195, '.', '+', '0',
+     'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID='
+     'cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon'
+     ' leader peptide;protein_id=YP_005179941.1;transl_table=11'],
     ], columns=["seq_id", "source", "type", "start", "end",
                 "score", "strand", "phase", "attributes"],
-                                                index=[4])
+                                                index=[4, 6, 8])
 
 
 written_attribute_df = pd.DataFrame([
@@ -494,10 +502,12 @@ def test_filter_by_length():
 
 def test_get_feature_by_attribute():
     gff3_df = generate_gff3_df()
-    filtered_gff3_df = gff3_df.get_feature_by_attribute('gbkey', 'Gene')
-    filtered_gff3_df2 = gff3_df.get_feature_by_attribute('Parent', 'gene2')
+    filtered_gff3_df = gff3_df.get_feature_by_attribute('gbkey', ['Gene'])
+    filtered_gff3_df2 = gff3_df.get_feature_by_attribute('Parent',
+                                                         ['gene2', 'gene3',
+                                                          'gene4'])
     filtered_gff3_df3 = gff3_df.get_feature_by_attribute('locus_tag',
-                                                         'SL1344_0006')
+                                                         ['SL1344_0006'])
     assert type(filtered_gff3_df) == gff3pd.Gff3DataFrame
     assert type(filtered_gff3_df2) == gff3pd.Gff3DataFrame
     assert type(filtered_gff3_df3) == gff3pd.Gff3DataFrame

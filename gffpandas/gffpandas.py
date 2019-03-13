@@ -142,7 +142,8 @@ class Gff3DataFrame(object):
                                                               at_dic.get(atr))
         return df_attributes
 
-    def get_feature_by_attribute(self, attr_tag, attr_value)-> "Gff3DataFrame":
+    def get_feature_by_attribute(self, attr_tag,
+                                 attr_value_list)-> "Gff3DataFrame":
         """Filtering the pandas dataframe by a attribute.
 
         The 9th column of a gff3-file contains the list of feature
@@ -154,14 +155,16 @@ class Gff3DataFrame(object):
         :param attr_tag: Name of attribute tag, by which the df
                          will be filtered
         :type attr_tag: str
-        :param attr_value: Name of the value, which has to be associated with
-                the attribute tag. If an entry includes this value with the
-                corresponding tag it is selected
-        :type attr_value: str
+        :param attr_value_list: List of value name or several value names,
+                which has/have to be associated with the attribute tag.
+                If an entry includes the value with the corresponding tag it
+                is selected
+        :type attr_value_list: list
         """
         df_copy = self.df.copy()
         attribute_df = Gff3DataFrame.attributes_to_columns(self)
-        filtered_by_attr_df = df_copy[(attribute_df[attr_tag] == attr_value)]
+        filtered_by_attr_df = df_copy.loc[attribute_df[attr_tag].isin(
+            attr_value_list)]
         return Gff3DataFrame(input_df=filtered_by_attr_df,
                              input_header=self.header)
 
