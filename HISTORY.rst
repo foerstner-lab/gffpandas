@@ -2,6 +2,11 @@
 History
 =======
 
+1.1.0 (2019-03-13)
+------------------
+
+* get_feature_by_attribute for several values posible now
+
 1.0.1 (2019-03-06)
 ------------------
 
