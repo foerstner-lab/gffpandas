@@ -484,7 +484,7 @@ def teardown_module(module):
 
 def test_filter_feature_of_type():
     gff3_df = generate_gff3_df()
-    object_type_df = gff3_df.filter_feature_of_type('gene')
+    object_type_df = gff3_df.filter_feature_of_type(['gene'])
     assert type(object_type_df) == gff3pd.Gff3DataFrame
     assert object_type_df.df.empty == compare_filter_feature_df.empty
     pd.testing.assert_frame_equal(object_type_df.df,

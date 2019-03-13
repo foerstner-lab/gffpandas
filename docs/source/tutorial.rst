@@ -71,7 +71,7 @@ The created data frame contains all eleven annotation entries and can be changed
 
 In this example, the user wants to return a GFF3 file, but only its coding sequences ('CDS'), which base pair length (bp) is minimal 10 bp long and maximal 250 bp long. Therefore, the following functions will be combined::
   
-   >>> combined_df = annotation.filter_feature_of_type('CDS').filter_by_length(10, 250).to_gff3('temp.gff')
+   >>> combined_df = annotation.filter_feature_of_type(['CDS']).filter_by_length(10, 250).to_gff3('temp.gff')
    >>> gff_content = open('temp.gff').read()
    >>> print(gff_content)
 
@@ -94,7 +94,7 @@ filter_feature_of_type
   
 For example::
   
-   >>> filtered_df = annotation.filter_feature_of_type('gene')
+   >>> filtered_df = annotation.filter_feature_of_type(['gene'])
    >>> print(filtered_df.df)
 
    Out[2]:

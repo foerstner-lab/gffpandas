@@ -90,14 +90,15 @@ class Gff3DataFrame(object):
             fh.write(self.header)
             fh.write(gff_feature)
 
-    def filter_feature_of_type(self, feature_type)-> "Gff3DataFrame":
-        """Filtering the pandas dataframe by a feature_type.
+    def filter_feature_of_type(self, feature_type_list)-> "Gff3DataFrame":
+        """Filtering the pandas dataframe by feature_type.
 
-        For this method a feature-type has to be given, as e.g. 'CDS'.
+        For this method a list of feature-type(s) has to be given,
+        as e.g. ['CDS', 'ncRNA'].
 
-        :param feature_type: Name of the desired feature
-        :type feature_type: str"""
-        feature_df = self.df[self.df.type == feature_type]
+        :param feature_type_list: List of name(s) of the desired feature(s)
+        :type feature_type_list: list"""
+        feature_df = self.df.loc[self.df.type.isin(feature_type_list)]
         return Gff3DataFrame(input_df=feature_df, input_header=self.header)
 
     def filter_by_length(self, min_length=None,
