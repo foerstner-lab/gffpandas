@@ -142,11 +142,11 @@ For example::
 
 get_feature_by_attribute
 ========================
-| For this method the desired attribute tag as well as the corresponding value have to be given. A processed data frame will then be returned which contains the regarding attribute tag with the corresponding attribute value.
+| For this method the desired attribute tag as well as the corresponding value(s) have to be given. Therefore, the value name or several value names have to be given as list. A processed data frame will then be returned which contains the regarding attribute tag with the corresponding attribute value(s).
   
 For example::
 
-   >>> feature_by_attribute = annotation.get_feature_by_attribute('gbkey', 'CDS')
+   >>> feature_by_attribute = annotation.get_feature_by_attribute('gbkey', ['CDS'])
    >>> print(feature_by_attribute.df)
 
    Out[4]:
