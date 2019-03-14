@@ -62,7 +62,10 @@ class Gff3DataFrame(object):
         The pandas data frame is saved as a csv file.
 
         :param output_file: Desired name of the output csv file
-        :type output_file: str"""
+        :type output_file: str
+        :return: csv file with the content of the dataframe
+        :rtype: data file in csv format
+        """
         self._to_xsv(output_file=output_file, sep=',')
 
     def to_tsv(self, output_file=None)-> None:
@@ -72,6 +75,8 @@ class Gff3DataFrame(object):
 
         :param output_file: Desired name of the output tsv file
         :type output_file: str
+        :return: tsv file with the content of the dataframe
+        :rtype: data file in tsv format
         """
         self._to_xsv(output_file=output_file, sep='\t')
 
@@ -81,7 +86,10 @@ class Gff3DataFrame(object):
         The pandas dataframe is saved as a gff3 file.
 
         :param gff_file: Desired name of the output gff file
-        :type gff_file: str"""
+        :type gff_file: str
+        :return: gff3 file with the content of the dataframe
+        :rtype: data file in gff3 format
+        """
         df_nine_col = self.df[["seq_id", "source", "type", "start", "end",
                                "score", "strand", "phase", "attributes"]]
         gff_feature = df_nine_col.to_csv(sep='\t', index=False,
@@ -97,7 +105,11 @@ class Gff3DataFrame(object):
         as e.g. ['CDS', 'ncRNA'].
 
         :param feature_type_list: List of name(s) of the desired feature(s)
-        :type feature_type_list: list"""
+        :type feature_type_list: list
+        :return: original header and dataframe of the selected features
+                saved as object of the class Gff3DataFrame
+        :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
+        """
         feature_df = self.df.loc[self.df.type.isin(feature_type_list)]
         return Gff3DataFrame(input_df=feature_df, input_header=self.header)
 
@@ -112,6 +124,10 @@ class Gff3DataFrame(object):
         :type min_length: int
         :param max_length: maximal bp length of the feature
         :type max_length: int
+        :return: original header and dataframe with features, whose lengths
+                fits the set parameters, saved as object of the class
+                Gff3DataFrame
+        :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
         """
         gene_length = self.df.end - self.df.start
         filtered_by_length = self.df[(gene_length >= min_length) &
@@ -126,6 +142,10 @@ class Gff3DataFrame(object):
         For this method only a pandas DataFrame and not a Gff3DataFrame
         will be returned. Therefore, this data frame can not be saved as
         gff3 file.
+
+        :return: pandas dataframe, whereby the attribute column of the gff3
+                file are splitted into the different attribute tags
+        :rtype: pandas DataFrame
         """
         attribute_df = self.df.copy()
         df_attributes = attribute_df.loc[:, 'seq_id':'attributes']
@@ -161,6 +181,10 @@ class Gff3DataFrame(object):
                 If an entry includes the value with the corresponding tag it
                 is selected
         :type attr_value_list: list
+        :return: original header and dataframe with the entries, which contain
+            the desired attribute values, both saved as object of the class
+            Gff3DataFrame
+        :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
         """
         df_copy = self.df.copy()
         attribute_df = Gff3DataFrame.attributes_to_columns(self)
@@ -174,7 +198,14 @@ class Gff3DataFrame(object):
 
         The maximal bp-length, minimal bp-length, the count of sense (+) and
         antisense (-) strands as well as the count of each available
-        feature."""
+        feature.
+
+        :return: information about the given dataframe, which are the length of
+            the longest and shortest feature entry (in bp), the number of
+            feature on the sense and antisense strand and the number of
+            different feature types.
+        :rtype: dictionary
+        """
         df_w_region = self.df[self.df.type != 'region']
         gene_length = df_w_region.end - df_w_region.start
         strand_counts = pd.value_counts(self.df['strand']).to_dict()
@@ -223,7 +254,12 @@ class Gff3DataFrame(object):
         :param type: type of the feature
         :type type: str
         :param strand: minus (-) for antisense and plus (+) for sense strand
-        :type strand: str"""
+        :type strand: str
+        :return: original header and dataframe, containing the entries which
+            overlap or do not overlap (complement=True) with the given
+            parameters, both saved as object of the class Gff3DataFrame
+        :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
+        """
         overlap_df = self.df
         condition = (((overlap_df.start > start) &
                      (overlap_df.start < end)) |
@@ -260,7 +296,11 @@ class Gff3DataFrame(object):
         :param seq_id: corresponding accession number
         :type seq_id: str
         :param type: feature type
-        :type type: str"""
+        :type type: str
+        :return: original header and dataframe containing the duplicated
+            entries, both saved as object of the class Gff3DataFrame
+        :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
+        """
         input_df = self.df[self.df.seq_id == seq_id]
         df_feature = input_df[input_df.type == type]
         duplicate = df_feature.loc[df_feature[['end', 'start',
