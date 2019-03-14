@@ -89,3 +89,6 @@ install: clean ## install the package to the active Python's site-packages
 get_example:
 	wget -c ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/Salmonella_enterica/all_assembly_versions/GCF_000210855.2_ASM21085v2/GCF_000210855.2_ASM21085v2_genomic.gff.gz
 	gunzip GCF_000210855.2_ASM21085v2_genomic.gff.gz
+
+mypy: ## run mypy to test type annotation
+	mypy gffpandas/gffpandas.py --ignore-missing-imports
