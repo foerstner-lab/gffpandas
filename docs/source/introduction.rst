@@ -16,7 +16,7 @@ so that the required annotation entries can be selected. Furthermore,
 the processed annotation data can be safed again as GFF3 file or as
 csv or tsv file.
 
-| To see the single functions see `How to use gffpandas`__.
+To see the single functions see `How to use gffpandas`__.
 
 .. _Tutorial: file:///home/vivian/gffPandas/gffpandas/docs/build/html/tutorial.html
 

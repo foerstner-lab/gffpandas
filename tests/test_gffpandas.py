@@ -5,6 +5,7 @@
 
 import gffpandas.gffpandas as gff3pd
 import pandas as pd
+import os
 
 
 written_df = pd.DataFrame([
@@ -209,9 +210,17 @@ compare_get_feature_by_attribute2 = pd.DataFrame([
      'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID=cds0;Name'
      '=YP_005179941.1;Parent=gene2;gbkey=CDS;product=thr operon leader peptide'
      ';protein_id=YP_005179941.1;transl_table=11'],
+    ['NC_016810.1', 'RefSeq', 'CDS', 21, 345, '.', '-', '0',
+     'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID='
+     'cds0;Name=YP_005179941.1;Parent=gene3;gbkey=CDS;product=thr operon'
+     ' leader peptide;protein_id=YP_005179941.1;transl_table=11'],
+    ['NC_016810.1', 'RefSeq', 'CDS', 61, 195, '.', '+', '0',
+     'Dbxref=UniProtKB%252FTrEMBL:E1W7M4%2CGenbank:YP_005179941.1;ID='
+     'cds0;Name=YP_005179941.1;Parent=gene4;gbkey=CDS;product=thr operon'
+     ' leader peptide;protein_id=YP_005179941.1;transl_table=11'],
     ], columns=["seq_id", "source", "type", "start", "end",
                 "score", "strand", "phase", "attributes"],
-                                                index=[4])
+                                                index=[4, 6, 8])
 
 
 written_attribute_df = pd.DataFrame([
@@ -439,33 +448,43 @@ def test_if_df_values_equal_gff_values():
     pd.testing.assert_frame_equal(test_df, written_df)
 
 
-def test_to_csv():
+def setup_module(module):
     gff3_df = generate_gff3_df()
     gff3_df.to_csv('temp.csv')
+    gff3_df.to_tsv('temp.tsv')
+    gff3_df.to_gff3('temp.gff')
+    global csv_content
+    global tsv_content
+    global gff_content
     csv_content = open('temp.csv').read()
+    tsv_content = open('temp.tsv').read()
+    gff_content = open('temp.gff').read()
+
+
+def test_to_csv():
     assert csv_content == written_csv
 
 
 def test_to_tsv():
-    gff3_df = generate_gff3_df()
-    gff3_df.to_tsv('temp.tsv')
-    tsv_content = open('temp.tsv').read()
     assert tsv_content == written_tsv
 
 
 def test_to_gff3():
-    gff3_df = generate_gff3_df()
-    gff3_df.to_gff3('temp.gff')
-    gff_content = open('temp.gff').read()
     assert gff_content == written_gff
     read_gff_output = gff3pd.read_gff3('temp.gff')
     read_in_file = gff3pd.read_gff3('fixtures/test_file.gff')
     pd.testing.assert_frame_equal(read_in_file.df, read_gff_output.df)
 
 
+def teardown_module(module):
+    os.remove('temp.csv')
+    os.remove('temp.tsv')
+    os.remove('temp.gff')
+
+
 def test_filter_feature_of_type():
     gff3_df = generate_gff3_df()
-    object_type_df = gff3_df.filter_feature_of_type('gene')
+    object_type_df = gff3_df.filter_feature_of_type(['gene'])
     assert type(object_type_df) == gff3pd.Gff3DataFrame
     assert object_type_df.df.empty == compare_filter_feature_df.empty
     pd.testing.assert_frame_equal(object_type_df.df,
@@ -483,10 +502,12 @@ def test_filter_by_length():
 
 def test_get_feature_by_attribute():
     gff3_df = generate_gff3_df()
-    filtered_gff3_df = gff3_df.get_feature_by_attribute('gbkey', 'Gene')
-    filtered_gff3_df2 = gff3_df.get_feature_by_attribute('Parent', 'gene2')
+    filtered_gff3_df = gff3_df.get_feature_by_attribute('gbkey', ['Gene'])
+    filtered_gff3_df2 = gff3_df.get_feature_by_attribute('Parent',
+                                                         ['gene2', 'gene3',
+                                                          'gene4'])
     filtered_gff3_df3 = gff3_df.get_feature_by_attribute('locus_tag',
-                                                         'SL1344_0006')
+                                                         ['SL1344_0006'])
     assert type(filtered_gff3_df) == gff3pd.Gff3DataFrame
     assert type(filtered_gff3_df2) == gff3pd.Gff3DataFrame
     assert type(filtered_gff3_df3) == gff3pd.Gff3DataFrame

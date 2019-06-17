@@ -71,7 +71,7 @@ The created data frame contains all eleven annotation entries and can be changed
 
 In this example, the user wants to return a GFF3 file, but only its coding sequences ('CDS'), which base pair length (bp) is minimal 10 bp long and maximal 250 bp long. Therefore, the following functions will be combined::
   
-   >>> combined_df = annotation.filter_feature_of_type('CDS').filter_by_length(10, 250).to_gff3('temp.gff')
+   >>> combined_df = annotation.filter_feature_of_type(['CDS']).filter_by_length(10, 250).to_gff3('temp.gff')
    >>> gff_content = open('temp.gff').read()
    >>> print(gff_content)
 
@@ -94,7 +94,7 @@ filter_feature_of_type
   
 For example::
   
-   >>> filtered_df = annotation.filter_feature_of_type('gene')
+   >>> filtered_df = annotation.filter_feature_of_type(['gene'])
    >>> print(filtered_df.df)
 
    Out[2]:
@@ -142,11 +142,11 @@ For example::
 
 get_feature_by_attribute
 ========================
-| For this method the desired attribute tag as well as the corresponding value have to be given. A processed data frame will then be returned which contains the regarding attribute tag with the corresponding attribute value.
+| For this method the desired attribute tag as well as the corresponding value(s) have to be given. Therefore, the value name or several value names have to be given as list. A processed data frame will then be returned which contains the regarding attribute tag with the corresponding attribute value(s).
   
 For example::
 
-   >>> feature_by_attribute = annotation.get_feature_by_attribute('gbkey', 'CDS')
+   >>> feature_by_attribute = annotation.get_feature_by_attribute('gbkey', ['CDS'])
    >>> print(feature_by_attribute.df)
 
    Out[4]:

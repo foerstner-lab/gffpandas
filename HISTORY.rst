@@ -2,6 +2,16 @@
 History
 =======
 
+1.2.0 (2019-03-13)
+------------------
+
+* filter_feature_of_type for several features possible now
+
+1.1.0 (2019-03-13)
+------------------
+
+* get_feature_by_attribute for several values possible now
+
 1.0.1 (2019-03-06)
 ------------------
 
