@@ -13,8 +13,7 @@ class Gff3DataFrame(object):
 
     """
 
-    def __init__(self, input_gff_file=None,
-                 input_df=None, input_header=None)-> None:
+    def __init__(self, input_gff_file=None, input_df=None, input_header=None) -> None:
         """Create an instance."""
         if input_gff_file is not None:
             self._gff_file = input_gff_file
@@ -24,39 +23,62 @@ class Gff3DataFrame(object):
             self.df = input_df
             self.header = input_header
 
-    def _read_gff3_to_df(self)-> pd.DataFrame:
+    def _read_gff3_to_df(self) -> pd.DataFrame:
         """Create a pandas dataframe.
 
         By the pandas library the gff3 file is read and
         a pd dataframe with the given column-names is returned."""
-        self.df = pd.read_table(self._gff_file, comment='#',
-                                names=["seq_id", "source", "type", "start",
-                                       "end", "score", "strand", "phase",
-                                       "attributes"])
+        self.df = pd.read_table(
+            self._gff_file,
+            comment="#",
+            names=[
+                "seq_id",
+                "source",
+                "type",
+                "start",
+                "end",
+                "score",
+                "strand",
+                "phase",
+                "attributes",
+            ],
+        )
         return self.df
 
-    def _read_gff_header(self)-> str:
+    def _read_gff_header(self) -> str:
         """Create a header.
 
         The header of the gff file is read, means all lines,
         which start with '#'."""
-        self.header = ''
+        self.header = ""
         for line in open(self._gff_file):
-            if line.startswith('#'):
+            if line.startswith("#"):
                 self.header += line
             else:
                 break
         return self.header
 
-    def _to_xsv(self, output_file=None, sep=None)-> None:
+    def _to_xsv(self, output_file=None, sep=None) -> None:
         """Function for creating a csv or tsv file."""
 
-        self.df.to_csv(output_file, sep=sep, index=False,
-                       header=["seq_id", "source", "type", "start",
-                               "end", "score", "strand", "phase",
-                               "attributes"])
+        self.df.to_csv(
+            output_file,
+            sep=sep,
+            index=False,
+            header=[
+                "seq_id",
+                "source",
+                "type",
+                "start",
+                "end",
+                "score",
+                "strand",
+                "phase",
+                "attributes",
+            ],
+        )
 
-    def to_csv(self, output_file=None)-> None:
+    def to_csv(self, output_file=None) -> None:
         """Create a csv file.
 
         The pandas data frame is saved as a csv file.
@@ -66,9 +88,9 @@ class Gff3DataFrame(object):
         :return: csv file with the content of the dataframe
         :rtype: data file in csv format
         """
-        self._to_xsv(output_file=output_file, sep=',')
+        self._to_xsv(output_file=output_file, sep=",")
 
-    def to_tsv(self, output_file=None)-> None:
+    def to_tsv(self, output_file=None) -> None:
         """Create a tsv file.
 
         The pandas data frame is saved as a tsv file.
@@ -78,9 +100,9 @@ class Gff3DataFrame(object):
         :return: tsv file with the content of the dataframe
         :rtype: data file in tsv format
         """
-        self._to_xsv(output_file=output_file, sep='\t')
+        self._to_xsv(output_file=output_file, sep="\t")
 
-    def to_gff3(self, gff_file)-> None:
+    def to_gff3(self, gff_file) -> None:
         """Create a gff3 file.
 
         The pandas dataframe is saved as a gff3 file.
@@ -90,15 +112,25 @@ class Gff3DataFrame(object):
         :return: gff3 file with the content of the dataframe
         :rtype: data file in gff3 format
         """
-        df_nine_col = self.df[["seq_id", "source", "type", "start", "end",
-                               "score", "strand", "phase", "attributes"]]
-        gff_feature = df_nine_col.to_csv(sep='\t', index=False,
-                                         header=None)
-        with open(gff_file, 'w') as fh:
+        df_nine_col = self.df[
+            [
+                "seq_id",
+                "source",
+                "type",
+                "start",
+                "end",
+                "score",
+                "strand",
+                "phase",
+                "attributes",
+            ]
+        ]
+        gff_feature = df_nine_col.to_csv(sep="\t", index=False, header=None)
+        with open(gff_file, "w") as fh:
             fh.write(self.header)
             fh.write(gff_feature)
 
-    def filter_feature_of_type(self, feature_type_list)-> "Gff3DataFrame":
+    def filter_feature_of_type(self, feature_type_list) -> "Gff3DataFrame":
         """Filtering the pandas dataframe by feature_type.
 
         For this method a list of feature-type(s) has to be given,
@@ -113,8 +145,7 @@ class Gff3DataFrame(object):
         feature_df = self.df.loc[self.df.type.isin(feature_type_list)]
         return Gff3DataFrame(input_df=feature_df, input_header=self.header)
 
-    def filter_by_length(self, min_length=None,
-                         max_length=None)-> "Gff3DataFrame":
+    def filter_by_length(self, min_length=None, max_length=None) -> "Gff3DataFrame":
         """Filtering the pandas dataframe by the gene_length.
 
         For this method the desired minimal and maximal bp length
@@ -130,12 +161,12 @@ class Gff3DataFrame(object):
         :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
         """
         gene_length = self.df.end - self.df.start
-        filtered_by_length = self.df[(gene_length >= min_length) &
-                                     (gene_length <= max_length)]
-        return Gff3DataFrame(input_df=filtered_by_length,
-                             input_header=self.header)
+        filtered_by_length = self.df[
+            (gene_length >= min_length) & (gene_length <= max_length)
+        ]
+        return Gff3DataFrame(input_df=filtered_by_length, input_header=self.header)
 
-    def attributes_to_columns(self)-> pd.DataFrame:
+    def attributes_to_columns(self) -> pd.DataFrame:
         """Saving each attribute-tag to a single column.
 
         Attribute column will be split by the tags in the single columns.
@@ -148,24 +179,29 @@ class Gff3DataFrame(object):
         :rtype: pandas DataFrame
         """
         attribute_df = self.df.copy()
-        df_attributes = attribute_df.loc[:, 'seq_id':'attributes']
-        attribute_df['at_dic'] = attribute_df.attributes.apply(
+        df_attributes = attribute_df.loc[:, "seq_id":"attributes"]
+        attribute_df["at_dic"] = attribute_df.attributes.apply(
             lambda attributes: dict(
-                [key_value_pair.split(sep='=', maxsplit=1) for
-                 key_value_pair in attributes.split(';')]))
-        attribute_df['at_dic_keys'] = attribute_df['at_dic'].apply(
-            lambda at_dic: list(at_dic.keys()))
-        merged_attribute_list = list(itertools.chain.
-                                     from_iterable(attribute_df
-                                                   ['at_dic_keys']))
+                [
+                    key_value_pair.split(sep="=", maxsplit=1)
+                    for key_value_pair in attributes.split(";")
+                ]
+            )
+        )
+        attribute_df["at_dic_keys"] = attribute_df["at_dic"].apply(
+            lambda at_dic: list(at_dic.keys())
+        )
+        merged_attribute_list = list(
+            itertools.chain.from_iterable(attribute_df["at_dic_keys"])
+        )
         nonredundant_list = sorted(list(set(merged_attribute_list)))
         for atr in nonredundant_list:
-            df_attributes[atr] = attribute_df['at_dic'].apply(lambda at_dic:
-                                                              at_dic.get(atr))
+            df_attributes[atr] = attribute_df["at_dic"].apply(
+                lambda at_dic: at_dic.get(atr)
+            )
         return df_attributes
 
-    def get_feature_by_attribute(self, attr_tag,
-                                 attr_value_list)-> "Gff3DataFrame":
+    def get_feature_by_attribute(self, attr_tag, attr_value_list) -> "Gff3DataFrame":
         """Filtering the pandas dataframe by a attribute.
 
         The 9th column of a gff3-file contains the list of feature
@@ -189,10 +225,8 @@ class Gff3DataFrame(object):
         """
         df_copy = self.df.copy()
         attribute_df = Gff3DataFrame.attributes_to_columns(self)
-        filtered_by_attr_df = df_copy.loc[attribute_df[attr_tag].isin(
-            attr_value_list)]
-        return Gff3DataFrame(input_df=filtered_by_attr_df,
-                             input_header=self.header)
+        filtered_by_attr_df = df_copy.loc[attribute_df[attr_tag].isin(attr_value_list)]
+        return Gff3DataFrame(input_df=filtered_by_attr_df, input_header=self.header)
 
     def stats_dic(self) -> dict:
         """Gives the following statistics for the data:
@@ -207,23 +241,27 @@ class Gff3DataFrame(object):
             different feature types.
         :rtype: dictionary
         """
-        df_w_region = self.df[self.df.type != 'region']
+        df_w_region = self.df[self.df.type != "region"]
         gene_length = df_w_region.end - df_w_region.start
-        strand_counts = pd.value_counts(self.df['strand']).to_dict()
-        type_counts = pd.value_counts(self.df['type']).to_dict()
+        strand_counts = pd.value_counts(self.df["strand"]).to_dict()
+        type_counts = pd.value_counts(self.df["type"]).to_dict()
         stats_dic = {
-            'Maximal_bp_length':
-            gene_length.max(),
-            'Minimal_bp_length':
-            gene_length.min(),
-            'Counted_strands': strand_counts,
-            'Counted_feature_types': type_counts
+            "Maximal_bp_length": gene_length.max(),
+            "Minimal_bp_length": gene_length.min(),
+            "Counted_strands": strand_counts,
+            "Counted_feature_types": type_counts,
         }
         return stats_dic
 
-    def overlaps_with(self, seq_id=None, start=None, end=None,
-                      type=None, strand=None,
-                      complement=False)-> "Gff3DataFrame":
+    def overlaps_with(
+        self,
+        seq_id=None,
+        start=None,
+        end=None,
+        type=None,
+        strand=None,
+        complement=False,
+    ) -> "Gff3DataFrame":
         """To see which entries overlap with a comparable feature.
 
         For this method the chromosom accession number has to be given.
@@ -262,18 +300,14 @@ class Gff3DataFrame(object):
         :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
         """
         overlap_df = self.df
-        condition = (((overlap_df.start > start) &
-                     (overlap_df.start < end)) |
-                     ((overlap_df.end > start) &
-                     (overlap_df.end < end)) |
-                     ((overlap_df.start < start) &
-                     (overlap_df.end > start)) |
-                     ((overlap_df.start == start) &
-                     (overlap_df.end == end)) |
-                     ((overlap_df.start == start) &
-                     (overlap_df.end > end)) |
-                     ((overlap_df.start < start) &
-                     (overlap_df.end == end)))
+        condition = (
+            ((overlap_df.start > start) & (overlap_df.start < end))
+            | ((overlap_df.end > start) & (overlap_df.end < end))
+            | ((overlap_df.start < start) & (overlap_df.end > start))
+            | ((overlap_df.start == start) & (overlap_df.end == end))
+            | ((overlap_df.start == start) & (overlap_df.end > end))
+            | ((overlap_df.start < start) & (overlap_df.end == end))
+        )
         overlap_df = overlap_df[overlap_df.seq_id == seq_id]
         if type is not None:
             overlap_df = overlap_df[overlap_df.type == type]
@@ -285,8 +319,7 @@ class Gff3DataFrame(object):
             overlap_df = overlap_df[~condition]
         return Gff3DataFrame(input_df=overlap_df, input_header=self.header)
 
-    def find_duplicated_entries(self, seq_id=None,
-                                type=None)-> "Gff3DataFrame":
+    def find_duplicated_entries(self, seq_id=None, type=None) -> "Gff3DataFrame":
         """Find entries which are redundant.
 
         For this method the chromosom accession number (seq_id) as well as the
@@ -304,6 +337,5 @@ class Gff3DataFrame(object):
         """
         input_df = self.df[self.df.seq_id == seq_id]
         df_feature = input_df[input_df.type == type]
-        duplicate = df_feature.loc[df_feature[['end', 'start',
-                                               'strand']].duplicated()]
+        duplicate = df_feature.loc[df_feature[["end", "start", "strand"]].duplicated()]
         return Gff3DataFrame(input_df=duplicate, input_header=self.header)
