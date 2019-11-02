@@ -28,8 +28,9 @@ class Gff3DataFrame(object):
 
         By the pandas library the gff3 file is read and
         a pd dataframe with the given column-names is returned."""
-        self.df = pd.read_table(
+        self.df = pd.read_csv(
             self._gff_file,
+            sep="\t",
             comment="#",
             names=[
                 "seq_id",
