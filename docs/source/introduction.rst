@@ -18,6 +18,6 @@ csv or tsv file.
 
 To see the single functions see `How to use gffpandas`__.
 
-.. _Tutorial: file:///home/vivian/gffPandas/gffpandas/docs/build/html/tutorial.html
+.. _Tutorial: https://gffpandas.readthedocs.io/en/latest/tutorial.html
 
 __ Tutorial_ 

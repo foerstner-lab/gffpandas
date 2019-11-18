@@ -42,7 +42,7 @@ So far, only GFF3 files containing only one GFF3 file, i.e. one header, can be u
 
 .. [#] https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md
 
-.. _Tutorial: file:///home/vivian/gffPandas/gffpandas/docs/build/html/tutorial.html
+.. _Tutorial: https://gffpandas.readthedocs.io/en/latest/tutorial.html
 
 __ Tutorial_ 
 
