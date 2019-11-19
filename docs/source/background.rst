@@ -36,7 +36,7 @@ nine columns, which are the following:
    ID, Dbxref, gbkey, genome, genomic, mol_type, serovar, strain, Name, gene, locus_tag, Parent, Genbank, product, protein_id, transl_table
    
 |
-| With the gffpandas library a GFF3 file can be processed as a pandas data frame. Different criteria (see `How to use gffpandas`__) can be selected to obtain the desired entries of the data. Optional, the filtered data frame can be given back as GFF3, csv or tsv file.
+| With the gffpandas library a GFF3 file can be processed as a pandas data frame. Different criteria (see `How to use gffpandas`__) can be selected to obtain the desired entries of the data. Optional, the filtered data frame can be given back as GFF3, tsv or csv file.
 
 So far, only GFF3 files containing only one GFF3 file, i.e. one header, can be used. 
 
