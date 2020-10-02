@@ -1,4 +1,4 @@
-pip==18.0
+pip>=18.0
 bumpversion==0.5.3
 wheel==0.31.0
 watchdog==0.8.3
@@ -10,4 +10,4 @@ cryptography==2.3
 PyYAML==5.1
 pytest==3.6.3
 pytest-runner==4.2
-pandas==0.23.3
+pandas>=1.0.0

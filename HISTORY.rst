@@ -1,6 +1,10 @@
 =======
 History
 =======
+1.2.1 (2020-10-02)
+------------------
+
+* Bug fix: Removed pytest-runner from setup requirements
 
 1.2.0 (2019-03-13)
 ------------------

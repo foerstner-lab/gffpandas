@@ -12,26 +12,25 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    # TODO: put package requirements here
+    'pandas',
 ]
 
 setup_requirements = [
-    'pytest-runner',
-    # TODO(konrad): put setup requirements (distutils extensions, etc.) here
+    'setuptools',
 ]
 
 test_requirements = [
     'pytest',
-    # TODO: put package test requirements here
+    'pytest-runner',
 ]
 
 setup(
     name='gffpandas',
-    version='1.2.0',
+    version='1.2.1',
     description="GFF annotations in panda data frames",
     long_description=readme + '\n\n' + history,
-    author="Vivian A. Monzon, Konrad U. Förstner",
-    author_email='vivian.monzon@stud-mail.uni-wuerzburg.de, konrad@foerstner.org',
+    author="Muhammad M. Elhossary, Vivian A. Monzon, Konrad U. Förstner",
+    author_email='elhossary@zbmed.de, vivian.monzon@stud-mail.uni-wuerzburg.de, konrad@foerstner.org',
     url='https://github.com/foerstner-lab/gffpandas',
     packages=find_packages(include=['gffpandas']),
     include_package_data=True,
