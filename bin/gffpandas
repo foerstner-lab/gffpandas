@@ -1,0 +1,52 @@
+import argparse
+
+import argcomplete
+
+from gffpandaslib.gff3_exporter import Gff3Exporter
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(help="commands")
+    # ___________________________________________________________________
+    show_version_parser = subparsers.add_parser("version", help="Show version")
+    show_version_parser.set_defaults(func=show_version)
+    # ___________________________________________________________________
+    table_export_parser = subparsers.add_parser("table_export",
+                                                help="Export GFF3 file to various formats")
+    table_export_parser.set_defaults(func=export_to_table)
+    table_export_parser.add_argument("--input_gff", "-i", required=True, type=str,
+                                     help="URL/file path to gff file or compressed gff")
+    table_export_parser.add_argument("--output_file", "-o", required=True,
+                                     help="Output file path and name including extension")
+    table_export_parser.add_argument("--export_type", "-t", required=True, choices=["csv", "tsv", "xlsx", "md", "gff"],
+                                     help="Output type of the export")
+    table_export_parser.add_argument("--drop_columns", "-d", required=False, type=str, nargs="+",
+                                     help="Mention a space separated column names to remove (lower case only)")
+    table_export_parser.add_argument("--expand_attributes", "-e", action='store_true', default=False,
+                                     help="Expand attributes to multiple columns")
+    # ___________________________________________________________________
+    argcomplete.autocomplete(parser)
+    args = parser.parse_args()
+    if "func" in dir(args):
+        args.func(args)
+    else:
+        parser.print_help()
+
+
+def show_version(args):
+    """
+    Version
+    """
+    pass
+
+
+def export_to_table(args):
+    if args.export_type == "gff":
+        Gff3Exporter(args.input_gff).export_to_gff(output_file=args.output_file)
+    else:
+        Gff3Exporter(args.input_gff).export_to_table(to=args.export_type, output_file=args.output_file,
+                                                     expand_attributes=True, drop_columns=args.drop_columns)
+
+
+main()
