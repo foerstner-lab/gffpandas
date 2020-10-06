@@ -1,4 +1,5 @@
 import itertools
+
 import pandas as pd
 
 
@@ -141,7 +142,7 @@ class Gff3DataFrame(object):
         :type feature_type_list: list
         :return: original header and dataframe of the selected features
                 saved as object of the class Gff3DataFrame
-        :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
+        :rtype: class 'gffpandaslib.gffpandaslib.Gff3DataFrame'
         """
         feature_df = self.df.loc[self.df.type.isin(feature_type_list)]
         return Gff3DataFrame(input_df=feature_df, input_header=self.header)
@@ -159,12 +160,12 @@ class Gff3DataFrame(object):
         :return: original header and dataframe with features, whose lengths
                 fits the set parameters, saved as object of the class
                 Gff3DataFrame
-        :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
+        :rtype: class 'gffpandaslib.gffpandaslib.Gff3DataFrame'
         """
         gene_length = self.df.end - self.df.start
         filtered_by_length = self.df[
             (gene_length >= min_length) & (gene_length <= max_length)
-        ]
+            ]
         return Gff3DataFrame(input_df=filtered_by_length, input_header=self.header)
 
     def attributes_to_columns(self) -> pd.DataFrame:
@@ -222,7 +223,7 @@ class Gff3DataFrame(object):
         :return: original header and dataframe with the entries, which contain
             the desired attribute values, both saved as object of the class
             Gff3DataFrame
-        :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
+        :rtype: class 'gffpandaslib.gffpandaslib.Gff3DataFrame'
         """
         df_copy = self.df.copy()
         attribute_df = Gff3DataFrame.attributes_to_columns(self)
@@ -298,7 +299,7 @@ class Gff3DataFrame(object):
         :return: original header and dataframe, containing the entries which
             overlap or do not overlap (complement=True) with the given
             parameters, both saved as object of the class Gff3DataFrame
-        :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
+        :rtype: class 'gffpandaslib.gffpandaslib.Gff3DataFrame'
         """
         overlap_df = self.df
         condition = (
@@ -334,7 +335,7 @@ class Gff3DataFrame(object):
         :type type: str
         :return: original header and dataframe containing the duplicated
             entries, both saved as object of the class Gff3DataFrame
-        :rtype: class 'gffpandas.gffpandas.Gff3DataFrame'
+        :rtype: class 'gffpandaslib.gffpandaslib.Gff3DataFrame'
         """
         input_df = self.df[self.df.seq_id == seq_id]
         df_feature = input_df[input_df.type == type]
