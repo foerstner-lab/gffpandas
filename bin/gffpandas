@@ -39,6 +39,8 @@ def main():
                             help="Output file path and name including extension")
     oaf_parser.add_argument("--prefix", "-t", required=True, type=str,
                             help="Any marking prefix string")
+    oaf_parser.add_argument("--allow_different_strands", "-a", default=False, action='store_true',
+                            help="All different strand overlap")
     # ___________________________________________________________________
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
@@ -69,7 +71,8 @@ def export_to_table(args):
 
 
 def fetch_overlap(args):
-    OAF(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file).fetch_overlaps()
+    OAF(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file) \
+        .fetch_overlaps(allow_different_strands=args.allow_different_strands)
 
 
 main()
