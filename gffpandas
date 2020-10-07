@@ -3,8 +3,8 @@ import logging as lg
 
 import argcomplete
 
-from gffpandaslib.annotation_filter import AnnotationFilter as AF
-from gffpandaslib.annotation_overlap_fetcher import AnnotationOverlapFetcher as AOF
+from gffpandaslib.annotation_filter import AnnotationFilter as af
+from gffpandaslib.annotation_overlap_fetcher import AnnotationOverlapFetcher as aof
 from gffpandaslib.gff3_exporter import Gff3Exporter
 
 
@@ -92,15 +92,15 @@ def export_to_table(args):
 
 
 def fetch_overlap(args):
-    AOF(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file) \
+    aof(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file) \
         .fetch_overlaps(allow_different_strands=args.allow_different_strands)
 
 
 def filter_annotations(args):
     if args.by == "length":
-        AF(args.input_gff, args.output_file).filter_by_length(args.min_len, args.max_len)
+        af(args.input_gff, args.output_file).filter_by_length(args.min_len, args.max_len)
     elif args.by == "type":
-        AF(args.input_gff, args.output_file).filter_by_type(args.type)
+        af(args.input_gff, args.output_file).filter_by_type(args.type)
     else:
         lg.error(" Unrecognized filtering option")
 
