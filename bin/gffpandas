@@ -2,8 +2,8 @@ import argparse
 
 import argcomplete
 
+from gffpandaslib.annotation_overlap_fetcher import AnnotationOverlapFetcher as AOF
 from gffpandaslib.gff3_exporter import Gff3Exporter
-from gffpandaslib.overlapping_annotation_fetcher import OverlappingAnnotationFetcher as OAF
 
 
 def main():
@@ -28,18 +28,18 @@ def main():
                                  help="Expand attributes to multiple columns")
 
     # ___________________________________________________________________
-    oaf_parser = subparsers.add_parser("fetch_overlap",
+    aof_parser = subparsers.add_parser("fetch_overlap",
                                        help="Fetches overlapping annotations from 2 sets and adds it to the attributes")
-    oaf_parser.set_defaults(func=fetch_overlap)
-    oaf_parser.add_argument("--input_gff_a", "-i_a", required=True, type=str,
+    aof_parser.set_defaults(func=fetch_overlap)
+    aof_parser.add_argument("--input_gff_a", "-i_a", required=True, type=str,
                             help="URL/file path to gff file or compressed gff")
-    oaf_parser.add_argument("--input_gff_b", "-i_b", required=True, type=str,
+    aof_parser.add_argument("--input_gff_b", "-i_b", required=True, type=str,
                             help="URL/file path to gff file or compressed gff")
-    oaf_parser.add_argument("--output_file", "-o", required=True, type=str,
+    aof_parser.add_argument("--output_file", "-o", required=True, type=str,
                             help="Output file path and name including extension")
-    oaf_parser.add_argument("--prefix", "-t", required=True, type=str,
+    aof_parser.add_argument("--prefix", "-t", required=True, type=str,
                             help="Any marking prefix string")
-    oaf_parser.add_argument("--allow_different_strands", "-a", default=False, action='store_true',
+    aof_parser.add_argument("--allow_different_strands", "-a", default=False, action='store_true',
                             help="All different strand overlap")
     # ___________________________________________________________________
     argcomplete.autocomplete(parser)
@@ -71,7 +71,7 @@ def export_to_table(args):
 
 
 def fetch_overlap(args):
-    OAF(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file) \
+    AOF(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file) \
         .fetch_overlaps(allow_different_strands=args.allow_different_strands)
 
 

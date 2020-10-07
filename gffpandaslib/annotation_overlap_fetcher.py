@@ -2,7 +2,7 @@ from gffpandaslib.gff3 import Gff3
 from gffpandaslib.gff3_exporter import Gff3Exporter
 
 
-class OverlappingAnnotationFetcher:
+class AnnotationOverlapFetcher:
 
     def __init__(self, input_obj_a, input_obj_b, set_b_prefix, output_file) -> None:
         self.input_gff_a = Gff3(input_obj_a)
