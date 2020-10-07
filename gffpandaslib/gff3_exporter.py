@@ -9,7 +9,10 @@ from gffpandaslib.gff3 import Gff3
 class Gff3Exporter:
 
     def __init__(self, input_obj) -> None:
-        self.gff3 = Gff3(input_obj, load_metadata=False)
+        if isinstance(input_obj, Gff3):
+            self.gff3 = input_obj
+        else:
+            self.gff3 = Gff3(input_obj, load_metadata=False)
         self.export_df = None
 
     def export_to_table(self, to, output_file, expand_attributes=False, drop_columns=None) -> None:
@@ -21,6 +24,7 @@ class Gff3Exporter:
                     self.export_df.drop(drop_column, axis=1, inplace=True)
                 except Exception as e:
                     lg.warning(f" {e}")
+        lg.info(f"Writing the {to} file: {os.path.basename(output_file)}")
         if to == "csv":
             self.export_df.to_csv(os.path.abspath(f"{output_file}"), sep=",", header=True, index=False)
         elif to == "tsv":
@@ -39,10 +43,22 @@ class Gff3Exporter:
         expanded_df = self.gff3.df
         for indx in expanded_df.index:
             attr_dict = {k.lower(): v for k, v in
-                         dict(item.split("=") for item in expanded_df.at[indx, "attributes"].split(";")).items()}
+                         dict(item.split("=", maxsplit=1)
+                              for item in expanded_df.at[indx, "attributes"].split(";")).items()}
             for k in attr_dict.keys():
                 expanded_df.at[indx, k] = attr_dict[k]
         return expanded_df
 
-    def export_to_gff(self, output_file) -> None:
-        self.gff3.df.to_csv(os.path.abspath(f"{output_file}"), sep="\t", header=True, index=False)
+    def export_to_gff(self, output_file, write_header=True) -> None:
+        sep = "\t"
+        if write_header:
+            header_text = ""
+            for k in self.gff3.header_info.keys():
+                header_text += f"# {k} {self.gff3.header_info[k]}\n"
+            try:
+                with open(os.path.abspath(f"{output_file}"), "w") as f:
+                    f.write(f"{header_text}{self.gff3.df.to_csv(sep=sep, header=False, index=False)}")
+            except Exception as e:
+                lg.error(f" {e}")
+        else:
+            self.gff3.df.to_csv(os.path.abspath(f"{output_file}"), sep=sep, header=False, index=False)

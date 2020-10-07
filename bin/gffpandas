@@ -3,6 +3,7 @@ import argparse
 import argcomplete
 
 from gffpandaslib.gff3_exporter import Gff3Exporter
+from gffpandaslib.overlapping_annotation_fetcher import OverlappingAnnotationFetcher as OAF
 
 
 def main():
@@ -12,22 +13,39 @@ def main():
     show_version_parser = subparsers.add_parser("version", help="Show version")
     show_version_parser.set_defaults(func=show_version)
     # ___________________________________________________________________
-    table_export_parser = subparsers.add_parser("table_export",
-                                                help="Export GFF3 file to various formats")
-    table_export_parser.set_defaults(func=export_to_table)
-    table_export_parser.add_argument("--input_gff", "-i", required=True, type=str,
-                                     help="URL/file path to gff file or compressed gff")
-    table_export_parser.add_argument("--output_file", "-o", required=True,
-                                     help="Output file path and name including extension")
-    table_export_parser.add_argument("--export_type", "-t", required=True, choices=["csv", "tsv", "xlsx", "md", "gff"],
-                                     help="Output type of the export")
-    table_export_parser.add_argument("--drop_columns", "-d", required=False, type=str, nargs="+",
-                                     help="Mention a space separated column names to remove (lower case only)")
-    table_export_parser.add_argument("--expand_attributes", "-e", action='store_true', default=False,
-                                     help="Expand attributes to multiple columns")
+    exporter_parser = subparsers.add_parser("export",
+                                            help="Export GFF3 file to various formats")
+    exporter_parser.set_defaults(func=export_to_table)
+    exporter_parser.add_argument("--input_gff", "-i", required=True, type=str,
+                                 help="URL/file path to gff file or compressed gff")
+    exporter_parser.add_argument("--output_file", "-o", required=True, type=str,
+                                 help="Output file path and name including extension")
+    exporter_parser.add_argument("--export_type", "-t", required=True, choices=["csv", "tsv", "xlsx", "md", "gff"],
+                                 help="Output type of the export")
+    exporter_parser.add_argument("--drop_columns", "-d", required=False, type=str, nargs="+",
+                                 help="Mention a space separated column names to remove (lower case only)")
+    exporter_parser.add_argument("--expand_attributes", "-e", action='store_true', default=False,
+                                 help="Expand attributes to multiple columns")
+
+    # ___________________________________________________________________
+    oaf_parser = subparsers.add_parser("fetch_overlap",
+                                       help="Fetches overlapping annotations from 2 sets and adds it to the attributes")
+    oaf_parser.set_defaults(func=fetch_overlap)
+    oaf_parser.add_argument("--input_gff_a", "-i_a", required=True, type=str,
+                            help="URL/file path to gff file or compressed gff")
+    oaf_parser.add_argument("--input_gff_b", "-i_b", required=True, type=str,
+                            help="URL/file path to gff file or compressed gff")
+    oaf_parser.add_argument("--output_file", "-o", required=True, type=str,
+                            help="Output file path and name including extension")
+    oaf_parser.add_argument("--prefix", "-t", required=True, type=str,
+                            help="Any marking prefix string")
     # ___________________________________________________________________
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
+
+    # if args.export_type == 'gff' and (args.expand_attributes is True or args.drop_columns is not None):
+    #     parser.error("Arguments error: --export_type 'gff' cannot be used with"
+    #                  "arguments --expand_attributes or --drop_columns")
     if "func" in dir(args):
         args.func(args)
     else:
@@ -38,6 +56,7 @@ def show_version(args):
     """
     Version
     """
+    # TODO
     pass
 
 
@@ -47,6 +66,10 @@ def export_to_table(args):
     else:
         Gff3Exporter(args.input_gff).export_to_table(to=args.export_type, output_file=args.output_file,
                                                      expand_attributes=True, drop_columns=args.drop_columns)
+
+
+def fetch_overlap(args):
+    OAF(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file).fetch_overlaps()
 
 
 main()

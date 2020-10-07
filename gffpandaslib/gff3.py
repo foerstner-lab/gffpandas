@@ -15,7 +15,7 @@ class Gff3:
     input_obj: pd.DataFrame or str  # The only required property
     load_metadata: bool = True
     # Other optional GFF3 features
-    header_text: str = field(default="")
+    header_text: str or None = field(default="")
     header_info: dict or str = field(default_factory=dict or str)
     seq_ids: list = field(default_factory=list)
     organism_name: str = field(default="")
@@ -70,7 +70,7 @@ class Gff3:
                         self.header_text += line
         except:
             lg.info("Could not find header lines")
-            self.header_text = "UNDEFINED"
+            self.header_text = None
         self.seq_ids = self.df["seq_id"].unique().tolist()
         self.header_info = self.parse_header_text()
         if self.load_metadata:
@@ -79,12 +79,14 @@ class Gff3:
         self.validate_gff3()
 
     def parse_header_text(self):
-        if self.header_text == "UNDEFINED":
-            return "UNDEFINED"
+        if self.header_text is None:
+            return None
         lg.info(" Parsing header text")
         ret_dict = {}
         parse_str = self.header_text.replace("#", "").replace("!", "").splitlines()
         for line in parse_str:
+            if line == "":
+                continue
             split_line = line.split(" ", 1)
             if len(split_line) == 2:
                 # check redundant info
@@ -97,7 +99,7 @@ class Gff3:
             return ret_dict
         else:
             lg.info(" Could not parse header text")
-            return "UNDEFINED"
+            return None
 
     def get_metadata(self) -> None:
         Entrez.email = 'x@x.x'
