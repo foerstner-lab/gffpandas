@@ -53,8 +53,9 @@ class Gff3Exporter:
         sep = "\t"
         if write_header:
             header_text = ""
-            for k in self.gff3.header_info.keys():
-                header_text += f"# {k} {self.gff3.header_info[k]}\n"
+            if self.gff3.header_info is not None:
+                for k in self.gff3.header_info.keys():
+                    header_text += f"# {k} {self.gff3.header_info[k]}\n"
             try:
                 with open(os.path.abspath(f"{output_file}"), "w") as f:
                     f.write(f"{header_text}{self.gff3.df.to_csv(sep=sep, header=False, index=False)}")
