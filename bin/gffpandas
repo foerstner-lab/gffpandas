@@ -1,12 +1,15 @@
 import argparse
+import logging as lg
 
 import argcomplete
 
+from gffpandaslib.annotation_filter import AnnotationFilter as AF
 from gffpandaslib.annotation_overlap_fetcher import AnnotationOverlapFetcher as AOF
 from gffpandaslib.gff3_exporter import Gff3Exporter
 
 
 def main():
+    # Entry point
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(help="commands")
     # ___________________________________________________________________
@@ -42,12 +45,30 @@ def main():
     aof_parser.add_argument("--allow_different_strands", "-a", default=False, action='store_true',
                             help="All different strand overlap")
     # ___________________________________________________________________
+    filter_parser = subparsers.add_parser("filter",
+                                          help="Export GFF3 file to various formats")
+    filter_parser.set_defaults(func=filter_annotations)
+    filter_parser.add_argument("--input_gff", "-i", required=True, type=str,
+                               help="URL/file path to gff file or compressed gff")
+    filter_parser.add_argument("--output_file", "-o", required=True, type=str,
+                               help="Output file path and name including extension")
+    filter_parser.add_argument("--by", "-b", required=True, choices=["length", "type"],
+                               help="Type of filtering required")
+    filter_parser.add_argument("--min_len", "-n", required=False, type=int,
+                               help="Minimum length required (> 0) for filtering by length")
+    filter_parser.add_argument("--max_len", "-x", required=False, type=int,
+                               help="Maximum length required (> 0) for filtering by length")
+    filter_parser.add_argument("--annotation_type", "-t", required=False, type=str,
+                               help="Annotation type required for filtering by type")
+    # ___________________________________________________________________
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
 
     # if args.export_type == 'gff' and (args.expand_attributes is True or args.drop_columns is not None):
     #     parser.error("Arguments error: --export_type 'gff' cannot be used with"
     #                  "arguments --expand_attributes or --drop_columns")
+    # TODO check inputs required
+
     if "func" in dir(args):
         args.func(args)
     else:
@@ -73,6 +94,15 @@ def export_to_table(args):
 def fetch_overlap(args):
     AOF(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file) \
         .fetch_overlaps(allow_different_strands=args.allow_different_strands)
+
+
+def filter_annotations(args):
+    if args.by == "length":
+        AF(args.input_gff, args.output_file).filter_by_length(args.min_len, args.max_len)
+    elif args.by == "type":
+        AF(args.input_gff, args.output_file).filter_by_type(args.type)
+    else:
+        lg.error(" Unrecognized filtering option")
 
 
 main()
