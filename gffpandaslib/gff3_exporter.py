@@ -41,10 +41,16 @@ class Gff3Exporter:
     def _expand_attributes_to_columns(self) -> pd.DataFrame:
         lg.info(" Expanding attributes to columns")
         expanded_df = self.gff3.df
+        attr_dict = {}
         for indx in expanded_df.index:
-            attr_dict = {k.lower(): v for k, v in
-                         dict(item.split("=", maxsplit=1)
-                              for item in expanded_df.at[indx, "attributes"].split(";")).items()}
+            comma_list = [item.split("=", maxsplit=1) for item in expanded_df.at[indx, "attributes"].split(";")]
+            for item in comma_list:
+                try:
+                    attr_dict = {k.lower(): v for k, v in dict(item).items()}
+                except Exception as e:
+                    lg.warning(f" Some attributes was malformed and ignored: {e}")
+
+            # TODO check for badly written attributes
             for k in attr_dict.keys():
                 expanded_df.at[indx, k] = attr_dict[k]
         return expanded_df

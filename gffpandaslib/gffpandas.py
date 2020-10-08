@@ -1,4 +1,5 @@
 import itertools
+from warnings import warn
 
 import pandas as pd
 
@@ -13,8 +14,8 @@ class Gff3DataFrame(object):
     attribute.
 
     """
-
     def __init__(self, input_gff_file=None, input_df=None, input_header=None) -> None:
+        warn("This class is depreciated, an will be removed soon!")
         """Create an instance."""
         if input_gff_file is not None:
             self._gff_file = input_gff_file

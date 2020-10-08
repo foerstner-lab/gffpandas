@@ -11,7 +11,7 @@ from gffpandaslib.gff3_exporter import Gff3Exporter
 def main():
     # Entry point
     parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers(help="commands")
+    subparsers = parser.add_subparsers(help="commands", dest='command')
     # ___________________________________________________________________
     show_version_parser = subparsers.add_parser("version", help="Show version")
     show_version_parser.set_defaults(func=show_version)
@@ -58,17 +58,28 @@ def main():
                                help="Minimum length required (> 0) for filtering by length")
     filter_parser.add_argument("--max_len", "-x", required=False, type=int,
                                help="Maximum length required (> 0) for filtering by length")
-    filter_parser.add_argument("--annotation_type", "-t", required=False, type=str,
-                               help="Annotation type required for filtering by type")
+    filter_parser.add_argument("--annotation_type", "-t", required=False, type=str, nargs="+",
+                               help="Annotation type required for filtering by type (space separated values)")
     # ___________________________________________________________________
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
-
-    # if args.export_type == 'gff' and (args.expand_attributes is True or args.drop_columns is not None):
-    #     parser.error("Arguments error: --export_type 'gff' cannot be used with"
-    #                  "arguments --expand_attributes or --drop_columns")
-    # TODO check inputs required
-
+    # Handling inconsistent argument passes
+    if args.command == "export":
+        if args.export_type == 'gff' and (args.expand_attributes is True or args.drop_columns is not None):
+            parser.error("Arguments error: --export_type 'gff' cannot be used with"
+                         "arguments --expand_attributes or --drop_columns")
+    elif args.command == "filter":
+        if args.by == 'length':
+            if args.min_len is None or args.max_len is None:
+                parser.error("Arguments error: filter by length requires arguments --min_len and --max_len")
+        elif args.by == 'type':
+            if args.annotation_type is None:
+                parser.error("Arguments error: filter by type requires argument --annotation_type")
+        else:
+            exit(1)
+    else:
+        pass
+    # passing argument to functions
     if "func" in dir(args):
         args.func(args)
     else:

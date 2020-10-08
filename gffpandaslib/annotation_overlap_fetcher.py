@@ -55,15 +55,15 @@ class AnnotationOverlapFetcher:
                     elif 'id' in b_attr.keys():
                         overlap_name = b_attr["id"]
                     else:
-                        overlap_name = tmp_df.at[tmp_indx, 'attributes']
+                        overlap_name = tmp_df.at[tmp_indx, 'attributes'].replace(";", "-")
                     if counter > 1:
                         count_prefix = f"_{counter}"
                     else:
                         count_prefix = ""
                     if not allow_different_strands:
                         self.input_gff_a.df.at[indx, "attributes"] += \
-                            f";{self.set_b_prefix}_overlapped_start{count_prefix}={b_start}" \
-                            f";{self.set_b_prefix}_overlapped_end{count_prefix}={b_end}" \
+                            f";{self.set_b_prefix}_overlap_start{count_prefix}={b_start}" \
+                            f";{self.set_b_prefix}_overlap_end{count_prefix}={b_end}" \
                             f";{self.set_b_prefix}_overlap_size{count_prefix}={overlap_size}nt" \
                             f";{self.set_b_prefix}_comment{count_prefix}={overlap_name}"
                         continue

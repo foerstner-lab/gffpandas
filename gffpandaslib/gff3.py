@@ -25,8 +25,10 @@ class Gff3:
     seq_topologies: dict = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        df_column_names = ["seq_id", "source", "type", "start", "end", "score", "strand", "phase", "attributes"]
-        df_column_dtypes = ["str", "str", "str", "int", "int", "str", "str", "str", "str"]
+        df_columns = {"seq_id": str, "source": str, "type": str,
+                      "start": int, "end": int, "score": str,
+                      "strand": str, "phase": str, "attributes": str}
+        df_column_names = [x for x in df_columns.keys()]
         if isinstance(self.input_obj, pd.DataFrame):  # Handling Dataframe as input
             if df_column_names == self.input_obj.columns.values.tolist():
                 self.df = self.input_obj
@@ -41,15 +43,17 @@ class Gff3:
                                                     if os.path.isfile(self.input_obj)
                                                        or urlparse(self.input_obj).scheme != ""
                                                     else StringIO(self.input_obj),
-                                                    sep="\t", comment="#", names=df_column_names, dtype=str,
-                                                    warn_bad_lines=True, error_bad_lines=True)
+                                                    sep="\t", comment="#", names=df_column_names, dtype=df_columns,
+                                                    error_bad_lines=False, warn_bad_lines=True, na_filter=True)
             except Exception as e:
-                lg.error(f" Could not initiate the input dataframe:\n\t{e.args[1]}")
-                exit(e.args[0])
+                # lg.error(f" Could not initiate the input dataframe:\n\t{e.args[1]}")
+                # exit(e.args[0])
+                pass
             lg.info("GFF3 initialized through read_csv")
         else:
             lg.error("Could not initiate the input dataframe: unsupported or unknown input data")
         lg.info("Forcing proper data types for dataframe columns")
+        """
         for col in range(0, 9, 1):
             self.df.dropna(axis=0, inplace=True, subset=df_column_names[0:8])
             try:
@@ -58,6 +62,7 @@ class Gff3:
                 lg.error(f" While forcing the proper data type for column #{col} named \"{df_column_names[col]}\",\n"
                          f"A value has {e}\nPlease check input file and try again.")
                 exit(1)
+        """
         if self.df.empty:
             lg.error(" Could not read data from GFF3, empty dataframe produced, please check your input, exiting!")
             exit(1)
