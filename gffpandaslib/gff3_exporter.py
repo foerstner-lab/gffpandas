@@ -43,14 +43,18 @@ class Gff3Exporter:
         expanded_df = self.gff3.df
         attr_dict = {}
         for indx in expanded_df.index:
-            comma_list = [item.split("=", maxsplit=1) for item in expanded_df.at[indx, "attributes"].split(";")]
-            for item in comma_list:
-                try:
-                    attr_dict = {k.lower(): v for k, v in dict(item).items()}
-                except Exception as e:
-                    lg.warning(f" Some attributes was malformed and ignored: {e}")
-
+            comma_list = [item.split("=", maxsplit=1)
+                          for item in expanded_df.at[indx, "attributes"].replace(";;", "").split(";")]
             # TODO check for badly written attributes
+            for item in comma_list:
+                inner_dict = None
+                try:
+                    inner_dict = dict(item)
+                except Exception as e:
+                    lg.warning(f" Some attributes was malformed and ignored near line {indx} - {item}: {e}")
+                for k, v in inner_dict.items():
+                    attr_dict[k.lower()] = v
+
             for k in attr_dict.keys():
                 expanded_df.at[indx, k] = attr_dict[k]
         return expanded_df
