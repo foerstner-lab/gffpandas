@@ -44,7 +44,7 @@ class Gff3Exporter:
         attr_dict = {}
         for indx in expanded_df.index:
             comma_list = [item.split("=", maxsplit=1)
-                          for item in expanded_df.at[indx, "attributes"].replace(";;", "").split(";")]
+                          for item in expanded_df.at[indx, "attributes"].replace(";;", ";").split(";")]
             # TODO check for badly written attributes
             for item in comma_list:
                 if len(item) == 2:
