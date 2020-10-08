@@ -47,15 +47,13 @@ class Gff3Exporter:
                           for item in expanded_df.at[indx, "attributes"].replace(";;", "").split(";")]
             # TODO check for badly written attributes
             for item in comma_list:
-                inner_dict = None
-                try:
-                    inner_dict = dict(item)
-                except Exception as e:
-                    lg.warning(f" Some attributes was malformed and ignored near line {indx} - {item}: {e}")
-                if inner_dict is not None:
-                    for k, v in inner_dict.items():
-                        attr_dict[k.lower()] = v
-
+                if len(item) == 2:
+                    attr_dict[item[0]] = item[1]
+                elif len(item) == 1:
+                    lg.warning(f" Attribute without a value ignored")
+                else:
+                    lg.warning(f" Some attributes was malformed and ignored near line {indx} - {item}")
+                    pass
             for k in attr_dict.keys():
                 expanded_df.at[indx, k] = attr_dict[k]
         return expanded_df
