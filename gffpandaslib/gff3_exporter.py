@@ -56,6 +56,7 @@ class Gff3Exporter:
                     pass
             for k in attr_dict.keys():
                 expanded_df.at[indx, k] = attr_dict[k]
+        expanded_df.drop(["attributes"], axis=1, inplace=True)
         return expanded_df
 
     def export_to_gff(self, output_file, write_header=True) -> None:
