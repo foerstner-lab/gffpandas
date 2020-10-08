@@ -52,8 +52,9 @@ class Gff3Exporter:
                     inner_dict = dict(item)
                 except Exception as e:
                     lg.warning(f" Some attributes was malformed and ignored near line {indx} - {item}: {e}")
-                for k, v in inner_dict.items():
-                    attr_dict[k.lower()] = v
+                if inner_dict is not None:
+                    for k, v in inner_dict.items():
+                        attr_dict[k.lower()] = v
 
             for k in attr_dict.keys():
                 expanded_df.at[indx, k] = attr_dict[k]
