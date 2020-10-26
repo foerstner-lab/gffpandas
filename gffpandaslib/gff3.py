@@ -9,10 +9,14 @@ from Bio import Entrez, SeqIO
 
 
 @dataclass
-class Gff3:
+class GFF3:
     # Class of general feature format v3 (GFF3)
     lg.info("Initializing GFF3 object")
-    input_obj: pd.DataFrame or str  # The only required property
+    _df_columns = {"seq_id": str, "source": str, "type": str,
+                   "start": int, "end": int, "score": str,
+                   "strand": str, "phase": str, "attributes": str}
+    _df_column_names = [x for x in _df_columns.keys()]
+    input_obj: pd.DataFrame or str or list  # The only required property
     load_metadata: bool = True
     # Other optional GFF3 features
     header_text: str or None = field(default="")
@@ -23,46 +27,14 @@ class Gff3:
     seq_names: dict = field(default_factory=dict)
     seq_lengths: dict = field(default_factory=dict)
     seq_topologies: dict = field(default_factory=dict)
+    df: pd.DataFrame = field(default=pd.DataFrame(columns=_df_column_names))
 
     def __post_init__(self) -> None:
-        df_columns = {"seq_id": str, "source": str, "type": str,
-                      "start": int, "end": int, "score": str,
-                      "strand": str, "phase": str, "attributes": str}
-        df_column_names = [x for x in df_columns.keys()]
-        if isinstance(self.input_obj, pd.DataFrame):  # Handling Dataframe as input
-            if df_column_names == self.input_obj.columns.values.tolist():
-                self.df = self.input_obj
-                lg.info("GFF3 initialized through passed DataFrame")
-            else:
-                lg.error(" Input dataframe does not have the expected column names, please check your dataframe object")
-                exit(1)
-        elif isinstance(self.input_obj, str):  # Handling file path or URL or buffer as input
-
-            try:
-                self.df: pd.DataFrame = pd.read_csv(self.input_obj
-                                                    if os.path.isfile(self.input_obj)
-                                                       or urlparse(self.input_obj).scheme != ""
-                                                    else StringIO(self.input_obj),
-                                                    sep="\t", comment="#", names=df_column_names, dtype=df_columns,
-                                                    error_bad_lines=False, warn_bad_lines=True, na_filter=True)
-            except Exception as e:
-                # lg.error(f" Could not initiate the input dataframe:\n\t{e.args[1]}")
-                # exit(e.args[0])
-                pass
-            lg.info("GFF3 initialized through read_csv")
+        if isinstance(self.input_obj, list):
+            for item in self.input_obj:
+                self.df = self.df.append(self._read(item))
         else:
-            lg.error("Could not initiate the input dataframe: unsupported or unknown input data")
-        lg.info("Forcing proper data types for dataframe columns")
-        """
-        for col in range(0, 9, 1):
-            self.df.dropna(axis=0, inplace=True, subset=df_column_names[0:8])
-            try:
-                self.df[df_column_names[col]] = self.df[df_column_names[col]].astype(df_column_dtypes[col])
-            except Exception as e:
-                lg.error(f" While forcing the proper data type for column #{col} named \"{df_column_names[col]}\",\n"
-                         f"A value has {e}\nPlease check input file and try again.")
-                exit(1)
-        """
+            self.df = self._read(self.input_obj)
         if self.df.empty:
             lg.error(" Could not read data from GFF3, empty dataframe produced, please check your input, exiting!")
             exit(1)
@@ -73,8 +45,8 @@ class Gff3:
                 for line in f.readlines():
                     if line.startswith("#"):
                         self.header_text += line
-        except:
-            lg.info("Could not find header lines")
+        except Exception as e:
+            lg.info(" Could not find header lines")
             self.header_text = None
         self.seq_ids = self.df["seq_id"].unique().tolist()
         self.header_info = self.parse_header_text()
@@ -82,6 +54,52 @@ class Gff3:
             self.get_metadata()
 
         self.validate_gff3()
+
+    def _read(self, input_obj):
+        if isinstance(input_obj, pd.DataFrame):  # Handling Dataframe as input
+            if self._df_column_names == input_obj.columns.values.tolist():
+                ret_df = input_obj
+                lg.info("GFF3 initialized through passed DataFrame")
+            else:
+                ret_df = None
+                lg.error(" Input dataframe does not have the expected column names, please check your dataframe object")
+                exit(1)
+        elif isinstance(input_obj, str):  # Handling file path or URL or buffer as input
+            try:
+                ret_df = pd.read_csv(input_obj if os.path.isfile(input_obj) or urlparse(input_obj).scheme != ""
+                                     else StringIO(input_obj),
+                                     sep="\t", comment="#", names=self._df_column_names, dtype=self._df_columns,
+                                     error_bad_lines=False, warn_bad_lines=True, na_filter=True)
+            except Exception as e:
+                lg.warning(" Could not read GFF file, trying with another file handler")
+                handled_str, ignored_str = self._handle_malformed_content(input_obj)
+                try:
+                    ret_df = pd.read_csv(StringIO(handled_str), sep="\t", comment="#",
+                                         names=self._df_column_names, dtype=self._df_columns,
+                                         error_bad_lines=False, warn_bad_lines=True, na_filter=True)
+                    lg.warning(f" File '{os.path.basename(input_obj)}' was malformed "
+                               f"and handled with some lines ignored:\n{ignored_str}")
+                except:
+                    ret_df = None
+                    lg.error(f" Could not initiate the input dataframe:\n\t{e.args[1]}")
+                    exit(e.args[0])
+            lg.info("GFF3 initialized through read_csv")
+        else:
+            ret_df = None
+            lg.error("Could not initiate the input dataframe: unsupported or unknown input data")
+        """
+        lg.info("Forcing proper data types for dataframe columns")
+
+        for col in range(0, 9, 1):
+            self.df.dropna(axis=0, inplace=True, subset=df_column_names[0:8])
+            try:
+                self.df[df_column_names[col]] = self.df[df_column_names[col]].astype(df_column_dtypes[col])
+            except Exception as e:
+                lg.error(f" While forcing the proper data type for column #{col} named \"{df_column_names[col]}\",\n"
+                         f"A value has {e}\nPlease check input file and try again.")
+                exit(1)
+        """
+        return ret_df
 
     def parse_header_text(self):
         if self.header_text is None:
@@ -133,8 +151,33 @@ class Gff3:
                 int(str(esummary_record['Length']).replace("IntegerElement(", "").split(",")[0])
             self.taxonomy_id = str(esummary_record['TaxId']).replace("IntegerElement(", "").split(",")[0]
 
+    @staticmethod
+    def _handle_malformed_content(input_obj):
+        ret_str = ""
+        ignored_lines = ""
+        if os.path.isfile(input_obj):
+            with open(os.path.abspath(input_obj), "r") as input_lines:
+                for line in input_lines.readlines():
+                    if line.startswith("#"):
+                        ret_str += line
+                        continue
+                    line_split = line.split("\t")
+                    if len(line_split) == 9 or len(line_split) == 8:
+                        if line_split[3].isdigit() and line_split[4].isdigit() and (line_split[6] == "-"
+                                                                                    or line_split[6] == "+"):
+                            if len(line_split) == 8:
+                                ret_str += line.replace("\n", "\t_\n")
+                                continue
+                            ret_str += line
+                            continue
+                    ignored_lines += line
+        return ret_str, ignored_lines
+
     def validate_gff3(self):
+        self._check_for_duplicates()
         # TODO
+
+    def _check_for_duplicates(self):
         pass
 
     def describe_gff(self):

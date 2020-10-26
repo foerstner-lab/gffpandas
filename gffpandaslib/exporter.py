@@ -3,16 +3,16 @@ import os
 
 import pandas as pd
 
-from gffpandaslib.gff3 import Gff3
+from gffpandaslib.gff3 import GFF3
 
 
-class Gff3Exporter:
+class Exporter:
 
     def __init__(self, input_obj) -> None:
-        if isinstance(input_obj, Gff3):
+        if isinstance(input_obj, GFF3):
             self.gff3 = input_obj
         else:
-            self.gff3 = Gff3(input_obj, load_metadata=False)
+            self.gff3 = GFF3(input_obj, load_metadata=False)
         self.export_df = None
 
     def export_to_table(self, to, output_file, expand_attributes=False, drop_columns=None) -> None:

@@ -1,20 +1,20 @@
 import logging as lg
 
-from gffpandaslib.gff3 import Gff3
-from gffpandaslib.gff3_exporter import Gff3Exporter
+from gffpandaslib.exporter import Exporter
+from gffpandaslib.gff3 import GFF3
 
 
-class AnnotationOverlapFetcher:
+class OverlapFetcher:
 
     def __init__(self, input_obj_a, input_obj_b, set_b_prefix, output_file=None) -> None:
-        if isinstance(input_obj_a, Gff3):
+        if isinstance(input_obj_a, GFF3):
             self.input_gff_a = input_obj_a
         else:
-            self.input_gff_a = Gff3(input_obj_a, load_metadata=False)
-        if isinstance(input_obj_b, Gff3):
+            self.input_gff_a = GFF3(input_obj_a, load_metadata=False)
+        if isinstance(input_obj_b, GFF3):
             self.input_gff_b = input_obj_b
         else:
-            self.input_gff_b = Gff3(input_obj_b, load_metadata=False)
+            self.input_gff_b = GFF3(input_obj_b, load_metadata=False)
         self.set_b_prefix = set_b_prefix
         self.output_file = output_file
 
@@ -83,7 +83,7 @@ class AnnotationOverlapFetcher:
             self._export()
 
     def _export(self):
-        Gff3Exporter(self.input_gff_a).export_to_gff(self.output_file)
+        Exporter(self.input_gff_a).export_to_gff(self.output_file)
 
     @staticmethod
     def parse_attributes(attr_str):

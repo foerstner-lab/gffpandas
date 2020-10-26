@@ -3,9 +3,11 @@ import logging as lg
 
 import argcomplete
 
-from gffpandaslib.annotation_filter import AnnotationFilter as af
-from gffpandaslib.annotation_overlap_fetcher import AnnotationOverlapFetcher as aof
-from gffpandaslib.gff3_exporter import Gff3Exporter
+from gffpandaslib.collapser import Collapser
+from gffpandaslib.connector import Connector
+from gffpandaslib.exporter import Exporter
+from gffpandaslib.filter import Filter
+from gffpandaslib.overlap_fetcher import OverlapFetcher
 
 
 def main():
@@ -29,21 +31,21 @@ def main():
                                  help="Mention a space separated column names to remove (lower case only)")
     exporter_parser.add_argument("--expand_attributes", "-e", action='store_true', default=False,
                                  help="Expand attributes to multiple columns")
-
     # ___________________________________________________________________
-    aof_parser = subparsers.add_parser("fetch_overlap",
-                                       help="Fetches overlapping annotations from 2 sets and adds it to the attributes")
-    aof_parser.set_defaults(func=fetch_overlap)
-    aof_parser.add_argument("--input_gff_a", "-i_a", required=True, type=str,
-                            help="URL/file path to gff file or compressed gff")
-    aof_parser.add_argument("--input_gff_b", "-i_b", required=True, type=str,
-                            help="URL/file path to gff file or compressed gff")
-    aof_parser.add_argument("--output_file", "-o", required=True, type=str,
-                            help="Output file path and name including extension")
-    aof_parser.add_argument("--prefix", "-t", required=True, type=str,
-                            help="Any marking prefix string")
-    aof_parser.add_argument("--allow_different_strands", "-a", default=False, action='store_true',
-                            help="All different strand overlap")
+    overlap_fetcher_parser = subparsers.add_parser("fetch_overlap",
+                                                   help="Fetches overlapping annotations from 2 sets "
+                                                        "and adds it to the attributes")
+    overlap_fetcher_parser.set_defaults(func=fetch_overlap)
+    overlap_fetcher_parser.add_argument("--input_gff_a", "-i_a", required=True, type=str,
+                                        help="URL/file path to gff file or compressed gff")
+    overlap_fetcher_parser.add_argument("--input_gff_b", "-i_b", required=True, type=str,
+                                        help="URL/file path to gff file or compressed gff")
+    overlap_fetcher_parser.add_argument("--output_file", "-o", required=True, type=str,
+                                        help="Output file path and name including extension")
+    overlap_fetcher_parser.add_argument("--prefix", "-p", required=True, type=str,
+                                        help="Any marking prefix string")
+    overlap_fetcher_parser.add_argument("--allow_different_strands", "-a", default=False, action='store_true',
+                                        help="All different strand overlap")
     # ___________________________________________________________________
     filter_parser = subparsers.add_parser("filter",
                                           help="Export GFF3 file to various formats")
@@ -61,6 +63,45 @@ def main():
     filter_parser.add_argument("--annotation_type", "-t", required=False, type=str, nargs="+",
                                help="Annotation type required for filtering by type (space separated values)")
     # ___________________________________________________________________
+
+    collapse_parser = subparsers.add_parser("collapse",
+                                            help="Export GFF3 file to various formats")
+    collapse_parser.set_defaults(func=collapse)
+    collapse_parser.add_argument("--input_gffs", "-i", required=True, type=str, nargs="+",
+                                 help="URL/file path to gff files or compressed gff,"
+                                      "multiple GFF files will be combined as one GFF file")
+    collapse_parser.add_argument("--output_file", "-o", required=True, type=str,
+                                 help="Output file path and name including extension")
+    collapse_parser.add_argument("--distance", "-x", required=False, type=int,
+                                 help="Distance to merge overlaps (>= -1)")
+    collapse_parser.add_argument("--annotate", "-a", type=str, choices=["all", "overlap", "no_overlap"],
+                                 help="Choose output option, either to output only overlapped annotations, "
+                                      "or only non-overlapped, or all", default="all")
+    collapse_parser.add_argument("--annotation_types", "-t", type=str, nargs="+", default=None,
+                                 help="Annotation type required for filtering by type (space separated values)")
+    collapse_parser.add_argument("--rename_type", "-r", type=str, default=None,
+                                 help="Rename the type column")
+    collapse_parser.add_argument("--collapse_all_types", "-c", action='store_true',
+                                 help="If used, will cause the program to merge overlapping annotations"
+                                      " even if they are different in type")
+
+    # ___________________________________________________________________
+    connect_parser = subparsers.add_parser("connect",
+                                           help="Fetches overlapping annotations from 2 sets and adds it to the attributes")
+    connect_parser.set_defaults(func=connect_annotations)
+    connect_parser.add_argument("--input_gff_a", "-i_a", required=True, type=str,
+                                help="URL/file path to gff file or compressed gff")
+    connect_parser.add_argument("--input_gff_b", "-i_b", required=True, type=str,
+                                help="URL/file path to gff file or compressed gff")
+    connect_parser.add_argument("--output_file", "-o", required=True, type=str,
+                                help="Output file path and name including extension")
+    connect_parser.add_argument("--min_len", "-n", required=True, type=int,
+                                help="Maximum allowed length")
+    connect_parser.add_argument("--max_len", "-x", required=True, type=int,
+                                help="Maximum allowed length")
+    connect_parser.add_argument("--new_type", "-t", required=False, type=str, default=None,
+                                help="Give a name for the new sequences type")
+
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
     # Handling inconsistent argument passes
@@ -96,24 +137,34 @@ def show_version(args):
 
 def export_to_table(args):
     if args.export_type == "gff":
-        Gff3Exporter(args.input_gff).export_to_gff(output_file=args.output_file)
+        Exporter(args.input_gff).export_to_gff(output_file=args.output_file)
     else:
-        Gff3Exporter(args.input_gff).export_to_table(to=args.export_type, output_file=args.output_file,
-                                                     expand_attributes=True, drop_columns=args.drop_columns)
+        Exporter(args.input_gff).export_to_table(to=args.export_type, output_file=args.output_file,
+                                                 expand_attributes=True, drop_columns=args.drop_columns)
 
 
 def fetch_overlap(args):
-    aof(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file) \
+    OverlapFetcher(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file) \
         .fetch_overlaps(allow_different_strands=args.allow_different_strands)
 
 
 def filter_annotations(args):
     if args.by == "length":
-        af(args.input_gff, args.output_file).filter_by_length(args.min_len, args.max_len)
+        Filter(args.input_gff, args.output_file).filter_by_length(args.min_len, args.max_len)
     elif args.by == "type":
-        af(args.input_gff, args.output_file).filter_by_type(args.type)
+        Filter(args.input_gff, args.output_file).filter_by_type(args.type)
     else:
         lg.error(" Unrecognized filtering option")
+
+
+def connect_annotations(args):
+    Connector(args.input_gff_a, args.input_gff_b, args.output_file) \
+        .connect_annotation(args.min_len, args.max_len, args.new_type)
+
+
+def collapse(args):
+    Collapser(args.input_gffs, args.annotation_types, args.output_file) \
+        .collapse(args.collapse_all_types, args.distance, args.annotate, args.rename_type)
 
 
 main()

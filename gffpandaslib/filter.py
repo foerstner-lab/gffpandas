@@ -1,16 +1,16 @@
 import logging as lg
 
-from gffpandaslib.gff3 import Gff3
-from gffpandaslib.gff3_exporter import Gff3Exporter
+from gffpandaslib.exporter import Exporter
+from gffpandaslib.gff3 import GFF3
 
 
-class AnnotationFilter:
+class Filter:
 
     def __init__(self, input_obj, output_file=None):
-        if isinstance(input_obj, Gff3):
+        if isinstance(input_obj, GFF3):
             self.gff3 = input_obj
         else:
-            self.gff3 = Gff3(input_obj, load_metadata=False)
+            self.gff3 = GFF3(input_obj, load_metadata=False)
         self.output_file = output_file
 
     def filter_by_length(self, min_len, max_len):
@@ -29,4 +29,4 @@ class AnnotationFilter:
             self._export()
 
     def _export(self):
-        Gff3Exporter(self.gff3).export_to_gff(self.output_file)
+        Exporter(self.gff3).export_to_gff(self.output_file)
