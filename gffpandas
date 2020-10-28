@@ -65,7 +65,7 @@ def main():
     # ___________________________________________________________________
 
     collapse_parser = subparsers.add_parser("collapse",
-                                            help="Export GFF3 file to various formats")
+                                            help="Collapse one or more GFF files")
     collapse_parser.set_defaults(func=collapse)
     collapse_parser.add_argument("--input_gffs", "-i", required=True, type=str, nargs="+",
                                  help="URL/file path to gff files or compressed gff,"
@@ -87,7 +87,7 @@ def main():
 
     # ___________________________________________________________________
     connect_parser = subparsers.add_parser("connect",
-                                           help="Fetches overlapping annotations from 2 sets and adds it to the attributes")
+                                           help="")
     connect_parser.set_defaults(func=connect_annotations)
     connect_parser.add_argument("--input_gff_a", "-i_a", required=True, type=str,
                                 help="URL/file path to gff file or compressed gff")

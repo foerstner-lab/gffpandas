@@ -15,11 +15,7 @@ class Connector:
             self.input_gff_b = input_obj_b
         else:
             self.input_gff_b = GFF3(input_obj_b, load_metadata=False)
-        df_columns = {"seq_id": str, "source": str, "type": str,
-                      "start": int, "end": int, "score": str,
-                      "strand": str, "phase": str, "attributes": str}
-        df_column_names = [x for x in df_columns.keys()]
-        self.export_df = pd.DataFrame(columns=df_column_names)
+        self.export_df = pd.DataFrame(columns=self.input_gff_b.df_column_names)
         self.output_file = output_file
 
     def connect_annotation(self, min_len, max_len, new_type="undefined_sequence_type"):
@@ -80,7 +76,6 @@ class Connector:
         self.export_df.reset_index(inplace=True, drop=True)
         if self.output_file is not None:
             self._export()
-        print(self.export_df.shape)
 
     def _export(self):
         Exporter(self.export_df).export_to_gff(self.output_file)

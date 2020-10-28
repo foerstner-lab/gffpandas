@@ -14,11 +14,7 @@ class Collapser:
             self.input_gff = input_obj
         else:
             self.input_gff = GFF3(input_obj, load_metadata=False)
-        df_columns = {"seq_id": str, "source": str, "type": str,
-                      "start": int, "end": int, "score": str,
-                      "strand": str, "phase": str, "attributes": str}
-        df_column_names = [x for x in df_columns.keys()]
-        self.export_df = pd.DataFrame(columns=df_column_names)
+        self.export_df = pd.DataFrame(columns=self.input_gff.df_column_names)
         if annotation_types is not None:
             if isinstance(annotation_types, list):
                 self.export_df.append(self.input_gff.df[self.input_gff.df["type"].isin(annotation_types)])
@@ -35,6 +31,7 @@ class Collapser:
             combinations = product(self.input_gff.seq_ids, ["+", "-"])
         else:
             combinations = product(self.input_gff.seq_ids, ["+", "-"], self.input_gff.df["type"].unique().tolist())
+
         for comb in combinations:
             if collapse_all_types:
                 comb_df_slice = self.input_gff.df[

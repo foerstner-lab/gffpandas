@@ -183,3 +183,7 @@ class GFF3:
     def describe_gff(self):
         pass
         # TODO
+
+    @property
+    def df_column_names(self):
+        return self._df_column_names
