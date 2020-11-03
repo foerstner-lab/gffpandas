@@ -101,6 +101,8 @@ def main():
                                 help="Maximum allowed length")
     connect_parser.add_argument("--new_type", "-t", required=False, type=str, default=None,
                                 help="Give a name for the new sequences type")
+    connect_parser.add_argument("--keep", "-k", type=str, default="all", choices=["all", "shortest", "longest"],
+                                help="If multiple annotations occured in the same place with different sizes")
 
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
@@ -136,6 +138,7 @@ def show_version(args):
 
 
 def export_to_table(args):
+    lg.info(f"Launching {args.command} subcommand")
     if args.export_type == "gff":
         Exporter(args.input_gff).export_to_gff(output_file=args.output_file)
     else:
@@ -144,11 +147,13 @@ def export_to_table(args):
 
 
 def fetch_overlap(args):
+    lg.info(f"Launching {args.command} subcommand")
     OverlapFetcher(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file) \
         .fetch_overlaps(allow_different_strands=args.allow_different_strands)
 
 
 def filter_annotations(args):
+    lg.info(f"Launching {args.command} subcommand")
     if args.by == "length":
         Filter(args.input_gff, args.output_file).filter_by_length(args.min_len, args.max_len)
     elif args.by == "type":
@@ -158,11 +163,13 @@ def filter_annotations(args):
 
 
 def connect_annotations(args):
+    lg.info(f"Launching {args.command} subcommand")
     Connector(args.input_gff_a, args.input_gff_b, args.output_file) \
-        .connect_annotation(args.min_len, args.max_len, args.new_type)
+        .connect_annotation(args.min_len, args.max_len, args.new_type, args.keep)
 
 
 def collapse(args):
+    lg.info(f"Launching {args.command} subcommand")
     Collapser(args.input_gffs, args.annotation_types, args.output_file) \
         .collapse(args.collapse_all_types, args.distance, args.annotate, args.rename_type)
 

@@ -18,7 +18,7 @@ class Connector:
         self.export_df = pd.DataFrame(columns=self.input_gff_b.df_column_names)
         self.output_file = output_file
 
-    def connect_annotation(self, min_len, max_len, new_type="undefined_sequence_type"):
+    def connect_annotation(self, min_len, max_len, new_type="undefined_sequence_type", keep="all"):
         counter = 0
         for indx in self.input_gff_a.df.index:
             if self.input_gff_a.df.at[indx, "end"] - self.input_gff_a.df.at[indx, "start"] < min_len:
@@ -67,10 +67,24 @@ class Connector:
         self.export_df.sort_values(["seq_id", "start", "end"], inplace=True)
         f_export_df = self.export_df[self.export_df["strand"] == "+"].copy()
         r_export_df = self.export_df[self.export_df["strand"] == "-"].copy()
-        f_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
-        f_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-        r_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-        r_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+        # Keep longest
+        # Keep shortest
+        # Keep All
+        if keep == "all":
+            pass
+        elif keep == "shortest":
+            f_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
+            f_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
+        elif keep == "longest":
+            f_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+            f_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+        else:
+            print(f"Bad '{keep}' value for 'keep' argument")
+
         self.export_df = f_export_df.append(r_export_df)
         self.export_df.sort_values(["seq_id", "start", "end"], inplace=True)
         self.export_df.reset_index(inplace=True, drop=True)
