@@ -20,6 +20,60 @@ class Connector:
 
     def connect_annotation(self, min_len, max_len, new_type="undefined_sequence_type", keep="all"):
         counter = 0
+        # First round to get the perfect overlapping annotations
+        # #report them to the output and remove them from the inputs
+        for indx in self.input_gff_a.df.index:
+            seq_id = self.input_gff_a.df.at[indx, "seq_id"]
+            a_start = self.input_gff_a.df.at[indx, "start"]
+            a_end = self.input_gff_a.df.at[indx, "end"]
+            a_strand = self.input_gff_a.df.at[indx, "strand"]
+            a_rm_flag = False
+            if a_strand == "+":
+                tmp_df = self.input_gff_b.df[(self.input_gff_b.df["seq_id"] == seq_id) &
+                                             (self.input_gff_b.df["strand"] == a_strand) &
+                                             (a_end in
+                                              range(self.input_gff_b.df["start"], self.input_gff_b.df["end"] + 1))] \
+                    .sort_values(["start"])
+                if tmp_df.empty:
+                    continue
+                for i in range(0, tmp_df.shape[0], 1):
+                    if tmp_df["end"].iloc[i] - min(tmp_df["start"].iloc[i], a_start) + 1 in range(min_len, max_len + 1):
+                        tmp_df["start"].iloc[i] = min(tmp_df["start"].iloc[i], a_start)
+                        self.input_gff_b.df.drop(tmp_df.iloc[i].index[0], inplace=True, axis=0)
+                        a_rm_flag = True
+            elif a_strand == "-":
+                tmp_df = self.input_gff_b.df[(self.input_gff_b.df["seq_id"] == seq_id) &
+                                             (self.input_gff_b.df["strand"] == a_strand) &
+                                             (a_start in
+                                              range(self.input_gff_b.df["start"], self.input_gff_b.df["end"] + 1))] \
+                    .sort_values(["end"])
+                if tmp_df.empty:
+                    continue
+                for i in range(0, tmp_df.shape[0], 1):
+                    if tmp_df["start"].iloc[i] - max(tmp_df["end"].iloc[i], a_end) + 1 in range(min_len, max_len + 1):
+                        tmp_df["start"].iloc[i] = max(tmp_df["end"].iloc[i], a_end)
+                        self.input_gff_b.df.drop(tmp_df.iloc[i].index[0], inplace=True, axis=0)
+                        a_rm_flag = True
+            else:
+                continue
+            if a_rm_flag:
+                self.input_gff_a.df.drop(indx, inplace=True, axis=0)
+            if keep == "all":
+                pass
+            elif keep == "shortest":
+                tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
+                tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
+                tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
+                tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
+            elif keep == "longest":
+                tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+                tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
+                tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
+                tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+            else:
+                print(f"Bad '{keep}' value for 'keep' argument")
+        self.export_df = self.export_df.append(tmp_df)
+
         for indx in self.input_gff_a.df.index:
             if self.input_gff_a.df.at[indx, "end"] - self.input_gff_a.df.at[indx, "start"] < min_len:
                 continue
