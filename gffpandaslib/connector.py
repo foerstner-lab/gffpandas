@@ -56,21 +56,24 @@ class Connector:
                 continue
             if a_rm_flag:
                 self.input_gff_a.df.drop(indx, inplace=True, axis=0)
+            f_tmp_df = tmp_df[tmp_df["strand"] == "+"].copy()
+            r_tmp_df = tmp_df[tmp_df["strand"] == "-"].copy()
             if keep == "all":
                 pass
             elif keep == "shortest":
-                tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
-                tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
-                tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
-                tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
+                f_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
+                f_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
+                r_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
+                r_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
             elif keep == "longest":
-                tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
-                tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-                tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-                tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+                f_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+                f_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
+                r_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
+                r_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
             else:
                 print(f"Bad '{keep}' value for 'keep' argument")
-        self.export_df = self.export_df.append(tmp_df)
+            self.export_df = self.export_df.append(f_tmp_df)
+            self.export_df = self.export_df.append(r_tmp_df)
 
         for indx in self.input_gff_a.df.index:
             if self.input_gff_a.df.at[indx, "end"] - self.input_gff_a.df.at[indx, "start"] < min_len:
@@ -103,41 +106,35 @@ class Connector:
                 else:
                     continue
             else:
-                exit(1)
-
-            tmp_df["type"] = new_type
-            tmp_df["source"] = "GFFPandas"
-            counter += 1
-            # b_attr = self.parse_attributes(top_connection["attributes"])
-            # a_attr = self.parse_attributes(self.input_gff_a.df.at[indx, 'attributes'])
-            # top_connection["attributes"] = f"ID={new_type}_{counter}" \
-            #                              f";name={new_type}_{counter}_{seq_id}_{a_strand}" \
-            #                              f";seq_len={top_connection['end'] - top_connection['start'] + 1}" \
-            #                             f";set_a_annotation={a_attr['id']}|{a_attr['name']}" \
-            #                             f";set_b_annotation={b_attr['id']}|{b_attr['name']}"
-            self.export_df = self.export_df.append(tmp_df)
-        self.export_df.sort_values(["seq_id", "start", "end"], inplace=True)
-        f_export_df = self.export_df[self.export_df["strand"] == "+"].copy()
-        r_export_df = self.export_df[self.export_df["strand"] == "-"].copy()
-        # Keep longest
-        # Keep shortest
-        # Keep All
-        if keep == "all":
-            pass
-        elif keep == "shortest":
-            f_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
-            f_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
-            r_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
-            r_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
-        elif keep == "longest":
-            f_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
-            f_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-            r_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-            r_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
-        else:
-            print(f"Bad '{keep}' value for 'keep' argument")
-
-        self.export_df = f_export_df.append(r_export_df)
+                continue
+            f_tmp_df = tmp_df[tmp_df["strand"] == "+"].copy()
+            r_tmp_df = tmp_df[tmp_df["strand"] == "-"].copy()
+            if keep == "all":
+                pass
+            elif keep == "shortest":
+                f_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
+                f_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
+                r_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
+                r_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
+            elif keep == "longest":
+                f_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+                f_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
+                r_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
+                r_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+            else:
+                print(f"Bad '{keep}' value for 'keep' argument")
+            self.export_df = self.export_df.append(f_tmp_df)
+            self.export_df = self.export_df.append(r_tmp_df)
+        self.export_df["type"] = new_type
+        self.export_df["source"] = "GFFPandas"
+        # counter += 1
+        # b_attr = self.parse_attributes(top_connection["attributes"])
+        # a_attr = self.parse_attributes(self.input_gff_a.df.at[indx, 'attributes'])
+        # top_connection["attributes"] = f"ID={new_type}_{counter}" \
+        #                              f";name={new_type}_{counter}_{seq_id}_{a_strand}" \
+        #                              f";seq_len={top_connection['end'] - top_connection['start'] + 1}" \
+        #                             f";set_a_annotation={a_attr['id']}|{a_attr['name']}" \
+        #                             f";set_b_annotation={b_attr['id']}|{b_attr['name']}"
         self.export_df.sort_values(["seq_id", "start", "end"], inplace=True)
         self.export_df.reset_index(inplace=True, drop=True)
         if self.output_file is not None:
