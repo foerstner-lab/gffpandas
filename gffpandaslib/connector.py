@@ -27,13 +27,13 @@ class Connector:
             a_start = self.input_gff_a.df.at[indx, "start"]
             a_end = self.input_gff_a.df.at[indx, "end"]
             a_strand = self.input_gff_a.df.at[indx, "strand"]
+            b_start = self.input_gff_b.df.at[indx, "start"]
+            b_end = self.input_gff_b.df.at[indx, "end"]
             a_rm_flag = False
             if a_strand == "+":
                 tmp_df = self.input_gff_b.df[(self.input_gff_b.df["seq_id"] == seq_id) &
                                              (self.input_gff_b.df["strand"] == a_strand) &
-                                             (a_end in
-                                              range(self.input_gff_b.df["start"], self.input_gff_b.df["end"] + 1))] \
-                    .sort_values(["start"])
+                                             (a_end in range(b_start, b_end + 1))].sort_values(["start"])
                 if tmp_df.empty:
                     continue
                 for i in range(0, tmp_df.shape[0], 1):
@@ -44,9 +44,7 @@ class Connector:
             elif a_strand == "-":
                 tmp_df = self.input_gff_b.df[(self.input_gff_b.df["seq_id"] == seq_id) &
                                              (self.input_gff_b.df["strand"] == a_strand) &
-                                             (a_start in
-                                              range(self.input_gff_b.df["start"], self.input_gff_b.df["end"] + 1))] \
-                    .sort_values(["end"])
+                                             (a_start in range(b_start, b_end + 1))].sort_values(["end"])
                 if tmp_df.empty:
                     continue
                 for i in range(0, tmp_df.shape[0], 1):
