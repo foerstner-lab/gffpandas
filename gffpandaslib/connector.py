@@ -74,7 +74,7 @@ class Connector:
                 print(f"Bad '{keep}' value for 'keep' argument")
             self.export_df = self.export_df.append(f_tmp_df)
             self.export_df = self.export_df.append(r_tmp_df)
-
+        """
         for indx in self.input_gff_a.df.index:
             if self.input_gff_a.df.at[indx, "end"] - self.input_gff_a.df.at[indx, "start"] < min_len:
                 continue
@@ -125,6 +125,8 @@ class Connector:
                 print(f"Bad '{keep}' value for 'keep' argument")
             self.export_df = self.export_df.append(f_tmp_df)
             self.export_df = self.export_df.append(r_tmp_df)
+
+        """
         self.export_df["type"] = new_type
         self.export_df["source"] = "GFFPandas"
         # counter += 1
