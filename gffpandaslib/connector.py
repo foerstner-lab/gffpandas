@@ -22,40 +22,40 @@ class Connector:
         counter = 0
         # First round to get the perfect overlapping annotations
         # #report them to the output and remove them from the inputs
+        drop_indecies = []
+        strand_letter_func = lambda x: 'F' if x == "+" else "R"
         for indx in self.input_gff_a.df.index:
             seq_id = self.input_gff_a.df.at[indx, "seq_id"]
             a_start = self.input_gff_a.df.at[indx, "start"]
             a_end = self.input_gff_a.df.at[indx, "end"]
             a_strand = self.input_gff_a.df.at[indx, "strand"]
-            b_start = self.input_gff_b.df.at[indx, "start"]
-            b_end = self.input_gff_b.df.at[indx, "end"]
             a_rm_flag = False
-            if a_strand == "+":
-                tmp_df = self.input_gff_b.df[(self.input_gff_b.df["seq_id"] == seq_id) &
-                                             (self.input_gff_b.df["strand"] == a_strand) &
-                                             (a_end in range(b_start, b_end + 1))].sort_values(["start"])
-                if tmp_df.empty:
-                    continue
-                for i in range(0, tmp_df.shape[0], 1):
-                    if tmp_df["end"].iloc[i] - min(tmp_df["start"].iloc[i], a_start) + 1 in range(min_len, max_len + 1):
-                        tmp_df["start"].iloc[i] = min(tmp_df["start"].iloc[i], a_start)
-                        self.input_gff_b.df.drop(tmp_df.iloc[i].index[0], inplace=True, axis=0)
-                        a_rm_flag = True
-            elif a_strand == "-":
-                tmp_df = self.input_gff_b.df[(self.input_gff_b.df["seq_id"] == seq_id) &
-                                             (self.input_gff_b.df["strand"] == a_strand) &
-                                             (a_start in range(b_start, b_end + 1))].sort_values(["end"])
-                if tmp_df.empty:
-                    continue
-                for i in range(0, tmp_df.shape[0], 1):
-                    if tmp_df["start"].iloc[i] - max(tmp_df["end"].iloc[i], a_end) + 1 in range(min_len, max_len + 1):
-                        tmp_df["start"].iloc[i] = max(tmp_df["end"].iloc[i], a_end)
-                        self.input_gff_b.df.drop(tmp_df.iloc[i].index[0], inplace=True, axis=0)
-                        a_rm_flag = True
-            else:
+            check_pos = a_end if a_strand == "+" else a_start
+            tmp_df = self.input_gff_b.df[(self.input_gff_b.df["seq_id"] == seq_id) &
+                                         (self.input_gff_b.df["strand"] == a_strand) &
+                                         (self.input_gff_b.df["start"] <= check_pos) &
+                                         (check_pos <= self.input_gff_b.df["end"])].copy().sort_values(["start"])
+            if tmp_df.empty:
                 continue
+            for i in tmp_df.index:
+                minimum_start = min(tmp_df.at[i, "start"], a_start)
+                maximum_end = max(tmp_df.at[i, "end"], a_end)
+                if a_strand == "+" and min_len <= tmp_df.at[i, "end"] - minimum_start + 1 <= max_len:
+                    tmp_df.at[i, "start"] = minimum_start
+                elif a_strand == "-" and min_len <= maximum_end - tmp_df.at[i, "start"] + 1 <= max_len:
+                    tmp_df.at[i, "end"] = maximum_end
+                else:
+                    continue
+                drop_indecies.append(i)
+                a_rm_flag = True
+                counter += 1
+                tmp_df["attributes"] = f"ID={new_type}_{counter}" \
+                                       f";name={new_type}_{counter}_{seq_id}_{strand_letter_func(a_strand)}" \
+                                       f";seq_len={tmp_df.at[i, 'end'] - tmp_df.at[i, 'start'] + 1}" \
+                                       f";connection_type=overlapping"
             if a_rm_flag:
                 self.input_gff_a.df.drop(indx, inplace=True, axis=0)
+            tmp_df.sort_values(["seq_id", "start", "end"], inplace=True)
             f_tmp_df = tmp_df[tmp_df["strand"] == "+"].copy()
             r_tmp_df = tmp_df[tmp_df["strand"] == "-"].copy()
             if keep == "all":
@@ -74,7 +74,8 @@ class Connector:
                 print(f"Bad '{keep}' value for 'keep' argument")
             self.export_df = self.export_df.append(f_tmp_df)
             self.export_df = self.export_df.append(r_tmp_df)
-        """
+        self.input_gff_b.df.drop(drop_indecies, inplace=True, axis=0)
+
         for indx in self.input_gff_a.df.index:
             if self.input_gff_a.df.at[indx, "end"] - self.input_gff_a.df.at[indx, "start"] < min_len:
                 continue
@@ -123,20 +124,23 @@ class Connector:
                 r_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
             else:
                 print(f"Bad '{keep}' value for 'keep' argument")
+            for indx in f_tmp_df.index:
+                counter += 1
+                f_tmp_df["attributes"] = f"ID={new_type}_{counter}" \
+                                         f";name={new_type}_{counter}_{seq_id}_F" \
+                                         f";seq_len={tmp_df.at[indx, 'end'] - tmp_df.at[indx, 'start'] + 1}" \
+                                         f";connection_type=non_overlaping_in_window_{min_len}:{max_len}"
+            for indx in r_tmp_df.index:
+                counter += 1
+                r_tmp_df["attributes"] = f"ID={new_type}_{counter}" \
+                                         f";name={new_type}_{counter}_{seq_id}_R" \
+                                         f";seq_len={tmp_df.at[indx, 'end'] - tmp_df.at[indx, 'start'] + 1}" \
+                                         f";connection_type=non_overlaping_in_window_{min_len}:{max_len}"
             self.export_df = self.export_df.append(f_tmp_df)
             self.export_df = self.export_df.append(r_tmp_df)
 
-        """
         self.export_df["type"] = new_type
         self.export_df["source"] = "GFFPandas"
-        # counter += 1
-        # b_attr = self.parse_attributes(top_connection["attributes"])
-        # a_attr = self.parse_attributes(self.input_gff_a.df.at[indx, 'attributes'])
-        # top_connection["attributes"] = f"ID={new_type}_{counter}" \
-        #                              f";name={new_type}_{counter}_{seq_id}_{a_strand}" \
-        #                              f";seq_len={top_connection['end'] - top_connection['start'] + 1}" \
-        #                             f";set_a_annotation={a_attr['id']}|{a_attr['name']}" \
-        #                             f";set_b_annotation={b_attr['id']}|{b_attr['name']}"
         self.export_df.sort_values(["seq_id", "start", "end"], inplace=True)
         self.export_df.reset_index(inplace=True, drop=True)
         if self.output_file is not None:
