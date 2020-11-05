@@ -55,27 +55,8 @@ class Connector:
                                        f";connection_type=overlapping"
             if a_rm_flag:
                 self.input_gff_a.df.drop(indx, inplace=True, axis=0)
-            tmp_df.sort_values(["seq_id", "start", "end"], inplace=True)
-            f_tmp_df = tmp_df[tmp_df["strand"] == "+"].copy()
-            r_tmp_df = tmp_df[tmp_df["strand"] == "-"].copy()
-            if keep == "all":
-                pass
-            elif keep == "shortest":
-                f_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
-                f_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
-                r_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
-                r_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
-            elif keep == "longest":
-                f_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
-                f_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-                r_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-                r_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
-            else:
-                print(f"Bad '{keep}' value for 'keep' argument")
-            self.export_df = self.export_df.append(f_tmp_df)
-            self.export_df = self.export_df.append(r_tmp_df)
+            self.export_df = self.export_df.append(tmp_df)
         self.input_gff_b.df.drop(drop_indecies, inplace=True, axis=0)
-
         for indx in self.input_gff_a.df.index:
             if self.input_gff_a.df.at[indx, "end"] - self.input_gff_a.df.at[indx, "start"] < min_len:
                 continue
@@ -108,37 +89,31 @@ class Connector:
                     continue
             else:
                 continue
-            f_tmp_df = tmp_df[tmp_df["strand"] == "+"].copy()
-            r_tmp_df = tmp_df[tmp_df["strand"] == "-"].copy()
-            if keep == "all":
-                pass
-            elif keep == "shortest":
-                f_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
-                f_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
-                r_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
-                r_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
-            elif keep == "longest":
-                f_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
-                f_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-                r_tmp_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-                r_tmp_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
-            else:
-                print(f"Bad '{keep}' value for 'keep' argument")
-            for indx in f_tmp_df.index:
+            for indx in tmp_df.index:
                 counter += 1
-                f_tmp_df["attributes"] = f"ID={new_type}_{counter}" \
-                                         f";name={new_type}_{counter}_{seq_id}_F" \
-                                         f";seq_len={tmp_df.at[indx, 'end'] - tmp_df.at[indx, 'start'] + 1}" \
-                                         f";connection_type=non_overlaping_in_window_{min_len}:{max_len}"
-            for indx in r_tmp_df.index:
-                counter += 1
-                r_tmp_df["attributes"] = f"ID={new_type}_{counter}" \
-                                         f";name={new_type}_{counter}_{seq_id}_R" \
-                                         f";seq_len={tmp_df.at[indx, 'end'] - tmp_df.at[indx, 'start'] + 1}" \
-                                         f";connection_type=non_overlaping_in_window_{min_len}:{max_len}"
-            self.export_df = self.export_df.append(f_tmp_df)
-            self.export_df = self.export_df.append(r_tmp_df)
-
+                tmp_df["attributes"] = f"ID={new_type}_{counter}" \
+                                       f";name={new_type}_{counter}_{seq_id}_{strand_letter_func(a_strand)}" \
+                                       f";seq_len={tmp_df.at[indx, 'end'] - tmp_df.at[indx, 'start'] + 1}" \
+                                       f";connection_type=non_overlaping_in_window_{min_len}:{max_len}"
+            self.export_df = self.export_df.append(tmp_df)
+        self.export_df.sort_values(["seq_id", "start", "end"], inplace=True)
+        f_export_df = self.export_df[self.export_df["strand"] == "+"].copy()
+        r_export_df = self.export_df[self.export_df["strand"] == "-"].copy()
+        if keep == "all":
+            pass
+        elif keep == "shortest":
+            f_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
+            f_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
+        elif keep == "longest":
+            f_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+            f_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+        else:
+            print(f"Bad '{keep}' value for 'keep' argument")
+        self.export_df = f_export_df.append(r_export_df)
         self.export_df["type"] = new_type
         self.export_df["source"] = "GFFPandas"
         self.export_df.sort_values(["seq_id", "start", "end"], inplace=True)
