@@ -57,6 +57,7 @@ class Connector:
                 self.input_gff_a.df.drop(indx, inplace=True, axis=0)
             self.export_df = self.export_df.append(tmp_df)
         self.input_gff_b.df.drop(drop_indecies, inplace=True, axis=0)
+        # Second round to connect non overlapping annotations within a window
         for indx in self.input_gff_a.df.index:
             if self.input_gff_a.df.at[indx, "end"] - self.input_gff_a.df.at[indx, "start"] < min_len:
                 continue
@@ -89,11 +90,11 @@ class Connector:
                     continue
             else:
                 continue
-            for indx in tmp_df.index:
+            for i in tmp_df.index:
                 counter += 1
                 tmp_df["attributes"] = f"ID={new_type}_{counter}" \
                                        f";name={new_type}_{counter}_{seq_id}_{strand_letter_func(a_strand)}" \
-                                       f";seq_len={tmp_df.at[indx, 'end'] - tmp_df.at[indx, 'start'] + 1}" \
+                                       f";seq_len={tmp_df.at[i, 'end'] - tmp_df.at[i, 'start'] + 1}" \
                                        f";connection_type=non_overlaping_in_window_{min_len}:{max_len}"
             self.export_df = self.export_df.append(tmp_df)
         self.export_df.sort_values(["seq_id", "start", "end"], inplace=True)
