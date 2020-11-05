@@ -72,21 +72,19 @@ class Connector:
                                              (self.input_gff_b.df["strand"] == a_strand) &
                                              (self.input_gff_b.df["end"].between(min_pos, max_pos))] \
                     .sort_values(["end"])
-
                 if not tmp_df.empty:
-                    tmp_df["end"] = self.input_gff_a.df.at[indx, "end"]
-
+                    tmp_df["start"] = a_start
                 else:
                     continue
             elif a_strand == "-":
-                min_pos = a_end - (max_len + 1)
-                max_pos = a_end - (min_len + 1)
+                min_pos = a_end - (min_len + 1)
+                max_pos = a_end - (max_len + 1)
                 tmp_df = self.input_gff_b.df[(self.input_gff_b.df["seq_id"] == seq_id) &
                                              (self.input_gff_b.df["strand"] == a_strand) &
-                                             (self.input_gff_b.df["start"].between(min_pos, max_pos))] \
+                                             (self.input_gff_b.df["start"].between(max_pos, min_pos))] \
                     .sort_values(["start"], ascending=False)
                 if not tmp_df.empty:
-                    tmp_df["start"] = self.input_gff_a.df.at[indx, "start"]
+                    tmp_df["end"] = a_end
                 else:
                     continue
             else:
