@@ -67,6 +67,7 @@ class Connector:
                         a_rm_flag = True
                 if a_rm_flag:
                     a_drop_indecies.append(a_indx)
+            print("\n")
         self.input_gff_a.df.drop(a_drop_indecies, inplace=True, axis=0)
         self.input_gff_b.df.drop(b_drop_indecies, inplace=True, axis=0)
         self.input_gff_a.df.drop(["interval"], inplace=True, axis=1)
@@ -127,6 +128,7 @@ class Connector:
                                        f";seq_len={tmp_df.at[i, 'end'] - tmp_df.at[i, 'start'] + 1}" \
                                        f";connection_type=non_overlaping_in_window_{min_len}:{max_len}"
             self.export_df = self.export_df.append(tmp_df)
+        print("\n")
         self.export_df.sort_values(["seq_id", "start", "end"], inplace=True)
         f_export_df = self.export_df[self.export_df["strand"] == "+"].copy()
         r_export_df = self.export_df[self.export_df["strand"] == "-"].copy()
