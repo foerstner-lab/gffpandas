@@ -74,7 +74,8 @@ class Connector:
                     .sort_values(["end"])
 
                 if not tmp_df.empty:
-                    tmp_df["start"] = self.input_gff_a.df.at[indx, "start"]
+                    tmp_df["end"] = self.input_gff_a.df.at[indx, "end"]
+
                 else:
                     continue
             elif a_strand == "-":
@@ -85,7 +86,7 @@ class Connector:
                                              (self.input_gff_b.df["start"].between(min_pos, max_pos))] \
                     .sort_values(["start"], ascending=False)
                 if not tmp_df.empty:
-                    tmp_df["end"] = self.input_gff_a.df.at[indx, "end"]
+                    tmp_df["start"] = self.input_gff_a.df.at[indx, "start"]
                 else:
                     continue
             else:
