@@ -102,15 +102,15 @@ class Connector:
         if keep == "all":
             pass
         elif keep == "shortest":
-            f_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
-            f_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
-            r_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='first', inplace=True)
-            r_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='last', inplace=True)
+            f_export_df.drop_duplicates(subset=['seq_id', 'end'], keep='last', inplace=True)
+            f_export_df.drop_duplicates(subset=['seq_id', 'start'], keep='first', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'start'], keep='first', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'end'], keep='last', inplace=True)
         elif keep == "longest":
-            f_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
-            f_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-            r_export_df.drop_duplicates(subset=['seq_id', 'start', 'strand'], keep='last', inplace=True)
-            r_export_df.drop_duplicates(subset=['seq_id', 'end', 'strand'], keep='first', inplace=True)
+            f_export_df.drop_duplicates(subset=['seq_id', 'end'], keep='first', inplace=True)
+            f_export_df.drop_duplicates(subset=['seq_id', 'start'], keep='last', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'start'], keep='last', inplace=True)
+            r_export_df.drop_duplicates(subset=['seq_id', 'end'], keep='first', inplace=True)
         else:
             print(f"Bad '{keep}' value for 'keep' argument")
         self.export_df = f_export_df.append(r_export_df)
