@@ -81,8 +81,6 @@ class Connector:
                 sys.stdout.flush()
                 sys.stdout.write("\r" + f"\tProgress: {round(a_indx / gff_df_len * 100, 1)}%")
                 a_rm_flag = False
-                tmp_df = gff_b_df[gff_b_df["interval"].any().overlaps(gff_a_df.at[a_indx, "interval"])]
-                print(tmp_df)
                 for b_indx in gff_b_df.index:
                     tmp_df = gff_b_df[gff_b_df["interval"]]
                     if gff_a_df.at[a_indx, "interval"].overlaps(gff_b_df.at[b_indx, "interval"]):
