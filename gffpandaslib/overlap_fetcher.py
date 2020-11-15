@@ -40,6 +40,12 @@ class OverlapFetcher:
                                                (self.input_gff_b.df["strand"] == comb[1])]
             for a_indx in gff_a_df.index:
                 counter = 0
+                starts = ""
+                ends = ""
+                sizes = ""
+                precentages = ""
+                comments = ""
+                strands = ""
                 for b_indx in gff_b_df.index:
                     if gff_a_df.at[a_indx, "interval"].overlaps(gff_b_df.at[b_indx, "interval"]):
                         counter += 1
@@ -55,25 +61,33 @@ class OverlapFetcher:
                             overlap_name = b_attr["id"]
                         else:
                             overlap_name = row.at['attributes'].replace(";", "-")
-                        if counter > 1:
-                            count_prefix = f"_{counter}"
-                        else:
-                            count_prefix = ""
                         overlap_size = len(set(list(range(gff_b_df.at[b_indx, 'start'],
                                                           gff_b_df.at[b_indx, 'end'] + 1, 1))).intersection(
                             set(list(range(gff_a_df.at[a_indx, 'start'],
                                            gff_a_df.at[a_indx, 'end'] + 1, 1)))))
-                        self.input_gff_a.df.at[a_indx, "attributes"] += \
-                            f";{self.set_b_prefix}_overlap_start{count_prefix}={gff_b_df.at[b_indx, 'start']}" \
-                            f";{self.set_b_prefix}_overlap_end{count_prefix}={gff_b_df.at[b_indx, 'end']}" \
-                            f";{self.set_b_prefix}_overlap_size{count_prefix}={overlap_size}nt" \
-                            f";{self.set_b_prefix}_comment{count_prefix}={overlap_name}"
+                        percentage = round(overlap_size /
+                                           (gff_b_df.at[b_indx, 'end'] - gff_b_df.at[b_indx, 'start'] + 1) * 100, 2)
+                        starts += f"|{gff_b_df.at[b_indx, 'start']}"
+                        ends += f"|{gff_b_df.at[b_indx, 'end']}"
+                        sizes += f"|{overlap_size}nt"
+                        precentages += f"|{percentage}%"
+                        comments += f"|{overlap_name}"
+
                         if allow_different_strands:
                             if gff_a_df.at[a_indx, 'strand'] == gff_b_df.at[b_indx, 'strand']:
-                                overlap_strand = "sense"
+                                strands += f"|sense"
                             else:
-                                overlap_strand = "antisense"
-                            f";{self.set_b_prefix}_overlap_strand{count_prefix}={overlap_strand}"
+                                strands += f"|antisense"
+                self.input_gff_a.df.at[a_indx, "attributes"] += \
+                    f";{self.set_b_prefix}_overlap_start={starts[1:] if starts != '' else '_'}" \
+                    f";{self.set_b_prefix}_overlap_end={ends[1:] if ends != '' else '_'}" \
+                    f";{self.set_b_prefix}_overlap_size={sizes[1:] if sizes != '' else '_'}" \
+                    f";overlap_percentage_{self.set_b_prefix}={sizes[1:] if sizes != '' else '_'}" \
+                    f";{self.set_b_prefix}_comment={comments[1:] if comments != '' else '_'}"
+                if allow_different_strands:
+                    self.input_gff_a.df.at[a_indx, "attributes"] += \
+                        f";{self.set_b_prefix}_overlap_strand={strands[1:] if strands != '' else '_'}"
+
         self.input_gff_a.df.drop("interval", inplace=True, axis=1)
         if self.output_file is not None:
             self._export()
