@@ -74,6 +74,8 @@ class Connector:
                                            (self.input_gff_a.df["strand"] == comb[1])]
             gff_b_df = self.input_gff_b.df[(self.input_gff_b.df["seq_id"] == comb[0]) &
                                            (self.input_gff_b.df["strand"] == comb[1])]
+            if gff_a_df.empty:
+                continue
             gff_df_len = max(gff_a_df.index.tolist())
             print(f"==> Finding the {con_type.replace('_', ' ')} for sequence ID {comb[0]}{comb[1]}")
 
