@@ -82,7 +82,7 @@ class OverlapFetcher:
                     f";{self.set_b_prefix}_overlap_start={starts[1:] if starts != '' else '_'}" \
                     f";{self.set_b_prefix}_overlap_end={ends[1:] if ends != '' else '_'}" \
                     f";{self.set_b_prefix}_overlap_size={sizes[1:] if sizes != '' else '_'}" \
-                    f";overlap_percentage_{self.set_b_prefix}={precentages[1:] if precentages != '' else '_'}" \
+                    f";{self.set_b_prefix}_overlap_percentage={precentages[1:] if precentages != '' else '_'}" \
                     f";{self.set_b_prefix}_comment={comments[1:] if comments != '' else '_'}"
                 if allow_different_strands:
                     self.input_gff_a.df.at[a_indx, "attributes"] += \
