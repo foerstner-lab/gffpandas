@@ -23,8 +23,7 @@ class Connector:
 
     @staticmethod
     def _gen_interval(row):
-        # row["interval"] = pd.Interval(left=row["start"], right=row["end"])
-        row["interval"] = set(range(row["start"], row["end"] + 1, 1))
+        row["interval"] = pd.Interval(left=row["start"], right=row["end"])
         return row
 
     @staticmethod
@@ -32,29 +31,23 @@ class Connector:
         if max_len > row["end"] - row["start"] + 1:
             if row["strand"] == "+":
                 modified_end = row["start"] + (max_len - 1)
-                # row["interval"] = pd.Interval(left=row["start"], right=modified_end)
-                row["interval"] = set(range(row["start"], modified_end + 1, 1))
-
+                row["interval"] = pd.Interval(left=row["start"], right=modified_end)
             else:
                 modified_start = row["end"] - (max_len + 1)
                 if modified_start < 1:
                     modified_start = 1
-                # row["interval"] = pd.Interval(left=modified_start, right=row["end"])
-                row["interval"] = set(range(modified_start, row["end"] + 1, 1))
+                row["interval"] = pd.Interval(left=modified_start, right=row["end"])
         return row
 
     def connect_annotation(self, min_len, max_len, new_type="undefined_sequence_type", keep="all"):
         # First round to get the perfect overlapping annotations
         # report them to the output and remove them from the inputs
-        print("Generating length intervals for set A")
         self.input_gff_a.df = self.input_gff_a.df.apply(func=lambda row: self._gen_interval(row), axis=1)
-        print("Generating length intervals for set B")
         self.input_gff_b.df = self.input_gff_b.df.apply(func=lambda row: self._gen_interval(row), axis=1)
         self.fetch_interval_overlaps(min_len, max_len, new_type, "overlap")
         self.filter_redundant_annotations("longest")
         # Second round to connect non overlapping annotations within a window
         self.input_gff_a.df.reset_index(drop=True, inplace=True)
-        print("Generating max length intervals")
         self.input_gff_a.df = self.input_gff_a.df.apply(func=lambda row: self._gen_interval_in_max_len(row, max_len),
                                                         axis=1)
         self.fetch_interval_overlaps(min_len, max_len, new_type, "non_overlap_in_window")
@@ -89,11 +82,8 @@ class Connector:
                 sys.stdout.flush()
                 sys.stdout.write("\r" + f"\tProgress: {round(a_indx / gff_df_len * 100, 1)}%")
                 a_rm_flag = False
-                tmp_df = gff_b_df[bool(gff_a_df.at[a_indx, "interval"] & gff_b_df["interval"])]
-                print(tmp_df)
                 for b_indx in gff_b_df.index:
-                    if not gff_a_df.at[a_indx, "interval"].isdisjoint(gff_b_df.at[b_indx, "interval"]):
-                        # if gff_a_df.at[a_indx, "interval"].overlaps(gff_b_df.at[b_indx, "interval"]):
+                    if gff_a_df.at[a_indx, "interval"].overlaps(gff_b_df.at[b_indx, "interval"]):
                         counter += 1
                         row = gff_b_df.loc[b_indx].copy()
                         row["start"] = min(gff_a_df.at[a_indx, "start"], gff_b_df.at[b_indx, "start"])
