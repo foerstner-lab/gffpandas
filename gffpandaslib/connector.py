@@ -23,6 +23,7 @@ class Connector:
 
     @staticmethod
     def _gen_interval(row):
+        # row["interval"] = set(range(row["start"], row["end"] + 1, 1))
         row["interval"] = pd.Interval(left=row["start"], right=row["end"])
         return row
 
@@ -31,11 +32,13 @@ class Connector:
         if max_len > row["end"] - row["start"] + 1:
             if row["strand"] == "+":
                 modified_end = row["start"] + (max_len - 1)
+                # row["interval"] = set(range(row["start"], modified_end + 1, 1))
                 row["interval"] = pd.Interval(left=row["start"], right=modified_end)
             else:
                 modified_start = row["end"] - (max_len + 1)
                 if modified_start < 1:
                     modified_start = 1
+                #row["interval"] = set(range(modified_start, row["end"] + 1, 1))
                 row["interval"] = pd.Interval(left=modified_start, right=row["end"])
         return row
 
@@ -83,6 +86,7 @@ class Connector:
                 sys.stdout.write("\r" + f"\tProgress: {round(a_indx / gff_df_len * 100, 1)}%")
                 a_rm_flag = False
                 for b_indx in gff_b_df.index:
+                    #if gff_a_df.at[a_indx, "interval"].intersection(gff_b_df.at[b_indx, "interval"]):
                     if gff_a_df.at[a_indx, "interval"].overlaps(gff_b_df.at[b_indx, "interval"]):
                         counter += 1
                         row = gff_b_df.loc[b_indx].copy()
@@ -99,6 +103,7 @@ class Connector:
                         self.export_df = self.export_df.append(row)
                         b_drop_indecies.append(b_indx)
                         a_rm_flag = True
+
                 if a_rm_flag:
                     a_drop_indecies.append(a_indx)
             print("\n")
