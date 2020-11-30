@@ -21,7 +21,7 @@ class OverlapFetcher:
         self.set_b_prefix = set_b_prefix
         self.output_file = output_file
 
-    def fetch_overlaps(self, allow_different_strands=False):
+    def fetch_overlaps(self, allow_different_strands=False, names_only=False):
         lg.info(" Fetching overlaps")
         self.input_gff_a.df = self.input_gff_a.df.apply(func=lambda row: self._gen_interval(row), axis=1)
         self.input_gff_b.df = self.input_gff_b.df.apply(func=lambda row: self._gen_interval(row), axis=1)
@@ -78,15 +78,19 @@ class OverlapFetcher:
                                 strands += f"|sense"
                             else:
                                 strands += f"|antisense"
-                        self.input_gff_a.df.at[a_indx, "attributes"] += \
-                            f";{self.set_b_prefix}_overlap_start={starts[1:] if starts != '' else '.'}" \
-                            f";{self.set_b_prefix}_overlap_end={ends[1:] if ends != '' else '.'}" \
-                            f";{self.set_b_prefix}_overlap_size={sizes[1:] if sizes != '' else '.'}" \
-                            f";{self.set_b_prefix}_overlap_percentage={precentages[1:] if precentages != '' else '.'}" \
-                            f";{self.set_b_prefix}_comment={comments[1:] if comments != '' else '.'}"
-                        if allow_different_strands:
+                        if names_only:
                             self.input_gff_a.df.at[a_indx, "attributes"] += \
-                                f";{self.set_b_prefix}_overlap_strand={strands[1:] if strands != '' else '.'}"
+                                f";{self.set_b_prefix}_comment={comments[1:] if comments != '' else '.'}"
+                        else:
+                            self.input_gff_a.df.at[a_indx, "attributes"] += \
+                                f";{self.set_b_prefix}_overlap_start={starts[1:] if starts != '' else '.'}" \
+                                f";{self.set_b_prefix}_overlap_end={ends[1:] if ends != '' else '.'}" \
+                                f";{self.set_b_prefix}_overlap_size={sizes[1:] if sizes != '' else '.'}" \
+                                f";{self.set_b_prefix}_overlap_percentage={precentages[1:] if precentages != '' else '.'}" \
+                                f";{self.set_b_prefix}_comment={comments[1:] if comments != '' else '.'}"
+                            if allow_different_strands:
+                                self.input_gff_a.df.at[a_indx, "attributes"] += \
+                                    f";{self.set_b_prefix}_overlap_strand={strands[1:] if strands != '' else '.'}"
 
         self.input_gff_a.df.drop("interval", inplace=True, axis=1)
         if self.output_file is not None:

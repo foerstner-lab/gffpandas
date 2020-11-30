@@ -46,6 +46,8 @@ def main():
                                         help="Any marking prefix string")
     overlap_fetcher_parser.add_argument("--allow_different_strands", "-a", default=False, action='store_true',
                                         help="All different strand overlap")
+    overlap_fetcher_parser.add_argument("--names_only", "-n", default=False, action='store_true',
+                                        help="If used, it will ignore extra details columns")
     # ___________________________________________________________________
     filter_parser = subparsers.add_parser("filter",
                                           help="Export GFF3 file to various formats")
@@ -149,7 +151,7 @@ def export_to_table(args):
 def fetch_overlap(args):
     lg.info(f"Launching {args.command} subcommand")
     OverlapFetcher(args.input_gff_a, args.input_gff_b, args.prefix, args.output_file) \
-        .fetch_overlaps(allow_different_strands=args.allow_different_strands)
+        .fetch_overlaps(allow_different_strands=args.allow_different_strands, names_only=args.names_only)
 
 
 def filter_annotations(args):
