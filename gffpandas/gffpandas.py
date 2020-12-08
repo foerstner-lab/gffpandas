@@ -5,10 +5,12 @@ import pandas as pd
 def read_gff3(input_file):
     return Gff3DataFrame(input_file)
 
+
 def _split_atts(atts):
     """Split a feature string into attributes."""
     splits_list = [a.split("=") for a in atts.split(";") if "=" in a]
-    return {l[0]:"=".join(l[1:]) for l in splits_list}
+    return {item[0]: "=".join(item[1:]) for item in splits_list}
+
 
 class Gff3DataFrame(object):
     """This class contains header information in the header attribute and
@@ -17,7 +19,9 @@ class Gff3DataFrame(object):
 
     """
 
-    def __init__(self, input_gff_file=None, input_df=None, input_header=None) -> None:
+    def __init__(
+        self, input_gff_file=None, input_df=None, input_header=None
+    ) -> None:
         """Create an instance."""
         if input_gff_file is not None:
             self._gff_file = input_gff_file
@@ -150,7 +154,9 @@ class Gff3DataFrame(object):
         feature_df = self.df.loc[self.df.type.isin(feature_type_list)]
         return Gff3DataFrame(input_df=feature_df, input_header=self.header)
 
-    def filter_by_length(self, min_length=None, max_length=None) -> "Gff3DataFrame":
+    def filter_by_length(
+        self, min_length=None, max_length=None
+    ) -> "Gff3DataFrame":
         """Filtering the pandas dataframe by the gene_length.
 
         For this method the desired minimal and maximal bp length
@@ -169,7 +175,9 @@ class Gff3DataFrame(object):
         filtered_by_length = self.df[
             (gene_length >= min_length) & (gene_length <= max_length)
         ]
-        return Gff3DataFrame(input_df=filtered_by_length, input_header=self.header)
+        return Gff3DataFrame(
+            input_df=filtered_by_length, input_header=self.header
+        )
 
     def attributes_to_columns(self) -> pd.DataFrame:
         """Saving each attribute-tag to a single column.
@@ -199,7 +207,9 @@ class Gff3DataFrame(object):
             )
         return df_attributes
 
-    def get_feature_by_attribute(self, attr_tag, attr_value_list) -> "Gff3DataFrame":
+    def get_feature_by_attribute(
+        self, attr_tag, attr_value_list
+    ) -> "Gff3DataFrame":
         """Filtering the pandas dataframe by a attribute.
 
         The 9th column of a gff3-file contains the list of feature
@@ -223,8 +233,12 @@ class Gff3DataFrame(object):
         """
         df_copy = self.df.copy()
         attribute_df = Gff3DataFrame.attributes_to_columns(self)
-        filtered_by_attr_df = df_copy.loc[attribute_df[attr_tag].isin(attr_value_list)]
-        return Gff3DataFrame(input_df=filtered_by_attr_df, input_header=self.header)
+        filtered_by_attr_df = df_copy.loc[
+            attribute_df[attr_tag].isin(attr_value_list)
+        ]
+        return Gff3DataFrame(
+            input_df=filtered_by_attr_df, input_header=self.header
+        )
 
     def stats_dic(self) -> dict:
         """Gives the following statistics for the data:
@@ -317,7 +331,9 @@ class Gff3DataFrame(object):
             overlap_df = overlap_df[~condition]
         return Gff3DataFrame(input_df=overlap_df, input_header=self.header)
 
-    def find_duplicated_entries(self, seq_id=None, type=None) -> "Gff3DataFrame":
+    def find_duplicated_entries(
+        self, seq_id=None, type=None
+    ) -> "Gff3DataFrame":
         """Find entries which are redundant.
 
         For this method the chromosom accession number (seq_id) as well as the
@@ -335,5 +351,7 @@ class Gff3DataFrame(object):
         """
         input_df = self.df[self.df.seq_id == seq_id]
         df_feature = input_df[input_df.type == type]
-        duplicate = df_feature.loc[df_feature[["end", "start", "strand"]].duplicated()]
+        duplicate = df_feature.loc[
+            df_feature[["end", "start", "strand"]].duplicated()
+        ]
         return Gff3DataFrame(input_df=duplicate, input_header=self.header)
