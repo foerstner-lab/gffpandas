@@ -5,6 +5,10 @@ import pandas as pd
 def read_gff3(input_file):
     return Gff3DataFrame(input_file)
 
+def _split_atts(atts):
+    """Split a feature string into attributes."""
+    splits_list = [a.split("=") for a in atts.split(";") if "=" in a]
+    return {l[0]:"=".join(l[1:]) for l in splits_list}
 
 class Gff3DataFrame(object):
     """This class contains header information in the header attribute and
@@ -181,14 +185,7 @@ class Gff3DataFrame(object):
         """
         attribute_df = self.df.copy()
         df_attributes = attribute_df.loc[:, "seq_id":"attributes"]
-        attribute_df["at_dic"] = attribute_df.attributes.apply(
-            lambda attributes: dict(
-                [
-                    key_value_pair.split(sep="=", maxsplit=1)
-                    for key_value_pair in attributes.split(";")
-                ]
-            )
-        )
+        attribute_df["at_dic"] = attribute_df.attributes.apply(_split_atts)
         attribute_df["at_dic_keys"] = attribute_df["at_dic"].apply(
             lambda at_dic: list(at_dic.keys())
         )
