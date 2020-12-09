@@ -4,7 +4,9 @@
 """Tests for `gffpandas` package."""
 
 # standard library imports
+import shutil
 import time
+from pathlib import Path
 
 # first-party imports
 import gffpandas.gffpandas as gff3pd
@@ -1284,30 +1286,30 @@ def generate_gff3_df():
     return read_in_file
 
 
-# @print_docstring()
-# def test_clean_datadir(request):
-#    """Clean up datadir."""
-#    testdir = Path(request.fspath.dirpath())
-#    datadir = testdir / "data"
-#    if datadir.exists():
-#        shutil.rmtree(datadir)  # remove anything left in data directory
+@print_docstring()
+def test_clean_datadir(request):
+    """Clean up datadir."""
+    testdir = Path(request.fspath.dirpath())
+    datadir = testdir / "data"
+    if datadir.exists():
+        shutil.rmtree(datadir)  # remove anything left in data directory
 
-# @print_docstring()
-# def test_setup_datadir(request, datadir_mgr, capsys):
-#    """Copy in and download static data."""
-#    testdir = Path(request.fspath.dirpath())
-#    datadir = testdir / "data"
-#    filesdir = testdir / "testdata"
-#    shutil.copytree(filesdir, datadir)
-#    with capsys.disabled():
-#        datadir_mgr.download(
-#            download_url=REFSEQ_URL,
-#            files=[HUMAN_GFF],
-#            scope="global",
-#            md5_check=False,
-#            gunzip=True,
-#            progressbar=True,
-#            )
+@print_docstring()
+def test_setup_datadir(request, datadir_mgr, capsys):
+    """Copy in and download static data."""
+    testdir = Path(request.fspath.dirpath())
+    datadir = testdir / "data"
+    filesdir = testdir / "testdata"
+    shutil.copytree(filesdir, datadir)
+    with capsys.disabled():
+        datadir_mgr.download(
+            download_url=REFSEQ_URL,
+            files=[HUMAN_GFF],
+            scope="global",
+            md5_check=False,
+            gunzip=True,
+            progressbar=True,
+            )
 
 
 @print_docstring()
