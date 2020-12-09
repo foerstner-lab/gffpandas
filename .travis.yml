@@ -1,5 +1,5 @@
 dist: focal
-sudo: false
+os: linux
 language: python
 cache:
     directories:
