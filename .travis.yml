@@ -1,26 +1,15 @@
-# Config file for automatic testing at travis-ci.org
-# This file will be regenerated if you run travis_pypi_setup.py
-
+dist: focal
+os: linux
 language: python
+cache:
+    directories:
+        - $HOME/.cache/pip
+        - $HOME/tests/data
 python:
-  - 3.6
-
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
+    - "3.8"
 install:
-  - "pip install -r requirements_dev.txt"
+    - pip install -r requirements.txt
+    - pip install -v pytest pytest-cov pytest-datadir-mgr
+script:
+    - pytest --cov=gffpandas -s
 
-# command to run tests
-script: cd tests && pytest && cd ..
-
-# After you create the Github repo and add it to Travis, run the
-# travis_pypi_setup.py script to finish PyPI deployment setup
-# deploy:
-#   provider: pypi
-#   distributions: sdist bdist_wheel
-#   user: konrad
-#   password:
-#     secure: PLEASE_REPLACE_ME
-#   on:
-#     tags: true
-#     repo: konrad/pandasgff
-#     python: 2.7
