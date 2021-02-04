@@ -1,8 +1,6 @@
 import argparse
 import logging as lg
 
-import argcomplete
-
 from gffpandaslib.collapser import Collapser
 from gffpandaslib.connector import Connector
 from gffpandaslib.exporter import Exporter
@@ -106,7 +104,6 @@ def main():
     connect_parser.add_argument("--keep", "-k", type=str, default="all", choices=["all", "shortest", "longest"],
                                 help="If multiple annotations occured in the same place with different sizes")
 
-    argcomplete.autocomplete(parser)
     args = parser.parse_args()
     # Handling inconsistent argument passes
     if args.command == "export":
