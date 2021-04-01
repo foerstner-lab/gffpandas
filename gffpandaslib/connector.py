@@ -75,9 +75,11 @@ class Connector:
         b_drop_indecies = []
         for comb in combinations:
             gff_a_df = self.input_gff_a.df[(self.input_gff_a.df["seq_id"] == comb[0]) &
-                                           (self.input_gff_a.df["strand"] == comb[1])]
+                                           (self.input_gff_a.df["strand"] == comb[1])].copy()
             gff_b_df = self.input_gff_b.df[(self.input_gff_b.df["seq_id"] == comb[0]) &
-                                           (self.input_gff_b.df["strand"] == comb[1])]
+                                           (self.input_gff_b.df["strand"] == comb[1])].copy()
+            gff_a_df.sort_values(["start", "end"], inplace=True)
+            gff_b_df.sort_values(["start", "end"], inplace=True)
             if gff_a_df.empty:
                 continue
             gff_df_len = max(gff_a_df.index.tolist())
@@ -87,17 +89,17 @@ class Connector:
                 sys.stdout.write("\r" + f"\tProgress: {round(a_indx / gff_df_len * 100, 1)}%")
                 a_rm_flag = False
                 for b_indx in gff_b_df.index:
-                    #if gff_a_df.at[a_indx, "interval"].intersection(gff_b_df.at[b_indx, "interval"]):
+                    # if gff_a_df.at[a_indx, "interval"].intersection(gff_b_df.at[b_indx, "interval"]):
                     if gff_a_df.at[a_indx, "interval"].overlaps(gff_b_df.at[b_indx, "interval"]):
                         min_pos = min(gff_a_df.at[a_indx, "start"], gff_b_df.at[b_indx, "start"])
                         max_pos = max(gff_a_df.at[a_indx, "end"], gff_b_df.at[b_indx, "end"])
                         seq_len = max_pos - min_pos + 1
                         # check if there is a reported annotation for the same position
-                        if self.export_df[(self.export_df["start"] <= min_pos) &
-                                          (self.export_df["end"] >= max_pos) &
-                                          (self.export_df["seq_id"] == comb[0]) &
-                                          (self.export_df["strand"] == comb[1])].shape[0] != 0 or \
-                            seq_len not in len_range:
+                        if not self.export_df[
+                            (self.export_df["start"] <= min_pos) &
+                            (self.export_df["end"] >= max_pos) &
+                            (self.export_df["seq_id"] == comb[0]) &
+                            (self.export_df["strand"] == comb[1])].empty or seq_len not in len_range:
                             continue
                         counter += 1
                         row = gff_b_df.loc[b_indx].copy()
@@ -111,7 +113,9 @@ class Connector:
                         self.export_df = self.export_df.append(row)
                         b_drop_indecies.append(b_indx)
                         a_rm_flag = True
-
+                        gff_a_df.drop(a_indx, inplace=True, axis=0)
+                        gff_b_df.drop(b_indx, inplace=True, axis=0)
+                        break
                 if a_rm_flag:
                     a_drop_indecies.append(a_indx)
             print("\n")
