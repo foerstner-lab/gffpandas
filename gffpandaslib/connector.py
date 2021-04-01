@@ -93,7 +93,9 @@ class Connector:
                         row["start"] = min(gff_a_df.at[a_indx, "start"], gff_b_df.at[b_indx, "start"])
                         row["end"] = max(gff_a_df.at[a_indx, "end"], gff_b_df.at[b_indx, "end"])
                         if self.export_df[(self.export_df["start"] >= row["start"]) &
-                                          (self.export_df["end"] <= row["end"])].shape[0] != 0:
+                                          (self.export_df["end"] <= row["end"] &
+                                           (self.export_df["seq_id"] == comb[0]) &
+                                           (self.export_df["strand"] == comb[1]))].shape[0] != 0:
                             continue
                         seq_len = row["end"] - row["start"] + 1
                         if not min_len <= seq_len <= max_len:
