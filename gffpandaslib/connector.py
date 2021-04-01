@@ -67,6 +67,7 @@ class Connector:
             self._export()
 
     def fetch_interval_overlaps(self, min_len, max_len, new_type, con_type):
+        len_range = range(min_len, max_len + 1, 1)
         counter = 0
         strand_letter_func = lambda x: 'F' if x == "+" else "R"
         combinations = product(self.input_gff_a.seq_ids, ["+", "-"])
@@ -90,20 +91,18 @@ class Connector:
                     if gff_a_df.at[a_indx, "interval"].overlaps(gff_b_df.at[b_indx, "interval"]):
                         min_pos = min(gff_a_df.at[a_indx, "start"], gff_b_df.at[b_indx, "start"])
                         max_pos = max(gff_a_df.at[a_indx, "end"], gff_b_df.at[b_indx, "end"])
+                        seq_len = max_pos - min_pos + 1
                         # check if there is a reported annotation for the same position
-                        if self.export_df[(self.export_df["start"] >= min_pos) &
-                                          (self.export_df["end"] <= max_pos) &
+                        if self.export_df[(self.export_df["start"] <= min_pos) &
+                                          (self.export_df["end"] >= max_pos) &
                                           (self.export_df["seq_id"] == comb[0]) &
-                                          (self.export_df["strand"] == comb[1])].shape[0] != 0:
+                                          (self.export_df["strand"] == comb[1])].shape[0] != 0 or \
+                            seq_len not in len_range:
                             continue
                         counter += 1
                         row = gff_b_df.loc[b_indx].copy()
                         row["start"] = min_pos
                         row["end"] = max_pos
-
-                        seq_len = row["end"] - row["start"] + 1
-                        if not min_len <= seq_len <= max_len:
-                            continue
                         row["attributes"] = f"ID={comb[0]}_{strand_letter_func(comb[1])}_###ID###" \
                                             f";name={new_type}_###ID###_{comb[0]}_{strand_letter_func(comb[1])}" \
                                             f";seq_len={seq_len}" \
