@@ -90,10 +90,11 @@ class Connector:
                     if gff_a_df.at[a_indx, "interval"].overlaps(gff_b_df.at[b_indx, "interval"]):
                         min_pos = min(gff_a_df.at[a_indx, "start"], gff_b_df.at[b_indx, "start"])
                         max_pos = max(gff_a_df.at[a_indx, "end"], gff_b_df.at[b_indx, "end"])
+                        # check if there is a reported annotation for the same position
                         if self.export_df[(self.export_df["start"] >= min_pos) &
-                                          (self.export_df["end"] <= max_pos &
-                                           (self.export_df["seq_id"] == comb[0]) &
-                                           (self.export_df["strand"] == comb[1]))].shape[0] != 0:
+                                          (self.export_df["end"] <= max_pos) &
+                                          (self.export_df["seq_id"] == comb[0]) &
+                                          (self.export_df["strand"] == comb[1])].shape[0] != 0:
                             continue
                         counter += 1
                         row = gff_b_df.loc[b_indx].copy()
