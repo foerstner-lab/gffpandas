@@ -43,6 +43,7 @@ class TableConverter:
                 lg.error(f" Essential '{col}' column not found in table, please check your table")
                 exit()
         lg.info(" Essential columns found")
+        # Add non essential columns if not found
         imported_file_df["source"] = "GFFPandas"
         if "seq_id" in imported_file_df.columns or "seqid" in imported_file_df.columns:
             imported_file_df.rename(columns={"seqid": "seq_id"}, inplace=True)
@@ -50,7 +51,7 @@ class TableConverter:
         else:
             imported_file_df["seq_id"] = "chr1"
 
-        imported_file_df["seq_id"] = imported_file_df["seq_id"].fillna(
+        imported_file_df["type"] = imported_file_df["type"].fillna(
             "unknown_annotation_type") if "type" in imported_file_df.columns else "unknown_annotation_type"
         imported_file_df["score"] = imported_file_df["score"].fillna(
             ".") if "score" in imported_file_df.columns else "."
@@ -59,7 +60,7 @@ class TableConverter:
         imported_file_df["attributes"] = imported_file_df["attributes"].fillna(
             "") if "attributes" in imported_file_df.columns else ""
         extra_columns = [x for x in imported_file_df.columns if x not in gff_columns]
-
+        # add attributes column
         if 'id' in extra_columns:
             imported_file_df.rename(columns={"id": "original_id"}, inplace=True)
         for extra_column in extra_columns:
