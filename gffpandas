@@ -1,6 +1,5 @@
 import argparse
 import logging as lg
-import sys
 
 from gffpandaslib.collapser import Collapser
 from gffpandaslib.connector import Connector
@@ -11,8 +10,6 @@ from gffpandaslib.table_converter import TableConverter
 
 
 def main():
-    lg.basicConfig(filename='example.log', encoding='utf-8', level=lg.DEBUG)
-    lg.getLogger().addHandler(lg.StreamHandler(sys.stdout))
     # Entry point
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(help="commands", dest='command')
