@@ -16,7 +16,7 @@ class TableConverter:
         self.input_file = os.path.abspath(input_file)
         self.output_file = os.path.abspath(output_file)
         self.parse_other_columns = parse_other_columns
-        self.export_df = pd.DataFrame(columns=_df_columns)
+        self.export_df = None
 
     def convert(self):
         basic_columns = ["start", "end", "strand"]
@@ -89,7 +89,7 @@ class TableConverter:
         imported_file_df.drop(extra_columns, inplace=True, axis=1)
         imported_file_df = imported_file_df.reindex(columns=gff_columns)
         imported_file_df.sort_values(["seq_id", "start", "end"], inplace=True)
-        self.export_df = GFF3(imported_file_df, load_metadata=False)
+        self.export_df = GFF3(imported_file_df, load_metadata=False).df
         if self.output_file is not None:
             self._export()
 
