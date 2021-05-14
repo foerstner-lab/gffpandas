@@ -3,7 +3,7 @@
 
 """Tests for `gffpandas` package."""
 
-import gffpandas.gffpandas as gff3pd
+import gffpandaslib.gffpandas as gff3pd
 import pandas as pd
 import os
 
