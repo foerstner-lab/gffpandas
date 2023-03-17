@@ -26,7 +26,7 @@ test_requirements = [
 
 setup(
     name='gffpandas',
-    version='1.2.1',
+    version='1.2.2',
     description="GFF annotations in panda data frames",
     long_description=readme + '\n\n' + history,
     author="Muhammad M. Elhossary, Vivian A. Monzon, Konrad U. Förstner",

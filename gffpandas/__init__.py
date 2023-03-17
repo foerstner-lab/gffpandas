@@ -4,4 +4,4 @@
 
 __author__ = """Konrad U. Förstner"""
 __email__ = "konrad@foerstner.org"
-__version__ = "0.1.0"
+__version__ = "1.2.2"
