@@ -28,9 +28,8 @@ class Gff3DataFrame(object):
 
         By the pandas library the gff3 file is read and
         a pd dataframe with the given column-names is returned."""
-        self.df = pd.read_csv(
+        self.df = pd.read_table(
             self._gff_file,
-            sep="\t",
             comment="#",
             names=[
                 "seq_id",
@@ -52,11 +51,12 @@ class Gff3DataFrame(object):
         The header of the gff file is read, means all lines,
         which start with '#'."""
         self.header = ""
-        for line in open(self._gff_file):
-            if line.startswith("#"):
-                self.header += line
-            else:
-                break
+        try:
+            with open(self._gff_file) as file_content:
+                self.header = ''.join([line for line in file_content.readlines() if line.startswith("#")])
+        except:
+            pass
+        print(self.header)
         return self.header
 
     def _to_xsv(self, output_file=None, sep=None) -> None:
