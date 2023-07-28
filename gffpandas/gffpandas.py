@@ -42,6 +42,7 @@ class Gff3DataFrame(object):
                 "phase",
                 "attributes",
             ],
+            keep_default_na=False,
         )
         return self.df
 
