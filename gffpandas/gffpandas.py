@@ -42,6 +42,7 @@ class Gff3DataFrame(object):
                 "phase",
                 "attributes",
             ],
+            keep_default_na=False,
         )
         return self.df
 
@@ -56,7 +57,6 @@ class Gff3DataFrame(object):
                 self.header = ''.join([line for line in file_content.readlines() if line.startswith("#")])
         except:
             pass
-        print(self.header)
         return self.header
 
     def _to_xsv(self, output_file=None, sep=None) -> None:
